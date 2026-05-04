@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Golf Trip 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --green-dark: #1a472a;
+    --green-mid: #2d6a4f;
+    --green-light: #40916c;
+    --green-pale: #b7e4c7;
+    --sand: #f5f0e1;
+    --white: #ffffff;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-500: #6c757d;
+    --gray-800: #343a40;
+    --red: #c0392b;
+    --red-light: #e74c3c;
+    --blue: #2471a3;
+    --blue-light: #3498db;
+    --gold: #f1c40f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif;
+    background: var(--gray-100);
+    color: var(--gray-800);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+    color: white;
+    padding: 1.25rem 1rem;
+    text-align: center;
+  }
+
+  header h1 { font-size: 1.5rem; font-weight: 800; }
+  header p { opacity: 0.85; font-size: 0.9rem; }
+
+  .container { max-width: 600px; margin: 0 auto; padding: 0.75rem; }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin: 1.25rem 0 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 3px solid var(--green-light);
+  }
+
+  /* ---- Ryder Cup Points Bar ---- */
+  .ryder-bar-wrap {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .ryder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .ryder-header .team-red { color: var(--red); }
+  .ryder-header .team-blue { color: var(--blue); }
+  .ryder-header .vs { color: var(--gray-500); font-size: 0.8rem; font-weight: 400; }
+
+  .ryder-bar-container {
+    position: relative;
+    height: 44px;
+    border-radius: 22px;
+    overflow: hidden;
+    background: var(--gray-200);
+  }
+
+  .ryder-bar-red {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--red), var(--red-light));
+    border-radius: 22px 0 0 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 1.1rem;
+    min-width: 40px;
+    transition: width 0.6s ease;
+  }
+
+  .ryder-bar-blue {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--blue-light), var(--blue));
+    border-radius: 0 22px 22px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 1.1rem;
+    min-width: 40px;
+    transition: width 0.6s ease;
+  }
+
+  .ryder-win-line {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 3px;
+    background: var(--gold);
+    z-index: 10;
+    box-shadow: 0 0 8px rgba(241, 196, 15, 0.6);
+  }
+
+  .ryder-win-label {
+    position: absolute;
+    top: -18px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--gold);
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+
+  .ryder-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--gray-500);
+  }
+
+  /* ---- Countdown ---- */
+  .countdown-banner {
+    background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+    color: white;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    text-align: center;
+  }
+
+  .countdown-banner .label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: 0.85;
+  }
+
+  .countdown-banner .event-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0.15rem 0 0.5rem;
+  }
+
+  .countdown-units {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+  }
+
+  .countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .countdown-unit .number {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .countdown-unit .unit-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+  }
+
+  /* ---- Schedule ---- */
+  .schedule-grid {
+    display: grid;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .schedule-card {
+    background: white;
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.25rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    border-left: 4px solid var(--green-light);
+  }
+
+  .schedule-card.past {
+    opacity: 0.45;
+    border-left-color: var(--gray-500);
+  }
+
+  .schedule-card.next {
+    border-left-color: var(--gold);
+    box-shadow: 0 2px 8px rgba(241, 196, 15, 0.25);
+  }
+
+  .sched-top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+  }
+
+  .sched-date {
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--green-dark);
+    white-space: nowrap;
+  }
+
+  .sched-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .sched-meta {
+    font-size: 0.78rem;
+    color: var(--gray-500);
+    grid-column: 1;
+  }
+
+  .sched-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.2rem;
+    grid-row: 2;
+    grid-column: 2;
+  }
+
+  .sched-points {
+    background: var(--green-pale);
+    color: var(--green-dark);
+    font-weight: 700;
+    padding: 0.15rem 0.55rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .sched-cost {
+    font-weight: 600;
+    color: var(--gray-500);
+    font-size: 0.78rem;
+  }
+
+  .format-chip {
+    display: inline-block;
+    background: var(--green-dark);
+    color: white;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.15rem 0.55rem;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+    margin-left: auto;
+  }
+
+  /* Draft player pills */
+  .draft-players {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.3rem;
+  }
+
+  .draft-pill {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+  }
+
+  .draft-pill.round1 {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .draft-pill.round2 {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  /* ---- Player Grid ---- */
+  .player-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+  }
+
+  .player-card {
+    background: white;
+    border-radius: 10px;
+    padding: 0.85rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+    border: 2px solid transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .player-card:active {
+    transform: scale(0.97);
+  }
+
+  .player-card.active {
+    border-color: var(--green-light);
+    box-shadow: 0 3px 10px rgba(45, 106, 79, 0.2);
+  }
+
+  .player-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+  }
+
+  .player-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .player-handicap {
+    background: var(--sand);
+    padding: 0.1rem 0.4rem;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--green-dark);
+  }
+
+  .player-strokes {
+    font-size: 0.7rem;
+    color: var(--gray-500);
+    margin-bottom: 0.35rem;
+  }
+
+  .player-scores {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+  }
+
+  .score-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 26px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0 0.25rem;
+  }
+
+  .score-badge.good { background: #d4edda; color: #155724; }
+  .score-badge.ok { background: #fff3cd; color: #856404; }
+  .score-badge.bad { background: #f8d7da; color: #721c24; }
+
+  .no-scores {
+    color: var(--gray-500);
+    font-size: 0.75rem;
+    font-style: italic;
+  }
+
+  .player-avg {
+    margin-top: 0.4rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--gray-200);
+    font-size: 0.75rem;
+    color: var(--gray-500);
+  }
+
+  .player-avg span {
+    font-weight: 700;
+    color: var(--gray-800);
+  }
+
+  /* ---- Detail Panel ---- */
+  .detail-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  .detail-panel.visible { display: block; }
+
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .detail-header h3 { font-size: 1.15rem; }
+
+  .detail-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--gray-500);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .detail-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .detail-stat {
+    text-align: center;
+    padding: 0.5rem 0.25rem;
+    background: var(--gray-100);
+    border-radius: 8px;
+  }
+
+  .detail-stat .stat-value {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--green-dark);
+  }
+
+  .detail-stat .stat-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--gray-500);
+  }
+
+  .round-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+
+  .round-table th, .round-table td {
+    padding: 0.45rem 0.35rem;
+    text-align: center;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .round-table th {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--gray-500);
+    background: var(--gray-100);
+  }
+
+  .diff-good { color: #155724; font-weight: 700; }
+  .diff-ok { color: #856404; font-weight: 700; }
+  .diff-bad { color: #721c24; font-weight: 700; }
+
+  /* ---- Chart ---- */
+  .chart-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    margin-bottom: 1rem;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 280px;
+  }
+
+  .chart-legend {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin-bottom: 0.5rem;
+  }
+
+  .chart-instructions {
+    text-align: center;
+    padding: 0.6rem;
+    background: var(--sand);
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--green-dark);
+  }
+
+  /* ---- Desktop ---- */
+  @media (min-width: 768px) {
+    .container { max-width: 900px; padding: 1.5rem; }
+    header { padding: 2rem; }
+    header h1 { font-size: 2rem; }
+    header p { font-size: 1.05rem; }
+    .section-title { font-size: 1.3rem; }
+    .countdown-unit .number { font-size: 2.5rem; }
+    .player-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .player-name { font-size: 1.05rem; }
+    .chart-container { height: 380px; }
+    .detail-stats { grid-template-columns: repeat(6, 1fr); }
+    .ryder-bar-container { height: 52px; border-radius: 26px; }
+    .ryder-bar-red { border-radius: 26px 0 0 26px; font-size: 1.3rem; }
+    .ryder-bar-blue { border-radius: 0 26px 26px 0; font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Golf Trip 2026</h1>
+  <p>May 29 - 31 &middot; 14 Points Total &middot; 7.5 to Win</p>
+</header>
+
+<div class="container">
+
+  <!-- Ryder Cup Points Bar -->
+  <div class="ryder-bar-wrap" style="margin-top:0.75rem;">
+    <div class="ryder-header">
+      <span class="team-red">Team Red</span>
+      <span class="vs">14 pts available</span>
+      <span class="team-blue">Team Blue</span>
+    </div>
+    <div class="ryder-bar-container" id="ryder-bar">
+      <div class="ryder-bar-red" id="ryder-red" style="width:50%;">0</div>
+      <div class="ryder-bar-blue" id="ryder-blue" style="width:50%;">0</div>
+      <div class="ryder-win-line" id="ryder-line" style="left:50%;transform:translateX(-50%);">
+        <span class="ryder-win-label">7.5 to win</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Countdown -->
+  <div class="countdown-banner" id="countdown-banner">
+    <div class="label">Next Up</div>
+    <div class="event-name" id="countdown-event"></div>
+    <div class="countdown-units" id="countdown-units"></div>
+  </div>
+
+  <!-- Schedule -->
+  <h2 class="section-title">Schedule</h2>
+  <div class="schedule-grid" id="schedule-grid"></div>
+
+  <!-- Player Tracker -->
+  <h2 class="section-title">Player Tracker</h2>
+  <div class="chart-instructions">Tap any player to see round-by-round breakdown</div>
+
+  <!-- Detail Panel -->
+  <div class="detail-panel" id="detail-panel">
+    <div class="detail-header">
+      <h3 id="detail-name"></h3>
+      <button class="detail-close" id="detail-close">&times;</button>
+    </div>
+    <div class="detail-stats" id="detail-stats"></div>
+    <table class="round-table" id="round-table">
+      <thead>
+        <tr>
+          <th>Round</th>
+          <th>Score</th>
+          <th>Expected</th>
+          <th>+/-</th>
+        </tr>
+      </thead>
+      <tbody id="round-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- Player Cards -->
+  <div class="player-grid" id="player-grid"></div>
+
+  <!-- Chart -->
+  <div class="chart-section" style="margin-top:1.25rem;">
+    <h2 class="section-title" style="border:none;margin:0 0 0.25rem;">Performance vs. Handicap</h2>
+    <p class="chart-legend">Each bar shows strokes better (green) or worse (red) than expected (par 72 + handicap). Tap a player above to highlight.</p>
+    <div class="chart-container">
+      <canvas id="performanceChart"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const PAR = 72;
+const TOTAL_POINTS = 14;
+const WIN_POINTS = 7.5;
+
+// Current scores (update as rounds are played)
+let teamRedPoints = 0;
+let teamBluePoints = 0;
+
+const draftRound1 = ["Dan M", "Hadley", "Shane", "Nik", "Jon", "Dan", "Sam", "Garret"];
+const draftRound2 = ["Chris", "Ryan", "Ant", "Dylan"];
+
+const players = [
+  { name: "Dan M", handicap: 9.9, strokes: 0, scores: [88, 86, 85, 82, 80] },
+  { name: "Hadley", handicap: 12.8, strokes: 3, scores: [94] },
+  { name: "Shane", handicap: 13.2, strokes: 3, scores: [97, 93, 94, 91] },
+  { name: "Jon", handicap: 13.3, strokes: 3, scores: [88, 87] },
+  { name: "Nik", handicap: 16.1, strokes: 6, scores: [103, 99, 94] },
+  { name: "Dan", handicap: 21.6, strokes: 12, scores: [94, 97] },
+  { name: "Chris", handicap: 21.8, strokes: 12, scores: [104, 109, 103] },
+  { name: "Sam", handicap: 25.8, strokes: 15, scores: [] },
+  { name: "Ryan", handicap: 26.8, strokes: 18, scores: [99, 114, 102] },
+  { name: "Dylan", handicap: 26.8, strokes: 18, scores: [] },
+  { name: "Ant", handicap: 26.9, strokes: 18, scores: [] },
+  { name: "Garret", handicap: 27.3, strokes: 18, scores: [] },
+];
+
+const schedule = [
+  {
+    date: new Date(2026, 4, 15),
+    dateLabel: "May 15",
+    timeLabel: "",
+    name: "Team Captains Vote",
+    format: "Vote",
+    points: null,
+    cost: null,
+    tee: null,
+    note: null,
+    draft: null
+  },
+  {
+    date: new Date(2026, 4, 29, 14, 0),
+    dateLabel: "May 29",
+    timeLabel: "2:00 PM",
+    name: "Draft Round 1",
+    format: "For those there for Friday round",
+    points: null,
+    cost: null,
+    tee: null,
+    note: null,
+    draft: 1
+  },
+  {
+    date: new Date(2026, 4, 29, 15, 30),
+    dateLabel: "Fri 5/29",
+    timeLabel: "3:30 PM",
+    name: "Timber At Troy",
+    format: "Shamble",
+    points: 2,
+    cost: "$60",
+    tee: "3:30 / 3:39 PM",
+    note: null,
+    draft: null
+  },
+  {
+    date: new Date(2026, 4, 29, 21, 0),
+    dateLabel: "May 29",
+    timeLabel: "9:00 PM",
+    name: "Draft Round 2",
+    format: "For those coming later on Friday",
+    points: null,
+    cost: null,
+    tee: null,
+    note: null,
+    draft: 2
+  },
+  {
+    date: new Date(2026, 4, 30, 8, 30),
+    dateLabel: "Sat 5/30 AM",
+    timeLabel: "8:30 AM",
+    name: "Queenstown Harbor (Lake)",
+    format: "Best Ball",
+    points: 3,
+    cost: "$196",
+    tee: "8:30 / 8:40 / 8:50",
+    note: "Leave 6:45-7 AM",
+    draft: null
+  },
+  {
+    date: new Date(2026, 4, 30, 14, 20),
+    dateLabel: "Sat 5/30 PM",
+    timeLabel: "2:20 PM",
+    name: "Queenstown Harbor (River)",
+    format: "Scramble",
+    points: 3,
+    cost: null,
+    tee: "2:20 / 2:30 / 2:40",
+    note: null,
+    draft: null
+  },
+  {
+    date: new Date(2026, 4, 31, 8, 30),
+    dateLabel: "Sun 5/31",
+    timeLabel: "8:30 AM",
+    name: "Renditions",
+    format: "1v1 Matchplay",
+    points: 6,
+    cost: "$112",
+    tee: "8:30 / 8:40 / 8:50",
+    note: "Leave 7-7:15 AM",
+    draft: null
+  }
+];
+
+// --- Ryder Cup Bar ---
+function renderRyderBar() {
+  const total = TOTAL_POINTS;
+
+  const redEl = document.getElementById('ryder-red');
+  const blueEl = document.getElementById('ryder-blue');
+
+  if (teamRedPoints === 0 && teamBluePoints === 0) {
+    redEl.style.width = '50%';
+    blueEl.style.width = '50%';
+  } else {
+    const scored = teamRedPoints + teamBluePoints;
+    const redW = Math.max((teamRedPoints / scored) * 100, 8);
+    redEl.style.width = redW + '%';
+    blueEl.style.width = (100 - redW) + '%';
+  }
+
+  redEl.textContent = teamRedPoints;
+  blueEl.textContent = teamBluePoints;
+
+  const lineEl = document.getElementById('ryder-line');
+  lineEl.style.left = '50%';
+  lineEl.style.transform = 'translateX(-50%)';
+}
+
+renderRyderBar();
+
+// --- Countdown ---
+function updateCountdown() {
+  const now = new Date();
+  const upcoming = schedule.filter(e => e.date > now);
+
+  if (upcoming.length === 0) {
+    document.getElementById('countdown-event').textContent = "Trip Complete!";
+    document.getElementById('countdown-units').innerHTML = '';
+    return;
+  }
+
+  const next = upcoming[0];
+  document.getElementById('countdown-event').textContent = next.name + (next.format !== "Vote" ? " \u2014 " + next.format : "");
+
+  const diff = next.date - now;
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+
+  document.getElementById('countdown-units').innerHTML = `
+    <div class="countdown-unit"><span class="number">${days}</span><span class="unit-label">Days</span></div>
+    <div class="countdown-unit"><span class="number">${hours}</span><span class="unit-label">Hrs</span></div>
+    <div class="countdown-unit"><span class="number">${minutes}</span><span class="unit-label">Min</span></div>
+    <div class="countdown-unit"><span class="number">${seconds}</span><span class="unit-label">Sec</span></div>
+  `;
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// --- Schedule ---
+function renderSchedule() {
+  const now = new Date();
+  const grid = document.getElementById('schedule-grid');
+  const upcoming = schedule.filter(e => e.date > now);
+  const nextEvent = upcoming.length > 0 ? upcoming[0] : null;
+
+  schedule.forEach(evt => {
+    const isPast = evt.date < now;
+    const isNext = evt === nextEvent;
+
+    const card = document.createElement('div');
+    card.className = 'schedule-card' + (isPast ? ' past' : '') + (isNext ? ' next' : '');
+
+    let formatChip = '';
+    if (evt.format && evt.format !== "Vote" && !evt.draft) {
+      formatChip = `<span class="format-chip">${evt.format}</span>`;
+    }
+
+    let metaParts = [];
+    if (evt.note) metaParts.push(evt.note);
+    if (evt.tee) metaParts.push('Tee: ' + evt.tee);
+
+    // Draft player pills
+    let draftHtml = '';
+    if (evt.draft === 1) {
+      draftHtml = '<div class="draft-players">' + draftRound1.map(n => `<span class="draft-pill round1">${n}</span>`).join('') + '</div>';
+    } else if (evt.draft === 2) {
+      draftHtml = '<div class="draft-players">' + draftRound2.map(n => `<span class="draft-pill round2">${n}</span>`).join('') + '</div>';
+    }
+
+    card.innerHTML = `
+      <div class="sched-top">
+        <span class="sched-date">${evt.dateLabel} ${evt.timeLabel}</span>
+        <span class="sched-name">${evt.name}</span>
+        ${formatChip}
+      </div>
+      <div class="sched-meta">${metaParts.join(' &middot; ')}</div>
+      <div class="sched-right">
+        ${evt.points ? `<span class="sched-points">${evt.points} pts</span>` : ''}
+        ${evt.cost ? `<span class="sched-cost">${evt.cost}</span>` : ''}
+      </div>
+      ${draftHtml}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+renderSchedule();
+
+// --- Players ---
+let activePlayer = null;
+let chart = null;
+
+function getExpected(hc) { return PAR + (hc * 1.25); }
+
+function getDiffClass(d) {
+  if (d <= -2) return 'good';
+  if (d <= 2) return 'ok';
+  return 'bad';
+}
+
+function getDiffTextClass(d) {
+  if (d <= -2) return 'diff-good';
+  if (d <= 2) return 'diff-ok';
+  return 'diff-bad';
+}
+
+function renderPlayers() {
+  const grid = document.getElementById('player-grid');
+
+  players.forEach((p, idx) => {
+    const card = document.createElement('div');
+    card.className = 'player-card';
+    card.dataset.index = idx;
+
+    const expected = getExpected(p.handicap);
+    let scoresHtml = '';
+    if (p.scores.length > 0) {
+      scoresHtml = p.scores.map(s => {
+        const diff = s - expected;
+        return `<span class="score-badge ${getDiffClass(diff)}">${s}</span>`;
+      }).join('');
+    } else {
+      scoresHtml = '<span class="no-scores">No rounds posted</span>';
+    }
+
+    let avgHtml = '';
+    if (p.scores.length > 0) {
+      const avg = (p.scores.reduce((a,b) => a+b, 0) / p.scores.length).toFixed(1);
+      const avgDiff = (avg - expected).toFixed(1);
+      const sign = avgDiff > 0 ? '+' : '';
+      avgHtml = `<div class="player-avg">Avg <span>${avg}</span> &middot; <span class="${getDiffTextClass(avgDiff)}">${sign}${avgDiff}</span></div>`;
+    }
+
+    card.innerHTML = `
+      <div class="player-header">
+        <span class="player-name">${p.name}</span>
+        <span class="player-handicap">${p.handicap}</span>
+      </div>
+      <div class="player-strokes">${p.strokes} strokes</div>
+      <div class="player-scores">${scoresHtml}</div>
+      ${avgHtml}
+    `;
+
+    card.addEventListener('click', () => selectPlayer(idx));
+    grid.appendChild(card);
+  });
+}
+
+function selectPlayer(idx) {
+  if (activePlayer === idx) {
+    activePlayer = null;
+    document.getElementById('detail-panel').classList.remove('visible');
+    document.querySelectorAll('.player-card').forEach(c => c.classList.remove('active'));
+    updateChart(null);
+    return;
+  }
+
+  activePlayer = idx;
+  const p = players[idx];
+
+  document.querySelectorAll('.player-card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.player-card[data-index="${idx}"]`).classList.add('active');
+
+  const panel = document.getElementById('detail-panel');
+  panel.classList.add('visible');
+  document.getElementById('detail-name').textContent = p.name;
+
+  const expected = getExpected(p.handicap);
+  const statsDiv = document.getElementById('detail-stats');
+
+  if (p.scores.length > 0) {
+    const avg = (p.scores.reduce((a,b) => a+b,0) / p.scores.length).toFixed(1);
+    const best = Math.min(...p.scores);
+    const worst = Math.max(...p.scores);
+    const avgDiff = (avg - expected).toFixed(1);
+
+    statsDiv.innerHTML = `
+      <div class="detail-stat"><div class="stat-value">${p.handicap}</div><div class="stat-label">Handicap</div></div>
+      <div class="detail-stat"><div class="stat-value">${expected.toFixed(1)}</div><div class="stat-label">Expected</div></div>
+      <div class="detail-stat"><div class="stat-value">${avg}</div><div class="stat-label">Average</div></div>
+      <div class="detail-stat"><div class="stat-value">${best}</div><div class="stat-label">Best</div></div>
+      <div class="detail-stat"><div class="stat-value">${worst}</div><div class="stat-label">Worst</div></div>
+      <div class="detail-stat"><div class="stat-value ${getDiffTextClass(avgDiff)}">${avgDiff > 0 ? '+' : ''}${avgDiff}</div><div class="stat-label">Avg +/-</div></div>
+    `;
+
+    const tbody = document.getElementById('round-tbody');
+    tbody.innerHTML = p.scores.map((s, i) => {
+      const diff = s - expected;
+      const sign = diff > 0 ? '+' : '';
+      return `<tr>
+        <td>R${i + 1}</td>
+        <td><strong>${s}</strong></td>
+        <td>${expected.toFixed(1)}</td>
+        <td class="${getDiffTextClass(diff)}">${sign}${diff.toFixed(1)}</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('round-table').style.display = '';
+  } else {
+    statsDiv.innerHTML = `
+      <div class="detail-stat"><div class="stat-value">${p.handicap}</div><div class="stat-label">Handicap</div></div>
+      <div class="detail-stat"><div class="stat-value">${expected.toFixed(1)}</div><div class="stat-label">Expected</div></div>
+      <div class="detail-stat"><div class="stat-value">--</div><div class="stat-label">No Rounds</div></div>
+    `;
+    document.getElementById('round-tbody').innerHTML = '';
+    document.getElementById('round-table').style.display = 'none';
+  }
+
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  updateChart(idx);
+}
+
+document.getElementById('detail-close').addEventListener('click', () => {
+  activePlayer = null;
+  document.getElementById('detail-panel').classList.remove('visible');
+  document.querySelectorAll('.player-card').forEach(c => c.classList.remove('active'));
+  updateChart(null);
+});
+
+renderPlayers();
+
+// --- Chart ---
+function buildChartData(highlightIdx) {
+  const withScores = players.filter(p => p.scores.length > 0);
+  const labels = [], diffs = [], colors = [], borders = [];
+
+  withScores.forEach(p => {
+    const origIdx = players.indexOf(p);
+    const expected = getExpected(p.handicap);
+
+    p.scores.forEach((s, rIdx) => {
+      const diff = s - expected;
+      labels.push(`${p.name} R${rIdx + 1}`);
+      diffs.push(parseFloat(diff.toFixed(1)));
+
+      const lit = highlightIdx === null || highlightIdx === origIdx;
+      const a = lit ? 0.85 : 0.12;
+
+      if (diff <= 0) {
+        colors.push(`rgba(40,167,69,${a})`);
+        borders.push(`rgba(40,167,69,${Math.min(a+0.15,1)})`);
+      } else {
+        colors.push(`rgba(220,53,69,${a})`);
+        borders.push(`rgba(220,53,69,${Math.min(a+0.15,1)})`);
+      }
+    });
+  });
+
+  return { labels, diffs, colors, borders };
+}
+
+function createChart() {
+  const ctx = document.getElementById('performanceChart').getContext('2d');
+  const data = buildChartData(null);
+
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.labels,
+      datasets: [{
+        label: 'vs Expected',
+        data: data.diffs,
+        backgroundColor: data.colors,
+        borderColor: data.borders,
+        borderWidth: 1,
+        borderRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              const v = ctx.parsed.y;
+              return `${v > 0 ? '+' : ''}${v} vs expected`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          title: { display: true, text: '+/- Expected', font: { size: 11 } },
+          grid: { color: 'rgba(0,0,0,0.05)' },
+        },
+        x: {
+          ticks: { maxRotation: 55, minRotation: 55, font: { size: 10 } },
+          grid: { display: false }
+        }
+      },
+      onClick: (evt, elements) => {
+        if (elements.length > 0) {
+          const lbl = chart.data.labels[elements[0].index];
+          const nm = lbl.replace(/ R\d+$/, '');
+          const pIdx = players.findIndex(p => p.name === nm);
+          if (pIdx >= 0) selectPlayer(pIdx);
+        }
+      }
+    }
+  });
+}
+
+function updateChart(highlightIdx) {
+  if (!chart) return;
+  const data = buildChartData(highlightIdx);
+  chart.data.labels = data.labels;
+  chart.data.datasets[0].data = data.diffs;
+  chart.data.datasets[0].backgroundColor = data.colors;
+  chart.data.datasets[0].borderColor = data.borders;
+  chart.update();
+}
+
+createChart();
+</script>
+
+</body>
+</html>
