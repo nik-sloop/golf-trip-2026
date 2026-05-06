@@ -1662,7 +1662,8 @@ function seededShuffle(arr, seed) {
   return a;
 }
 
-const revealOrder = seededShuffle(players.map(p => p.name), 1);
+const REVEAL_SEED = 1;
+const revealOrder = seededShuffle(players.map(p => p.name), REVEAL_SEED);
 
 function getRevealStatus(playerName) {
   const idx = revealOrder.indexOf(playerName);
@@ -1965,7 +1966,7 @@ function buildLockedCard(p) {
 
 function buildTodayCard(p) {
   const card = document.createElement('div');
-  const animKey = `scouting_revealed_${p.name}`;
+  const animKey = `scouting_revealed_${REVEAL_SEED}_${p.name}`;
   const alreadyRevealed = localStorage.getItem(animKey) === '1';
 
   if (alreadyRevealed) {
