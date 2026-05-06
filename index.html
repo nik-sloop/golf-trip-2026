@@ -1662,7 +1662,7 @@ function seededShuffle(arr, seed) {
   return a;
 }
 
-const revealOrder = seededShuffle(players.map(p => p.name), 70329);
+const revealOrder = seededShuffle(players.map(p => p.name), 1);
 
 function getRevealStatus(playerName) {
   const idx = revealOrder.indexOf(playerName);
