@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Golf Trip 2026</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
@@ -22,6 +24,7 @@
     --blue: #2471a3;
     --blue-light: #3498db;
     --gold: #f1c40f;
+    --nav-height: 56px;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -53,6 +56,78 @@
     margin: 1.25rem 0 0.75rem;
     padding-bottom: 0.4rem;
     border-bottom: 3px solid var(--green-light);
+  }
+
+  /* ---- Bottom Nav ---- */
+  .bottom-nav {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    body {
+      padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
+    }
+
+    .bottom-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--gray-200);
+      z-index: 100;
+      justify-content: stretch;
+    }
+
+    .nav-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      border: none;
+      background: none;
+      font-family: inherit;
+      cursor: pointer;
+      color: var(--gray-500);
+      padding: 6px 0;
+      -webkit-tap-highlight-color: transparent;
+      transition: color 0.15s;
+    }
+
+    .nav-tab .nav-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+
+    .nav-tab .nav-label {
+      font-size: 0.62rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-tab.active {
+      color: var(--green-dark);
+    }
+
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+  }
+
+  /* Desktop: show all tabs */
+  @media (min-width: 768px) {
+    .tab-content { display: block !important; }
   }
 
   /* ---- Ryder Cup Points Bar ---- */
@@ -234,16 +309,8 @@
     white-space: nowrap;
   }
 
-  .sched-name {
-    font-size: 0.95rem;
-    font-weight: 600;
-  }
-
-  .sched-meta {
-    font-size: 0.78rem;
-    color: var(--gray-500);
-    grid-column: 1;
-  }
+  .sched-name { font-size: 0.95rem; font-weight: 600; }
+  .sched-meta { font-size: 0.78rem; color: var(--gray-500); grid-column: 1; }
 
   .sched-right {
     display: flex;
@@ -284,7 +351,6 @@
     margin-left: auto;
   }
 
-  /* Draft player pills */
   .draft-players {
     grid-column: 1 / -1;
     display: flex;
@@ -300,15 +366,8 @@
     border-radius: 10px;
   }
 
-  .draft-pill.round1 {
-    background: #d4edda;
-    color: #155724;
-  }
-
-  .draft-pill.round2 {
-    background: #fff3cd;
-    color: #856404;
-  }
+  .draft-pill.round1 { background: #d4edda; color: #155724; }
+  .draft-pill.round2 { background: #fff3cd; color: #856404; }
 
   /* ---- Player Grid ---- */
   .player-grid {
@@ -328,9 +387,7 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  .player-card:active {
-    transform: scale(0.97);
-  }
+  .player-card:active { transform: scale(0.97); }
 
   .player-card.active {
     border-color: var(--green-light);
@@ -344,10 +401,7 @@
     margin-bottom: 0.4rem;
   }
 
-  .player-name {
-    font-size: 0.95rem;
-    font-weight: 700;
-  }
+  .player-name { font-size: 0.95rem; font-weight: 700; }
 
   .player-handicap {
     background: var(--sand);
@@ -364,11 +418,7 @@
     margin-bottom: 0.35rem;
   }
 
-  .player-scores {
-    display: flex;
-    gap: 0.25rem;
-    flex-wrap: wrap;
-  }
+  .player-scores { display: flex; gap: 0.25rem; flex-wrap: wrap; }
 
   .score-badge {
     display: inline-flex;
@@ -384,25 +434,14 @@
     line-height: 1.2;
   }
 
-  .score-badge .score-main {
-    font-size: 0.72rem;
-    font-weight: 700;
-  }
-
-  .score-badge .score-diff {
-    font-size: 0.6rem;
-    opacity: 0.8;
-  }
+  .score-badge .score-main { font-size: 0.72rem; font-weight: 700; }
+  .score-badge .score-diff { font-size: 0.6rem; opacity: 0.8; }
 
   .score-badge.good { background: #d4edda; color: #155724; }
   .score-badge.ok { background: #fff3cd; color: #856404; }
   .score-badge.bad { background: #f8d7da; color: #721c24; }
 
-  .no-scores {
-    color: var(--gray-500);
-    font-size: 0.75rem;
-    font-style: italic;
-  }
+  .no-scores { color: var(--gray-500); font-size: 0.75rem; font-style: italic; }
 
   .player-avg {
     margin-top: 0.4rem;
@@ -412,15 +451,8 @@
     color: var(--gray-500);
   }
 
-  .player-avg span {
-    font-weight: 700;
-    color: var(--gray-800);
-  }
-
-  .player-avg .net-label {
-    font-weight: 400;
-    color: var(--gray-500);
-  }
+  .player-avg span { font-weight: 700; color: var(--gray-800); }
+  .player-avg .net-label { font-weight: 400; color: var(--gray-500); }
 
   /* ---- Detail Panel ---- */
   .detail-panel {
@@ -514,16 +546,8 @@
     margin-bottom: 1rem;
   }
 
-  .chart-container {
-    position: relative;
-    height: 280px;
-  }
-
-  .chart-legend {
-    font-size: 0.75rem;
-    color: var(--gray-500);
-    margin-bottom: 0.5rem;
-  }
+  .chart-container { position: relative; height: 280px; }
+  .chart-legend { font-size: 0.75rem; color: var(--gray-500); margin-bottom: 0.5rem; }
 
   .chart-instructions {
     text-align: center;
@@ -533,6 +557,464 @@
     margin-bottom: 0.75rem;
     font-size: 0.8rem;
     color: var(--green-dark);
+  }
+
+  /* ---- Scouting Controls ---- */
+  .scout-controls {
+    margin-bottom: 0.75rem;
+  }
+
+  .scout-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .scout-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
+    border: 1.5px solid var(--green-dark);
+    background: var(--green-dark);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .scout-filter-pill.inactive {
+    background: transparent;
+    color: var(--gray-500);
+    border-color: var(--gray-200);
+    text-decoration: line-through;
+  }
+
+  .scout-sort-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .scout-sort-row label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .scout-sort-select {
+    background: white;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    font-family: inherit;
+  }
+
+  .scout-toggle-btn {
+    margin-left: auto;
+    background: none;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    font-family: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ---- Scouting Cards ---- */
+  .scout-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .scout-card {
+    background: white;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .scout-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .scout-card-header .sc-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .scout-card-header .sc-hdcp {
+    background: var(--sand);
+    padding: 0.1rem 0.4rem;
+    border-radius: 8px;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--green-dark);
+    flex-shrink: 0;
+  }
+
+  .sc-overall-wrap {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .sc-overall-track {
+    height: 10px;
+    background: linear-gradient(to right,
+      rgba(220,53,69,0.12) 0%, rgba(220,53,69,0.12) 40%,
+      rgba(230,126,34,0.12) 40%, rgba(230,126,34,0.12) 50%,
+      rgba(234,179,8,0.12) 50%, rgba(234,179,8,0.12) 70%,
+      rgba(34,197,94,0.12) 70%, rgba(34,197,94,0.12) 100%
+    );
+    border-radius: 5px;
+    position: relative;
+  }
+
+  .sc-overall-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 5px;
+  }
+
+  .sc-overall-avg {
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    width: 3px;
+    background: white;
+    border-radius: 1.5px;
+    transform: translateX(-50%);
+    z-index: 2;
+    box-shadow: 0 0 0 1.5px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.15);
+  }
+
+  .sc-overall-val {
+    background: var(--green-dark);
+    color: white;
+    padding: 0.1rem 0.4rem;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    min-width: 30px;
+    text-align: center;
+  }
+
+  .sc-chevron {
+    font-size: 0.6rem;
+    color: var(--gray-500);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .sc-info-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gray-200);
+    background: none;
+    color: var(--gray-500);
+    font-size: 0.65rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .sc-info-btn.active {
+    background: var(--green-dark);
+    border-color: var(--green-dark);
+    color: white;
+  }
+
+  .sc-bio {
+    display: none;
+    padding: 0.6rem 0.75rem;
+    margin-top: 0.5rem;
+    background: var(--sand);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    color: var(--gray-800);
+    line-height: 1.5;
+  }
+
+  .sc-bio.visible {
+    display: block;
+  }
+
+  .scout-card.expanded .sc-chevron {
+    transform: rotate(180deg);
+  }
+
+  .sc-detail {
+    display: none;
+  }
+
+  .scout-card.expanded .sc-detail {
+    display: block;
+    margin-top: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .scout-card .sc-sub {
+    font-size: 0.72rem;
+    color: var(--gray-500);
+    margin-bottom: 0.5rem;
+  }
+
+  .scout-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .scout-row {
+    display: grid;
+    grid-template-columns: 65px 1fr 32px;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .scout-row .sr-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+  }
+
+  .scout-row .sr-bar-track {
+    height: 14px;
+    background: linear-gradient(to right,
+      rgba(220,53,69,0.12) 0%, rgba(220,53,69,0.12) 40%,
+      rgba(230,126,34,0.12) 40%, rgba(230,126,34,0.12) 50%,
+      rgba(234,179,8,0.12) 50%, rgba(234,179,8,0.12) 70%,
+      rgba(34,197,94,0.12) 70%, rgba(34,197,94,0.12) 100%
+    );
+    border-radius: 7px;
+    position: relative;
+  }
+
+  .scout-row .sr-bar-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 7px;
+    transition: left 0.4s ease, width 0.4s ease;
+  }
+
+  .sr-avg-marker {
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    width: 3px;
+    background: white;
+    border-radius: 1.5px;
+    transform: translateX(-50%);
+    z-index: 2;
+    box-shadow: 0 0 0 1.5px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.15);
+  }
+
+  .scout-row .sr-val {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    text-align: right;
+  }
+
+  .scout-card.no-data {
+    opacity: 0.5;
+  }
+
+  .scout-card .sc-nodata {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    font-style: italic;
+    padding: 0.25rem 0 0;
+  }
+
+  /* ---- Scouting Reveal ---- */
+  .scout-card.locked {
+    background: #1a1a2e;
+    border: 1.5px solid #2a2a4a;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scout-card.locked .scout-card-header .sc-name,
+  .scout-card.locked .scout-card-header .sc-hdcp {
+    color: #6c6c8a;
+  }
+
+  .scout-card.locked .sc-overall-val {
+    background: #2a2a4a;
+    color: #6c6c8a;
+  }
+
+  .scout-card.locked .lock-countdown {
+    font-size: 0.72rem;
+    color: #8888aa;
+    margin-top: 0.35rem;
+  }
+
+  .stamp-classified {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: rgba(192, 57, 43, 0.35);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .scout-card.reveal-today {
+    position: relative;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 8px rgba(241, 196, 15, 0.3), 0 0 16px rgba(34, 197, 94, 0.15); }
+    50% { box-shadow: 0 0 16px rgba(241, 196, 15, 0.6), 0 0 32px rgba(34, 197, 94, 0.3); }
+  }
+
+  .new-intel-banner {
+    background: linear-gradient(135deg, #f1c40f, #e67e22);
+    color: #1a1a2e;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+  }
+
+  .reveal-btn {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.1s;
+  }
+
+  .reveal-btn:active { transform: scale(0.97); }
+
+  .reveal-animation-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 10;
+    background: rgba(26, 26, 46, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scan-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(to bottom, transparent, #22c55e, transparent);
+    box-shadow: 0 0 15px #22c55e, 0 0 30px #22c55e;
+    animation: scanLine 1.5s ease-in-out forwards;
+  }
+
+  @keyframes scanLine {
+    0% { left: -4px; }
+    100% { left: 100%; }
+  }
+
+  .stamp-declassified {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: #22c55e;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: rotate(-15deg) scale(2.5);
+    text-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+    white-space: nowrap;
+  }
+
+  .stamp-declassified.slam {
+    animation: stampSlam 0.5s cubic-bezier(0.17, 0.67, 0.3, 1.33) forwards;
+  }
+
+  @keyframes stampSlam {
+    0% { opacity: 0; transform: rotate(-15deg) scale(2.5); }
+    60% { opacity: 1; transform: rotate(-15deg) scale(0.9); }
+    100% { opacity: 1; transform: rotate(-15deg) scale(1); }
+  }
+
+  .upcoming-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #6c6c8a;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin: 1.5rem 0 0.75rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 2px solid #2a2a4a;
+    grid-column: 1 / -1;
+  }
+
+  .today-intel-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin: 0 0 0.75rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 2px solid rgba(241, 196, 15, 0.3);
+    grid-column: 1 / -1;
   }
 
   /* ---- Desktop ---- */
@@ -550,6 +1032,7 @@
     .ryder-bar-container { height: 52px; border-radius: 26px; }
     .ryder-bar-red { border-radius: 26px 0 0 26px; font-size: 1.3rem; }
     .ryder-bar-blue { border-radius: 0 26px 26px 0; font-size: 1.3rem; }
+    .scout-grid { grid-template-columns: 1fr 1fr; }
   }
 </style>
 </head>
@@ -562,83 +1045,103 @@
 
 <div class="container">
 
-  <!-- Ryder Cup Points Bar -->
-  <div class="ryder-bar-wrap" style="margin-top:0.75rem;">
-    <div class="ryder-header">
-      <span class="team-red">Team Red</span>
-      <span class="vs">14 pts available</span>
-      <span class="team-blue">Team Blue</span>
+  <!-- TAB: Schedule -->
+  <div class="tab-content active" id="tab-schedule">
+    <div class="countdown-banner" id="countdown-banner">
+      <div class="label">Next Up</div>
+      <div class="event-name" id="countdown-event"></div>
+      <div class="countdown-units" id="countdown-units"></div>
     </div>
-    <div class="ryder-bar-container" id="ryder-bar">
-      <div class="ryder-bar-red" id="ryder-red" style="width:50%;">0</div>
-      <div class="ryder-bar-blue" id="ryder-blue" style="width:50%;">0</div>
-      <div class="ryder-win-line" id="ryder-line" style="left:50%;transform:translateX(-50%);">
-        <span class="ryder-win-label">7.5 to win</span>
+
+    <div class="ryder-bar-wrap">
+      <div class="ryder-header">
+        <span class="team-red">Team Red</span>
+        <span class="vs">14 pts available</span>
+        <span class="team-blue">Team Blue</span>
+      </div>
+      <div class="ryder-bar-container" id="ryder-bar">
+        <div class="ryder-bar-red" id="ryder-red" style="width:50%;">0</div>
+        <div class="ryder-bar-blue" id="ryder-blue" style="width:50%;">0</div>
+        <div class="ryder-win-line" id="ryder-line" style="left:50%;transform:translateX(-50%);">
+          <span class="ryder-win-label">7.5 to win</span>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Schedule</h2>
+    <div class="schedule-grid" id="schedule-grid"></div>
+  </div>
+
+  <!-- TAB: Rounds -->
+  <div class="tab-content" id="tab-rounds">
+    <h2 class="section-title">Player Tracker</h2>
+    <div class="chart-instructions">Tap any player to see round-by-round breakdown</div>
+
+    <div class="detail-panel" id="detail-panel">
+      <div class="detail-header">
+        <h3 id="detail-name"></h3>
+        <button class="detail-close" id="detail-close">&times;</button>
+      </div>
+      <div class="detail-stats" id="detail-stats"></div>
+      <table class="round-table" id="round-table">
+        <thead>
+          <tr>
+            <th>Round</th>
+            <th>Gross(Net)</th>
+            <th>Par</th>
+            <th>vs Par</th>
+          </tr>
+        </thead>
+        <tbody id="round-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="player-grid" id="player-grid"></div>
+
+    <div class="chart-section" style="margin-top:1.25rem;">
+      <h2 class="section-title" style="border:none;margin:0 0 0.25rem;">Net Score vs. Par</h2>
+      <p class="chart-legend">Each bar shows net strokes under (green) or over (red) par. Tap a player above to highlight.</p>
+      <div class="chart-container">
+        <canvas id="performanceChart"></canvas>
       </div>
     </div>
   </div>
 
-  <!-- Countdown -->
-  <div class="countdown-banner" id="countdown-banner">
-    <div class="label">Next Up</div>
-    <div class="event-name" id="countdown-event"></div>
-    <div class="countdown-units" id="countdown-units"></div>
-  </div>
-
-  <!-- Schedule -->
-  <h2 class="section-title">Schedule</h2>
-  <div class="schedule-grid" id="schedule-grid"></div>
-
-  <!-- Player Tracker -->
-  <h2 class="section-title">Player Tracker</h2>
-  <div class="chart-instructions">Tap any player to see round-by-round breakdown</div>
-
-  <!-- Detail Panel -->
-  <div class="detail-panel" id="detail-panel">
-    <div class="detail-header">
-      <h3 id="detail-name"></h3>
-      <button class="detail-close" id="detail-close">&times;</button>
-    </div>
-    <div class="detail-stats" id="detail-stats"></div>
-    <table class="round-table" id="round-table">
-      <thead>
-        <tr>
-          <th>Round</th>
-          <th>Gross(Net)</th>
-          <th>Par</th>
-          <th>vs Par</th>
-        </tr>
-      </thead>
-      <tbody id="round-tbody"></tbody>
-    </table>
-  </div>
-
-  <!-- Player Cards -->
-  <div class="player-grid" id="player-grid"></div>
-
-  <!-- Chart -->
-  <div class="chart-section" style="margin-top:1.25rem;">
-    <h2 class="section-title" style="border:none;margin:0 0 0.25rem;">Net Score vs. Par</h2>
-    <p class="chart-legend">Each bar shows net strokes under (green) or over (red) par. Net = gross &minus; handicap strokes. Tap a player above to highlight.</p>
-    <div class="chart-container">
-      <canvas id="performanceChart"></canvas>
-    </div>
+  <!-- TAB: Scouting -->
+  <div class="tab-content" id="tab-scouting">
+    <h2 class="section-title">Scouting Report</h2>
+    <div class="scout-controls" id="scout-controls"></div>
+    <div class="scout-grid" id="scout-grid"></div>
   </div>
 
 </div>
+
+<!-- Bottom Navigation (mobile only) -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="nav-tab active" data-tab="schedule">
+    <span class="nav-icon">&#128197;</span>
+    <span class="nav-label">Schedule</span>
+  </button>
+  <button class="nav-tab" data-tab="rounds">
+    <span class="nav-icon">&#9971;</span>
+    <span class="nav-label">Rounds</span>
+  </button>
+  <button class="nav-tab" data-tab="scouting">
+    <span class="nav-icon">&#128200;</span>
+    <span class="nav-label">Scouting</span>
+  </button>
+</nav>
 
 <script>
 const TOTAL_POINTS = 14;
 const WIN_POINTS = 7.5;
 
-// Current scores (update as rounds are played)
 let teamRedPoints = 0;
 let teamBluePoints = 0;
 
-const draftRound1 = ["Dan M", "Hadley", "Shane", "Nik", "Jon", "Dan", "Sam", "Garret"];
-const draftRound2 = ["Chris", "Ryan", "Ant", "Dylan"];
+const draftRound1 = ["Dan M", "Hadley", "Shane", "Nik", "Jon", "Dan", "Sam", "Garret", "Ant", "Dylan \ud83e\udd1e"];
+const draftRound2 = ["Chris", "Ryan"];
 
-// Scores in format: { gross, net, par }
 const players = [
   { name: "Dan M", handicap: 9.9, strokes: 0, scores: [
     { gross: 88, net: 79, par: 72 },
@@ -647,52 +1150,70 @@ const players = [
     { gross: 83, net: 75, par: 72 },
     { gross: 82, net: 71, par: 71 },
     { gross: 80, net: 70, par: 71 }
-  ]},
+  ], scouting: { driving: { range: "8-9", avg: 8.5 }, irons: { range: "8-9", avg: 8.5 }, chipping: { range: "7-8", avg: 7.5 }, putting: { range: "7-8", avg: 7.5 }, mental: { range: "8-9", avg: 8.5 }, total: "38-43", avg: 40.5, avgAdj: 40.5 }},
   { name: "Hadley", handicap: 12.8, strokes: 3, scores: [
     { gross: 94, net: 85, par: 72 }
-  ]},
+  ], scouting: null },
   { name: "Shane", handicap: 13.2, strokes: 3, scores: [
     { gross: 97, net: 84, par: 72 },
     { gross: 93, net: 78, par: 72 },
     { gross: 94, net: 81, par: 72 },
     { gross: 91, net: 77, par: 72 }
-  ]},
+  ], scouting: { driving: { range: "3-10", avg: 7 }, irons: { range: "7-9", avg: 8 }, chipping: { range: "6-9", avg: 7.5 }, putting: { range: "7-9", avg: 8 }, mental: { range: "7-9", avg: 8 }, total: "30-46", avg: 38, avgAdj: 38.5 }},
   { name: "Jon", handicap: 13.3, strokes: 3, scores: [
     { gross: 44, net: 38, par: 36 },
     { gross: 87, net: 76, par: 71 }
-  ]},
+  ], scouting: { driving: { range: "6-9", avg: 7 }, irons: { range: "7-8", avg: 7.5 }, chipping: { range: "6-9", avg: 7.5 }, putting: { range: "6-8", avg: 7 }, mental: { range: "7-8", avg: 7.5 }, total: "32-42", avg: 37, avgAdj: 36.5 }},
   { name: "Nik", handicap: 16.1, strokes: 6, scores: [
     { gross: 103, net: 91, par: 72 },
     { gross: 99, net: 85, par: 71 },
     { gross: 94, net: 77, par: 72 }
-  ]},
+  ], scouting: { driving: { range: "5-9", avg: 7 }, irons: { range: "4-7", avg: 6 }, chipping: { range: "6-8", avg: 7.5 }, putting: { range: "7-9", avg: 8 }, mental: { range: "7-8", avg: 7.5 }, total: "29-41", avg: 35, avgAdj: 36 }},
   { name: "Dan", handicap: 21.6, strokes: 12, scores: [
     { gross: 94, net: 75, par: 72 },
     { gross: 96, net: 76, par: 71 }
-  ]},
+  ], scouting: { driving: { range: "6-8", avg: 7 }, irons: { range: "6-8", avg: 7 }, chipping: { range: "3-7", avg: 6 }, putting: { range: "4-8", avg: 6 }, mental: { range: "5-8", avg: 7 }, total: "24-39", avg: 31.5, avgAdj: 33 }},
   { name: "Chris", handicap: 21.8, strokes: 12, scores: [
     { gross: 104, net: 80, par: 72 },
     { gross: 103, net: 79, par: 72 },
     { gross: 109, net: 87, par: 72 },
     { gross: 103, net: 79, par: 70 }
-  ]},
+  ], scouting: { driving: { range: "4-8", avg: 6 }, irons: { range: "5-7", avg: 6 }, chipping: { range: "5-7", avg: 6 }, putting: { range: "5-6", avg: 5.5 }, mental: { range: "7-8", avg: 7.5 }, total: "26-36", avg: 31, avgAdj: 31 }},
   { name: "Sam", handicap: 25.8, strokes: 15, scores: [
     { gross: 49, net: 37, par: 34 }
-  ]},
+  ], scouting: { driving: { range: "2-7", avg: 5 }, irons: { range: "4-7", avg: 6 }, chipping: { range: "5-7", avg: 6 }, putting: { range: "6-7", avg: 6.5 }, mental: { range: "5-8", avg: 7 }, total: "22-36", avg: 29, avgAdj: 30.5 }},
   { name: "Ryan", handicap: 26.8, strokes: 18, scores: [
     { gross: 99, net: 72, par: 72 },
     { gross: 113, net: 84, par: 72 },
     { gross: 102, net: 79, par: 67 }
-  ]},
-  { name: "Dylan", handicap: 26.8, strokes: 18, scores: [] },
-  { name: "Ant", handicap: 26.9, strokes: 18, scores: [] },
-  { name: "Garret", handicap: 27.3, strokes: 18, scores: [] },
+  ], scouting: { driving: { range: "1-7", avg: 4 }, irons: { range: "5-7", avg: 6 }, chipping: { range: "4-7", avg: 5.5 }, putting: { range: "5-6", avg: 5.5 }, mental: { range: "6-8", avg: 7 }, total: "21-35", avg: 28, avgAdj: 28 }},
+  { name: "Dylan", handicap: 26.8, strokes: 18, scores: [],
+    scouting: { driving: { range: "2-9", avg: 5 }, irons: { range: "5-8", avg: 7 }, chipping: { range: "5-7", avg: 6 }, putting: { range: "5-7", avg: 7 }, mental: { range: "5-8", avg: 7 }, total: "22-39", avg: 30.5, avgAdj: 32 }},
+  { name: "Ant", handicap: 26.9, strokes: 18, scores: [],
+    scouting: { driving: { range: "1-6", avg: 4 }, irons: { range: "4-8", avg: 6 }, chipping: { range: "5-8", avg: 6.5 }, putting: { range: "6-8", avg: 7 }, mental: { range: "5-8", avg: 7 }, total: "21-38", avg: 29.5, avgAdj: 30.5 }},
+  { name: "Garret", handicap: 27.3, strokes: 18, scores: [],
+    scouting: null },
 ];
+
+const playerBios = {
+  "Dan M": "The undisputed king of the group. Dan M's 9.9 handicap means he's giving zero strokes to anyone, and his recent 80 says he might shoot even lower. Consistently elite across the board with 8.5s in driving, irons, and mental — his only 'weakness' is a 7.5 short game that most guys here would kill for. Draft: Leading captain candidate. If he's not wearing the C, he's the undisputed #1 pick off the board.",
+  "Hadley": "The man of mystery. One round on file — a 94 — and zero scouting data, so we're basically drafting a ghost. Could be hiding a lethal game or could be a walking double bogey. Only 3 strokes at a 12.8 handicap, so the ceiling exists somewhere. Draft: High-risk early-round pick. With no data, captains will have to trust their gut — you're either getting a steal or lighting $110 on fire.",
+  "Shane": "Shane's driver is a slot machine — floor of 3, ceiling of 10 — so on any given hole he's either striping it 290 or fishing it out of someone's backyard. Everything else is rock solid with 8s across irons, putting, and mental. His scores have been trending down (97 to 91) and that 3-stroke allowance makes him dangerous. Draft: Should be off the board by Round 2. Just pray his driver shows up sober.",
+  "Jon": "Mr. Reliable. Jon doesn't have a single category below 7, which sounds boring until you realize he's going to quietly post a clean card while everyone else is melting down. His 9-hole 44(38) and 87(76) suggest consistent, unspectacular golf — exactly what wins team formats. Draft: A Rounds 1-2 lock. He won't win MVP but he won't torpedo your team either — and that's worth more than most guys realize.",
+  "Nik": "Nik's trajectory is the real story — 103 to 99 to 94 in his last three rounds. If that trend holds, he'll be breaking 90 by Renditions. His putting (8 avg) is sneakily elite, but those irons (4-7 range, 6 avg) are where dreams go to die. 6 strokes gives him some cushion though. Draft: Rounds 2-3 value pick if you believe the hot streak is real. Risky if it was just the back nine talking.",
+  "Dan": "Don't let the 21.6 handicap fool you — Dan just posted a net 75 and 76 with 12 strokes in his pocket. His tee-to-green game is respectable (7 driving, 7 irons) but once he gets within 50 yards, it's anyone's guess with a 6 in chipping and a shaky putting range. The definition of 'gets it done ugly.' Draft: Sneaky Rounds 2-3 value. That stroke count makes him a team format weapon if his wedge cooperates.",
+  "Chris": "Chris has logged the most rounds (4) and the results are... consistent-ish. Net scores of +8, +7, +15, +9 tell you he's got a floor but also a trapdoor. His mental game (7.5) is his best attribute, which he'll need because that 5.5 putting average is rough. 12 strokes helps, but someone's gotta sink the putts. Draft: Auto-pick in Round 5 after Timber at Troy since he arrives late. Known quantity — just don't ask him to make a 6-footer.",
+  "Sam": "Sam's lone 9-hole round (49/37 net) gives us almost nothing to work with, which is probably how he likes it. Scouting says his driving is a 2-7 range — so basically anywhere from the fairway to the parking lot. But 15 strokes is a LOT of free shots, and his 7 mental score means he won't crumble when it counts. Draft: Rounds 3-4 dark horse with maximum stroke advantage. In best ball and scramble, he just needs one good swing per hole.",
+  "Ryan": "Ryan's stat line reads like a Jekyll and Hyde novel. Net EVEN PAR one round, then a 113 gross the next. His 1-7 driving range (avg 4) suggests the tee box is where chaos lives, but somehow he produced an even-par net round with 18 strokes. When it clicks, it clicks — when it doesn't, take cover. Draft: Auto-pick in Round 5 after Timber at Troy since he arrives late. That boom-or-bust game could be electric or catastrophic in matchplay.",
+  "Dylan": "Zero rounds posted but the scouting numbers paint a quietly competent picture. A 7 in irons, putting, and mental with an overall 32 adj says he's got more game than his 26.8 handicap suggests. That 2-9 driving range is either exciting or terrifying depending on your appetite for chaos. 18 strokes makes him a weapon — if he shows up. Draft: Rounds 3-4 sleeper. If the scouting holds and he actually makes it, he's undervalued at his handicap.",
+  "Ant": "Ant's driving (1-6, avg 4) is the single biggest red flag in the entire field. Off the tee, he's basically playing a different sport. But from the fairway forward? A 6.5 in chipping, 7 in putting, and 7 in mental means he can actually play. The issue is getting to the fairway in the first place. 18 strokes is his life raft. Draft: Rounds 3-4 flier with maximum stroke benefit. In scramble format, just let someone else hit the drive.",
+  "Garret": "The ultimate wildcard. No rounds. No scouting data. No idea what we're dealing with. A 27.3 handicap and 18 strokes is all we've got, which means he's either going to surprise everyone or confirm every fear. Draft: Likely a Round 4 gamble. You're drafting vibes and a prayer at this point.",
+};
 
 const schedule = [
   {
-    date: new Date(2026, 4, 15),
-    dateLabel: "May 15",
+    date: new Date(2026, 4, 17),
+    dateLabel: "May 17",
     timeLabel: "",
     name: "Team Captains Vote",
     format: "Vote",
@@ -706,8 +1227,8 @@ const schedule = [
     date: new Date(2026, 4, 29, 14, 0),
     dateLabel: "May 29",
     timeLabel: "2:00 PM",
-    name: "Draft Round 1",
-    format: "For those there for Friday round",
+    name: "Draft (Rounds 1-4)",
+    format: "Arriving for Friday round",
     points: null,
     cost: null,
     tee: null,
@@ -730,8 +1251,8 @@ const schedule = [
     date: new Date(2026, 4, 29, 21, 0),
     dateLabel: "May 29",
     timeLabel: "9:00 PM",
-    name: "Draft Round 2",
-    format: "For those coming later on Friday",
+    name: "Draft (Round 5)",
+    format: "Arriving later Friday",
     points: null,
     cost: null,
     tee: null,
@@ -776,10 +1297,20 @@ const schedule = [
   }
 ];
 
+// --- Tab Navigation ---
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.tab;
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + target).classList.add('active');
+    window.scrollTo(0, 0);
+  });
+});
+
 // --- Ryder Cup Bar ---
 function renderRyderBar() {
-  const total = TOTAL_POINTS;
-
   const redEl = document.getElementById('ryder-red');
   const blueEl = document.getElementById('ryder-blue');
 
@@ -857,7 +1388,6 @@ function renderSchedule() {
     if (evt.note) metaParts.push(evt.note);
     if (evt.tee) metaParts.push('Tee: ' + evt.tee);
 
-    // Draft player pills
     let draftHtml = '';
     if (evt.draft === 1) {
       draftHtml = '<div class="draft-players">' + draftRound1.map(n => `<span class="draft-pill round1">${n}</span>`).join('') + '</div>';
@@ -1115,6 +1645,447 @@ function updateChart(highlightIdx) {
 }
 
 createChart();
+
+// --- Scouting Reveal ---
+const REVEAL_START = new Date('2026-05-06T18:00:00-04:00');
+
+function seededShuffle(arr, seed) {
+  const a = [...arr];
+  let t = seed >>> 0;
+  for (let i = a.length - 1; i > 0; i--) {
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    const r = ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    const j = Math.floor(r * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const revealOrder = seededShuffle(players.map(p => p.name), 70329);
+
+function getRevealStatus(playerName) {
+  const idx = revealOrder.indexOf(playerName);
+  if (idx === -1) return 'revealed';
+  const revealTime = new Date(REVEAL_START.getTime() + idx * 86400000);
+  const now = new Date();
+  if (now < revealTime) return 'locked';
+  const nextReveal = new Date(revealTime.getTime() + 86400000);
+  if (now < nextReveal) return 'today';
+  return 'revealed';
+}
+
+function getRevealCountdown(playerName) {
+  const idx = revealOrder.indexOf(playerName);
+  if (idx === -1) return '';
+  const revealTime = new Date(REVEAL_START.getTime() + idx * 86400000);
+  const now = new Date();
+  const diff = revealTime - now;
+  if (diff <= 0) return '';
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  if (days > 0) return `Report drops in ${days}d ${hours}h`;
+  return `Report drops in ${hours}h`;
+}
+
+function getRevealPosition(playerName) {
+  return revealOrder.indexOf(playerName) + 1;
+}
+
+// --- Scouting Cards ---
+const allSkills = ['driving', 'irons', 'chipping', 'putting', 'mental'];
+const skillLabels = { driving: 'Driving', irons: 'Irons', chipping: 'Chipping', putting: 'Putting', mental: 'Mental' };
+let scoutActiveSkills = new Set(allSkills);
+let scoutSortBy = 'overall';
+let scoutViewMode = 'avg';
+let scoutExpandedCards = new Set(players.filter(p => p.scouting && getRevealStatus(p.name) !== 'locked').map(p => p.name));
+
+function getScaleColor(val) {
+  if (val <= 4) return '#dc3545';
+  if (val <= 5) return '#e67e22';
+  if (val <= 7) return '#eab308';
+  return '#22c55e';
+}
+
+function computeBarGradient(floor, ceiling) {
+  if (ceiling <= floor) return getScaleColor(floor);
+  const range = ceiling - floor;
+  const stops = [];
+  stops.push({ pct: 0, color: getScaleColor(floor) });
+  const boundaries = [
+    { val: 4, from: '#dc3545', to: '#e67e22' },
+    { val: 5, from: '#e67e22', to: '#eab308' },
+    { val: 7, from: '#eab308', to: '#22c55e' },
+  ];
+  for (const b of boundaries) {
+    if (b.val > floor && b.val < ceiling) {
+      const pct = ((b.val - floor) / range) * 100;
+      stops.push({ pct, color: b.from });
+      stops.push({ pct, color: b.to });
+    }
+  }
+  stops.push({ pct: 100, color: getScaleColor(ceiling) });
+  return `linear-gradient(to right, ${stops.map(s => `${s.color} ${s.pct.toFixed(1)}%`).join(', ')})`;
+}
+
+function computeOverall(scouting, activeSkills) {
+  const skills = [...activeSkills];
+  if (skills.length === 0) return { floor: 0, ceiling: 0, avg: 0 };
+  let floorSum = 0, ceilSum = 0, avgSum = 0;
+  for (const cat of skills) {
+    const data = scouting[cat];
+    const parts = data.range.split('-');
+    floorSum += parseFloat(parts[0]);
+    ceilSum += parseFloat(parts[1]);
+    avgSum += data.avg;
+  }
+  return {
+    floor: floorSum / skills.length,
+    ceiling: ceilSum / skills.length,
+    avg: avgSum / skills.length
+  };
+}
+
+function getSkillValue(skillData, mode) {
+  const parts = skillData.range.split('-');
+  if (mode === 'floor') return parseFloat(parts[0]);
+  if (mode === 'ceiling') return parseFloat(parts[1]);
+  return skillData.avg;
+}
+
+function getOverallValue(overall, mode) {
+  if (mode === 'floor') return overall.floor;
+  if (mode === 'ceiling') return overall.ceiling;
+  return overall.avg;
+}
+
+function getSortValue(player, sortKey) {
+  if (!player.scouting) return -1;
+  if (sortKey === 'overall') return getOverallValue(computeOverall(player.scouting, scoutActiveSkills), scoutViewMode);
+  if (!scoutActiveSkills.has(sortKey)) return -1;
+  return getSkillValue(player.scouting[sortKey], scoutViewMode);
+}
+
+function renderScoutControls() {
+  const container = document.getElementById('scout-controls');
+
+  let filtersHtml = allSkills.map(cat => {
+    const active = scoutActiveSkills.has(cat);
+    return `<button class="scout-filter-pill${active ? '' : ' inactive'}" data-cat="${cat}">${skillLabels[cat]}</button>`;
+  }).join('');
+
+  let sortOptions = '<option value="overall">Overall</option>' +
+    allSkills.filter(c => scoutActiveSkills.has(c))
+      .map(c => `<option value="${c}"${scoutSortBy === c ? ' selected' : ''}>${skillLabels[c]}</option>`)
+      .join('');
+
+  const revealedWithData = players.filter(p => p.scouting && getRevealStatus(p.name) !== 'locked');
+  const allExpanded = revealedWithData.length > 0 && revealedWithData.every(p => scoutExpandedCards.has(p.name));
+  const toggleLabel = allExpanded ? 'Collapse All' : 'Expand All';
+
+  const viewOptions = ['floor', 'avg', 'ceiling'].map(v =>
+    `<option value="${v}"${scoutViewMode === v ? ' selected' : ''}>${v === 'avg' ? 'Average' : v.charAt(0).toUpperCase() + v.slice(1)}</option>`
+  ).join('');
+
+  container.innerHTML = `
+    <div class="scout-filter-row">${filtersHtml}</div>
+    <div class="scout-sort-row">
+      <label>Sort</label>
+      <select class="scout-sort-select" id="scout-sort-select">${sortOptions}</select>
+      <label>View</label>
+      <select class="scout-sort-select" id="scout-view-select">${viewOptions}</select>
+      <button class="scout-toggle-btn" id="scout-toggle-all">${toggleLabel}</button>
+    </div>
+  `;
+
+  container.querySelectorAll('.scout-filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const cat = pill.dataset.cat;
+      if (scoutActiveSkills.has(cat)) {
+        if (scoutActiveSkills.size > 1) scoutActiveSkills.delete(cat);
+      } else {
+        scoutActiveSkills.add(cat);
+      }
+      if (scoutSortBy !== 'overall' && !scoutActiveSkills.has(scoutSortBy)) scoutSortBy = 'overall';
+      renderScoutControls();
+      renderScoutCards();
+    });
+  });
+
+  document.getElementById('scout-sort-select').addEventListener('change', e => {
+    scoutSortBy = e.target.value;
+    renderScoutCards();
+  });
+
+  document.getElementById('scout-view-select').addEventListener('change', e => {
+    scoutViewMode = e.target.value;
+    renderScoutCards();
+  });
+
+  document.getElementById('scout-toggle-all').addEventListener('click', () => {
+    const revealedWithData = players.filter(p => p.scouting && getRevealStatus(p.name) !== 'locked');
+    const allExpanded = revealedWithData.every(p => scoutExpandedCards.has(p.name));
+    if (allExpanded) {
+      scoutExpandedCards.clear();
+    } else {
+      revealedWithData.forEach(p => scoutExpandedCards.add(p.name));
+    }
+    renderScoutControls();
+    renderScoutCards();
+  });
+}
+
+function buildRevealedCard(p, grid) {
+  const card = document.createElement('div');
+  const s = p.scouting;
+  const isExpanded = scoutExpandedCards.has(p.name);
+  const bio = playerBios[p.name] || '';
+
+  if (!s) {
+    card.className = 'scout-card no-data';
+    card.innerHTML = `
+      <div class="scout-card-header">
+        <span class="sc-name">${p.name}</span>
+        <button class="sc-info-btn" aria-label="Player info">?</button>
+        <span class="sc-hdcp">HCP ${p.handicap}</span>
+        <div class="sc-overall-wrap"></div>
+        <span class="sc-overall-val" style="opacity:0.3">--</span>
+      </div>
+      ${bio ? `<div class="sc-bio">${bio}</div>` : ''}
+      <div class="sc-nodata">No scouting data</div>
+    `;
+    if (bio) {
+      const infoBtn = card.querySelector('.sc-info-btn');
+      const bioEl = card.querySelector('.sc-bio');
+      infoBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        bioEl.classList.toggle('visible');
+        infoBtn.classList.toggle('active');
+      });
+    }
+    return card;
+  }
+
+  card.className = `scout-card${isExpanded ? ' expanded' : ''}`;
+
+  const overall = computeOverall(s, scoutActiveSkills);
+  const ovDisplayVal = getOverallValue(overall, scoutViewMode);
+  const ovLeft = (overall.floor / 10) * 100;
+  const ovWidth = ((overall.ceiling - overall.floor) / 10) * 100;
+  const ovMarkerPos = (ovDisplayVal / 10) * 100;
+  const ovGradient = computeBarGradient(overall.floor, overall.ceiling);
+
+  let statsHtml = allSkills.filter(c => scoutActiveSkills.has(c)).map(cat => {
+    const data = s[cat];
+    const parts = data.range.split('-');
+    const floor = parseFloat(parts[0]);
+    const ceiling = parseFloat(parts[1]);
+    const displayVal = getSkillValue(data, scoutViewMode);
+    const barLeft = (floor / 10) * 100;
+    const barWidth = ((ceiling - floor) / 10) * 100;
+    const markerPos = (displayVal / 10) * 100;
+    const gradient = computeBarGradient(floor, ceiling);
+    return `
+      <div class="scout-row">
+        <span class="sr-label">${skillLabels[cat]}</span>
+        <div class="sr-bar-track">
+          <div class="sr-bar-fill" style="left:${barLeft}%;width:${barWidth}%;background:${gradient}"></div>
+          <div class="sr-avg-marker" style="left:${markerPos}%"></div>
+        </div>
+        <span class="sr-val">${displayVal}</span>
+      </div>
+    `;
+  }).join('');
+
+  card.innerHTML = `
+    <div class="scout-card-header" data-player="${p.name}">
+      <span class="sc-name">${p.name}</span>
+      <button class="sc-info-btn" aria-label="Player info">?</button>
+      <span class="sc-hdcp">HCP ${p.handicap}</span>
+      <div class="sc-overall-wrap">
+        <div class="sc-overall-track">
+          <div class="sc-overall-fill" style="left:${ovLeft}%;width:${ovWidth}%;background:${ovGradient}"></div>
+          <div class="sc-overall-avg" style="left:${ovMarkerPos}%"></div>
+        </div>
+      </div>
+      <span class="sc-overall-val">${ovDisplayVal.toFixed(1)}</span>
+      <span class="sc-chevron">&#9660;</span>
+    </div>
+    ${bio ? `<div class="sc-bio">${bio}</div>` : ''}
+    <div class="sc-detail">
+      <div class="sc-sub">${p.strokes} strokes</div>
+      <div class="scout-stats">${statsHtml}</div>
+    </div>
+  `;
+
+  if (bio) {
+    const infoBtn = card.querySelector('.sc-info-btn');
+    const bioEl = card.querySelector('.sc-bio');
+    infoBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      bioEl.classList.toggle('visible');
+      infoBtn.classList.toggle('active');
+    });
+  }
+
+  card.querySelector('.scout-card-header').addEventListener('click', () => {
+    if (scoutExpandedCards.has(p.name)) {
+      scoutExpandedCards.delete(p.name);
+      card.classList.remove('expanded');
+    } else {
+      scoutExpandedCards.add(p.name);
+      card.classList.add('expanded');
+    }
+  });
+
+  return card;
+}
+
+function buildLockedCard(p) {
+  const card = document.createElement('div');
+  card.className = 'scout-card locked';
+  const pos = getRevealPosition(p.name);
+  const countdown = getRevealCountdown(p.name);
+  card.innerHTML = `
+    <div class="scout-card-header">
+      <span class="sc-name" style="color:#6c6c8a">Golfer #${pos}</span>
+      <span class="sc-hdcp" style="background:#2a2a4a;color:#6c6c8a">CLASSIFIED</span>
+      <div class="sc-overall-wrap">
+        <div class="sc-overall-track" style="opacity:0.2">
+          <div class="sc-overall-fill" style="left:0;width:100%;background:#2a2a4a"></div>
+        </div>
+      </div>
+      <span class="sc-overall-val" style="background:#2a2a4a;color:#6c6c8a">?</span>
+    </div>
+    <div class="lock-countdown">${countdown}</div>
+    <span class="stamp-classified">CLASSIFIED</span>
+  `;
+  return card;
+}
+
+function buildTodayCard(p) {
+  const card = document.createElement('div');
+  const animKey = `scouting_revealed_${p.name}`;
+  const alreadyRevealed = localStorage.getItem(animKey) === '1';
+
+  if (alreadyRevealed) {
+    // Show as normal revealed card with today styling
+    const revealed = buildRevealedCard(p);
+    revealed.classList.add('reveal-today');
+    return revealed;
+  }
+
+  // Show decode button
+  card.className = 'scout-card reveal-today';
+  card.style.position = 'relative';
+  const bio = playerBios[p.name] || '';
+  card.innerHTML = `
+    <div class="new-intel-banner">NEW INTEL</div>
+    <div class="scout-card-header">
+      <span class="sc-name">${p.name}</span>
+      <span class="sc-hdcp">HCP ${p.handicap}</span>
+    </div>
+    <button class="reveal-btn">Decode Report</button>
+  `;
+
+  card.querySelector('.reveal-btn').addEventListener('click', () => {
+    // Start animation
+    const overlay = document.createElement('div');
+    overlay.className = 'reveal-animation-overlay';
+    const scanEl = document.createElement('div');
+    scanEl.className = 'scan-line';
+    const stampEl = document.createElement('div');
+    stampEl.className = 'stamp-declassified';
+    stampEl.textContent = 'DECLASSIFIED';
+    overlay.appendChild(scanEl);
+    overlay.appendChild(stampEl);
+    card.appendChild(overlay);
+
+    // After scan line completes (1.5s), slam the stamp
+    setTimeout(() => {
+      scanEl.style.display = 'none';
+      stampEl.classList.add('slam');
+    }, 1500);
+
+    // After stamp (2s total), crossfade to real card
+    setTimeout(() => {
+      localStorage.setItem(animKey, '1');
+      overlay.style.transition = 'opacity 0.5s';
+      overlay.style.opacity = '0';
+      // Replace card content with revealed version
+      const revealed = buildRevealedCard(p);
+      revealed.classList.add('reveal-today');
+      card.replaceWith(revealed);
+    }, 2500);
+  });
+
+  return card;
+}
+
+function renderScoutCards() {
+  const grid = document.getElementById('scout-grid');
+  grid.innerHTML = '';
+
+  // Categorize players by reveal status
+  const todayPlayers = [];
+  const revealedPlayers = [];
+  const lockedPlayers = [];
+
+  players.forEach(p => {
+    const status = getRevealStatus(p.name);
+    if (status === 'today') todayPlayers.push(p);
+    else if (status === 'revealed') revealedPlayers.push(p);
+    else lockedPlayers.push(p);
+  });
+
+  // Sort revealed players normally
+  const sortedRevealed = [...revealedPlayers].sort((a, b) => getSortValue(b, scoutSortBy) - getSortValue(a, scoutSortBy));
+
+  // Sort locked by reveal order
+  lockedPlayers.sort((a, b) => revealOrder.indexOf(a.name) - revealOrder.indexOf(b.name));
+
+  // Today's reveal(s) at top
+  if (todayPlayers.length > 0) {
+    const todayLabel = document.createElement('div');
+    todayLabel.className = 'today-intel-title';
+    todayLabel.textContent = "TODAY'S INTEL";
+    grid.appendChild(todayLabel);
+    todayPlayers.forEach(p => grid.appendChild(buildTodayCard(p)));
+  }
+
+  // Revealed cards
+  if (sortedRevealed.length > 0) {
+    sortedRevealed.forEach(p => grid.appendChild(buildRevealedCard(p)));
+  }
+
+  // Upcoming locked cards
+  if (lockedPlayers.length > 0) {
+    const upcomingLabel = document.createElement('div');
+    upcomingLabel.className = 'upcoming-section-title';
+    upcomingLabel.textContent = 'UPCOMING REPORTS';
+    grid.appendChild(upcomingLabel);
+    lockedPlayers.forEach(p => grid.appendChild(buildLockedCard(p)));
+  }
+}
+
+function renderScoutSection() {
+  // Only show controls if there are revealed/today players with scouting data
+  const hasRevealed = players.some(p => {
+    const status = getRevealStatus(p.name);
+    return (status === 'revealed' || status === 'today') && p.scouting;
+  });
+
+  const controlsEl = document.getElementById('scout-controls');
+  if (hasRevealed) {
+    controlsEl.style.display = '';
+    renderScoutControls();
+  } else {
+    controlsEl.style.display = 'none';
+  }
+  renderScoutCards();
+}
+
+renderScoutSection();
 </script>
 
 </body>
