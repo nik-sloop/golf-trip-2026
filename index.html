@@ -1662,7 +1662,7 @@ function seededShuffle(arr, seed) {
   return a;
 }
 
-const REVEAL_SEED = 1;
+const REVEAL_SEED = 3;
 const revealOrder = seededShuffle(players.map(p => p.name), REVEAL_SEED);
 
 function getRevealStatus(playerName) {
