@@ -1185,6 +1185,9 @@
     line-height: 1.5;
   }
 
+  #tab-vote { display: none !important; }
+  .vote-unlocked #tab-vote { display: block !important; }
+
   /* ---- Desktop ---- */
   @media (min-width: 768px) {
     .container { max-width: 900px; padding: 1.5rem; }
@@ -1322,7 +1325,7 @@
     <span class="nav-icon">&#128200;</span>
     <span class="nav-label">Scouting</span>
   </button>
-  <button class="nav-tab" data-tab="vote">
+  <button class="nav-tab" data-tab="vote" id="vote-nav-tab" style="display:none">
     <span class="nav-icon">&#127937;</span>
     <span class="nav-label">Vote</span>
   </button>
@@ -2283,6 +2286,14 @@ function renderScoutSection() {
 }
 
 renderScoutSection();
+
+// --- Vote Tab Visibility ---
+// Access the vote tab at yoursite.com/#vote (hidden from others until launch)
+if (location.hash === '#vote') {
+  document.body.classList.add('vote-unlocked');
+  const voteNavTab = document.getElementById('vote-nav-tab');
+  if (voteNavTab) voteNavTab.style.display = '';
+}
 
 // --- Captain Vote (Supabase) ---
 // Fill in your Supabase project URL and anon key after creating your project:
