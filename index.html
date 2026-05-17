@@ -1205,6 +1205,142 @@
     padding: 0.6rem;
   }
 
+  .vote-pick-status {
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    padding: 0.5rem 0.25rem;
+  }
+
+  .vote-pick-status.ready { color: var(--green-dark); }
+
+  .vote-player-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .vote-player-card {
+    background: var(--gray-100);
+    border-radius: 10px;
+    padding: 0.65rem 0.7rem;
+    cursor: pointer;
+    border: 2px solid transparent;
+    position: relative;
+    transition: border-color 0.15s, background 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .vote-player-card:not(.vpc-self):active { transform: scale(0.97); }
+
+  .vote-player-card.vpc-pick1 {
+    border-color: var(--green-dark);
+    background: var(--green-pale);
+  }
+
+  .vote-player-card.vpc-pick2 {
+    border-color: var(--blue);
+    background: #dbeafe;
+  }
+
+  .vote-player-card.vpc-self {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .vpc-badge {
+    display: none;
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    font-size: 0.58rem;
+    font-weight: 800;
+    padding: 0.12rem 0.4rem;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .vpc-pick1 .vpc-badge { display: block; background: var(--green-dark); color: white; }
+  .vpc-pick2 .vpc-badge { display: block; background: var(--blue); color: white; }
+
+  .vpc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.2rem;
+  }
+
+  .vpc-name { font-size: 0.88rem; font-weight: 700; }
+
+  .vpc-hdcp {
+    background: var(--sand);
+    padding: 0.1rem 0.35rem;
+    border-radius: 6px;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--green-dark);
+    white-space: nowrap;
+  }
+
+  .vpc-strokes {
+    font-size: 0.68rem;
+    color: var(--gray-500);
+    margin-bottom: 0.35rem;
+  }
+
+  .vpc-overall-row {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .vpc-overall-track {
+    flex: 1;
+    height: 10px;
+    background: linear-gradient(to right,
+      rgba(220,53,69,0.12) 0%, rgba(220,53,69,0.12) 40%,
+      rgba(230,126,34,0.12) 40%, rgba(230,126,34,0.12) 50%,
+      rgba(234,179,8,0.12) 50%, rgba(234,179,8,0.12) 70%,
+      rgba(34,197,94,0.12) 70%, rgba(34,197,94,0.12) 100%
+    );
+    border-radius: 5px;
+    position: relative;
+  }
+
+  .vpc-overall-fill {
+    position: absolute;
+    top: 0; bottom: 0;
+    border-radius: 5px;
+  }
+
+  .vpc-overall-marker {
+    position: absolute;
+    top: -2px; bottom: -2px;
+    width: 3px;
+    background: white;
+    border-radius: 1.5px;
+    transform: translateX(-50%);
+    z-index: 2;
+    box-shadow: 0 0 0 1.5px rgba(0,0,0,0.35);
+  }
+
+  .vpc-overall-val {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    min-width: 26px;
+    text-align: right;
+  }
+
+  .vpc-no-scout {
+    font-size: 0.65rem;
+    color: var(--gray-500);
+    font-style: italic;
+  }
+
   #tab-vote { display: none !important; }
   .vote-unlocked #tab-vote { display: block !important; }
 
@@ -1315,12 +1451,8 @@
         <select class="vote-select" id="vote-voter-select">
           <option value="">Select your name...</option>
         </select>
-        <select class="vote-select" id="vote-nominee1-select">
-          <option value="">1st captain pick...</option>
-        </select>
-        <select class="vote-select" id="vote-nominee2-select">
-          <option value="">2nd captain pick...</option>
-        </select>
+        <div class="vote-pick-status" id="vote-pick-status">Tap two players below to vote</div>
+        <div class="vote-player-grid" id="vote-player-grid"></div>
         <button class="vote-submit-btn" id="vote-submit-btn" disabled>Cast Vote</button>
       </div>
     </div>
@@ -2331,28 +2463,114 @@ const RESULTS_REVEAL_DATE = new Date('2026-05-22T00:00:00');
 const supabaseConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
 
 let supabaseClient = null;
+let votePicks = [];
+
+function renderVotePlayerCards(voterName) {
+  const grid = document.getElementById('vote-player-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  votePicks = [];
+
+  const sorted = [...players].sort((a, b) => {
+    const aScore = a.scouting ? computeOverall(a.scouting, new Set(allSkills)).avg : -1;
+    const bScore = b.scouting ? computeOverall(b.scouting, new Set(allSkills)).avg : -1;
+    return bScore - aScore;
+  });
+
+  sorted.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'vote-player-card' + (p.name === voterName ? ' vpc-self' : '');
+    card.dataset.name = p.name;
+
+    let overallHtml = '';
+    if (p.scouting) {
+      const ov = computeOverall(p.scouting, new Set(allSkills));
+      const left = (ov.floor / 10) * 100;
+      const width = ((ov.ceiling - ov.floor) / 10) * 100;
+      const marker = (ov.avg / 10) * 100;
+      const grad = computeBarGradient(ov.floor, ov.ceiling);
+      overallHtml = `
+        <div class="vpc-overall-row">
+          <div class="vpc-overall-track">
+            <div class="vpc-overall-fill" style="left:${left}%;width:${width}%;background:${grad}"></div>
+            <div class="vpc-overall-marker" style="left:${marker}%"></div>
+          </div>
+          <span class="vpc-overall-val">${ov.avg.toFixed(1)}</span>
+        </div>`;
+    } else {
+      overallHtml = '<div class="vpc-no-scout">No scouting data</div>';
+    }
+
+    card.innerHTML = `
+      <div class="vpc-badge"></div>
+      <div class="vpc-header">
+        <span class="vpc-name">${p.name}</span>
+        <span class="vpc-hdcp">HCP ${p.handicap}</span>
+      </div>
+      <div class="vpc-strokes">${p.strokes} strokes</div>
+      ${overallHtml}
+    `;
+
+    if (p.name !== voterName) {
+      card.addEventListener('click', () => handleVoteCardClick(p.name));
+    }
+    grid.appendChild(card);
+  });
+}
+
+function handleVoteCardClick(name) {
+  const idx = votePicks.indexOf(name);
+  if (idx !== -1) {
+    votePicks.splice(idx, 1);
+  } else if (votePicks.length < 2) {
+    votePicks.push(name);
+  } else {
+    votePicks[1] = name;
+  }
+  updateVoteCardSelection();
+}
+
+function updateVoteCardSelection() {
+  document.querySelectorAll('.vote-player-card').forEach(card => {
+    const name = card.dataset.name;
+    card.classList.remove('vpc-pick1', 'vpc-pick2');
+    const badge = card.querySelector('.vpc-badge');
+    badge.textContent = '';
+    const i = votePicks.indexOf(name);
+    if (i === 0) { card.classList.add('vpc-pick1'); badge.textContent = 'Pick 1'; }
+    if (i === 1) { card.classList.add('vpc-pick2'); badge.textContent = 'Pick 2'; }
+  });
+
+  const statusEl = document.getElementById('vote-pick-status');
+  const submitBtn = document.getElementById('vote-submit-btn');
+  if (!statusEl || !submitBtn) return;
+
+  const voterName = document.getElementById('vote-voter-select')?.value;
+
+  if (votePicks.length === 0) {
+    statusEl.textContent = 'Tap two players below to vote';
+    statusEl.className = 'vote-pick-status';
+  } else if (votePicks.length === 1) {
+    statusEl.textContent = `${votePicks[0]} — tap one more`;
+    statusEl.className = 'vote-pick-status';
+  } else {
+    statusEl.textContent = `${votePicks[0]} & ${votePicks[1]}`;
+    statusEl.className = 'vote-pick-status ready';
+  }
+
+  submitBtn.disabled = votePicks.length < 2 || !voterName || !supabaseConfigured;
+}
 
 function initVoteTab() {
   const voterSelect = document.getElementById('vote-voter-select');
-  const nominee1Select = document.getElementById('vote-nominee1-select');
-  const nominee2Select = document.getElementById('vote-nominee2-select');
   const submitBtn = document.getElementById('vote-submit-btn');
 
   const allVoters = [...draftRound1, ...draftRound2].map(n => n.replace(/\s*[^\x00-\x7F]+/g, '').trim());
-  const captainCandidates = players.map(p => p.name);
 
   allVoters.forEach(name => {
     const opt = document.createElement('option');
     opt.value = name; opt.textContent = name;
     voterSelect.appendChild(opt);
-  });
-
-  captainCandidates.forEach(name => {
-    [nominee1Select, nominee2Select].forEach(sel => {
-      const opt = document.createElement('option');
-      opt.value = name; opt.textContent = name;
-      sel.appendChild(opt);
-    });
   });
 
   const savedVoter = localStorage.getItem(VOTE_VOTER_KEY);
@@ -2364,18 +2582,16 @@ function initVoteTab() {
     return;
   }
 
-  [voterSelect, nominee1Select, nominee2Select].forEach(el => el.addEventListener('change', updateSubmitState));
+  renderVotePlayerCards('');
 
-  function updateSubmitState() {
-    const v = voterSelect.value, n1 = nominee1Select.value, n2 = nominee2Select.value;
-    const valid = v && n1 && n2 && n1 !== n2 && v !== n1 && v !== n2;
-    submitBtn.disabled = !valid || !supabaseConfigured;
-  }
+  voterSelect.addEventListener('change', () => {
+    renderVotePlayerCards(voterSelect.value);
+    updateVoteCardSelection();
+  });
 
   submitBtn.addEventListener('click', async () => {
     const voter = voterSelect.value;
-    const nominee1 = nominee1Select.value;
-    const nominee2 = nominee2Select.value;
+    const [nominee1, nominee2] = votePicks;
     if (!voter || !nominee1 || !nominee2) return;
 
     submitBtn.disabled = true;
@@ -2417,8 +2633,8 @@ function showAlreadyVoted(voter, nominee1, nominee2) {
     localStorage.removeItem(VOTE_NOMINEE2_KEY);
     inner.innerHTML = `
       <select class="vote-select" id="vote-voter-select"><option value="">Select your name...</option></select>
-      <select class="vote-select" id="vote-nominee1-select"><option value="">1st captain pick...</option></select>
-      <select class="vote-select" id="vote-nominee2-select"><option value="">2nd captain pick...</option></select>
+      <div class="vote-pick-status" id="vote-pick-status">Tap two players below to vote</div>
+      <div class="vote-player-grid" id="vote-player-grid"></div>
       <button class="vote-submit-btn" id="vote-submit-btn" disabled>Cast Vote</button>
     `;
     initVoteTab();
