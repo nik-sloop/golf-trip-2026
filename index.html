@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Golf Trip 2026</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root {
     --green-dark: #1a472a;
@@ -1017,6 +1018,173 @@
     grid-column: 1 / -1;
   }
 
+  /* ---- Vote Tab ---- */
+  .vote-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    margin-bottom: 0.75rem;
+  }
+
+  .vote-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 0.75rem;
+  }
+
+  .vote-select {
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--gray-800);
+    background: white;
+    margin-bottom: 0.75rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236c757d' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2rem;
+  }
+
+  .vote-select:focus {
+    outline: none;
+    border-color: var(--green-light);
+  }
+
+  .vote-submit-btn {
+    width: 100%;
+    padding: 0.8rem;
+    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: opacity 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .vote-submit-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .vote-submit-btn:not(:disabled):active { transform: scale(0.97); }
+
+  .vote-already {
+    text-align: center;
+    padding: 1rem;
+    background: var(--green-pale);
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+  }
+
+  .vote-already .va-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--green-dark);
+    opacity: 0.7;
+  }
+
+  .vote-already .va-name {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--green-dark);
+    margin-top: 0.2rem;
+  }
+
+  .vote-change-btn {
+    background: none;
+    border: 1.5px solid var(--green-light);
+    border-radius: 8px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--green-dark);
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 0.5rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .vote-results-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray-500);
+    margin-bottom: 0.75rem;
+  }
+
+  .vote-result-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 32px;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .vrr-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vrr-bar-track {
+    height: 18px;
+    background: var(--gray-100);
+    border-radius: 9px;
+    overflow: hidden;
+  }
+
+  .vrr-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-dark), var(--green-light));
+    border-radius: 9px;
+    transition: width 0.5s ease;
+    min-width: 0;
+  }
+
+  .vrr-count {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    text-align: right;
+  }
+
+  .vrr-crown {
+    font-size: 0.75rem;
+    margin-left: 0.25rem;
+  }
+
+  .vote-status-msg {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--gray-500);
+    padding: 0.5rem;
+    font-style: italic;
+  }
+
+  .vote-voters-list {
+    font-size: 0.72rem;
+    color: var(--gray-500);
+    margin-top: 0.3rem;
+    line-height: 1.5;
+  }
+
   /* ---- Desktop ---- */
   @media (min-width: 768px) {
     .container { max-width: 900px; padding: 1.5rem; }
@@ -1114,6 +1282,30 @@
     <div class="scout-grid" id="scout-grid"></div>
   </div>
 
+  <!-- TAB: Vote -->
+  <div class="tab-content" id="tab-vote">
+    <h2 class="section-title">Captain Vote</h2>
+
+    <div class="vote-card" id="vote-form-card">
+      <h3>Who should be Team Captain?</h3>
+      <div id="vote-form-inner">
+        <select class="vote-select" id="vote-voter-select">
+          <option value="">Select your name...</option>
+        </select>
+        <select class="vote-select" id="vote-nominee-select">
+          <option value="">Vote for captain...</option>
+        </select>
+        <button class="vote-submit-btn" id="vote-submit-btn" disabled>Cast Vote</button>
+      </div>
+    </div>
+
+    <div class="vote-card">
+      <div class="vote-results-title">Live Results &mdash; <span id="vote-total-count">0</span> votes cast</div>
+      <div id="vote-results-list"></div>
+      <div class="vote-status-msg" id="vote-status-msg">Loading votes...</div>
+    </div>
+  </div>
+
 </div>
 
 <!-- Bottom Navigation (mobile only) -->
@@ -1129,6 +1321,10 @@
   <button class="nav-tab" data-tab="scouting">
     <span class="nav-icon">&#128200;</span>
     <span class="nav-label">Scouting</span>
+  </button>
+  <button class="nav-tab" data-tab="vote">
+    <span class="nav-icon">&#127937;</span>
+    <span class="nav-label">Vote</span>
   </button>
 </nav>
 
@@ -2087,6 +2283,188 @@ function renderScoutSection() {
 }
 
 renderScoutSection();
+
+// --- Captain Vote (Supabase) ---
+// Fill in your Supabase project URL and anon key after creating your project:
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+const VOTE_VOTER_KEY = 'captain_vote_voter_2026';
+const VOTE_NOMINEE_KEY = 'captain_vote_nominee_2026';
+
+const supabaseConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
+
+let supabaseClient = null;
+
+function initVoteTab() {
+  const voterSelect = document.getElementById('vote-voter-select');
+  const nomineeSelect = document.getElementById('vote-nominee-select');
+  const submitBtn = document.getElementById('vote-submit-btn');
+  const formCard = document.getElementById('vote-form-card');
+
+  const allVoters = [...draftRound1, ...draftRound2].map(n => n.replace(/\s*[^\x00-\x7F]+/g, '').trim());
+  const captainCandidates = players.map(p => p.name);
+
+  allVoters.forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    voterSelect.appendChild(opt);
+  });
+
+  captainCandidates.forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    nomineeSelect.appendChild(opt);
+  });
+
+  const savedVoter = localStorage.getItem(VOTE_VOTER_KEY);
+  const savedNominee = localStorage.getItem(VOTE_NOMINEE_KEY);
+
+  if (savedVoter && savedNominee) {
+    showAlreadyVoted(savedVoter, savedNominee, formCard);
+  }
+
+  voterSelect.addEventListener('change', updateSubmitState);
+  nomineeSelect.addEventListener('change', updateSubmitState);
+
+  function updateSubmitState() {
+    const canSubmit = voterSelect.value && nomineeSelect.value && voterSelect.value !== nomineeSelect.value;
+    submitBtn.disabled = !canSubmit || !supabaseConfigured;
+  }
+
+  submitBtn.addEventListener('click', async () => {
+    const voter = voterSelect.value;
+    const nominee = nomineeSelect.value;
+    if (!voter || !nominee) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    try {
+      const { error } = await supabaseClient
+        .from('captain_votes')
+        .upsert({ voter, nominee }, { onConflict: 'voter' });
+
+      if (error) throw error;
+
+      localStorage.setItem(VOTE_VOTER_KEY, voter);
+      localStorage.setItem(VOTE_NOMINEE_KEY, nominee);
+      showAlreadyVoted(voter, nominee, formCard);
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Cast Vote';
+      alert('Error submitting vote. Please try again.');
+      console.error(err);
+    }
+  });
+}
+
+function showAlreadyVoted(voter, nominee, formCard) {
+  const inner = document.getElementById('vote-form-inner');
+  inner.innerHTML = `
+    <div class="vote-already">
+      <div class="va-label">Your vote</div>
+      <div class="va-name">${nominee}</div>
+    </div>
+    <button class="vote-change-btn" id="vote-change-btn">Change vote</button>
+  `;
+
+  document.getElementById('vote-change-btn').addEventListener('click', () => {
+    localStorage.removeItem(VOTE_VOTER_KEY);
+    localStorage.removeItem(VOTE_NOMINEE_KEY);
+    inner.innerHTML = `
+      <select class="vote-select" id="vote-voter-select">
+        <option value="">Select your name...</option>
+      </select>
+      <select class="vote-select" id="vote-nominee-select">
+        <option value="">Vote for captain...</option>
+      </select>
+      <button class="vote-submit-btn" id="vote-submit-btn" disabled>Cast Vote</button>
+    `;
+    initVoteTab();
+  });
+}
+
+function renderVoteResults(votes) {
+  const list = document.getElementById('vote-results-list');
+  const statusMsg = document.getElementById('vote-status-msg');
+  const totalEl = document.getElementById('vote-total-count');
+
+  if (!votes || votes.length === 0) {
+    list.innerHTML = '';
+    totalEl.textContent = '0';
+    statusMsg.textContent = 'No votes yet — be the first!';
+    return;
+  }
+
+  statusMsg.textContent = '';
+  totalEl.textContent = votes.length;
+
+  const tally = {};
+  votes.forEach(v => {
+    tally[v.nominee] = (tally[v.nominee] || { count: 0, voters: [] });
+    tally[v.nominee].count++;
+    tally[v.nominee].voters.push(v.voter);
+  });
+
+  const sorted = Object.entries(tally).sort((a, b) => b[1].count - a[1].count);
+  const maxVotes = sorted[0][1].count;
+
+  list.innerHTML = sorted.map(([name, data], i) => {
+    const pct = maxVotes > 0 ? (data.count / maxVotes) * 100 : 0;
+    const crown = i === 0 ? '<span class="vrr-crown">&#128081;</span>' : '';
+    return `
+      <div class="vote-result-row">
+        <span class="vrr-name">${name}${crown}</span>
+        <div class="vrr-bar-track">
+          <div class="vrr-bar-fill" style="width:${pct}%"></div>
+        </div>
+        <span class="vrr-count">${data.count}</span>
+      </div>
+      <div class="vote-voters-list">${data.voters.join(', ')}</div>
+    `;
+  }).join('');
+}
+
+async function loadVotes() {
+  if (!supabaseConfigured) {
+    document.getElementById('vote-status-msg').textContent = 'Supabase not configured yet.';
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from('captain_votes')
+    .select('voter, nominee');
+
+  if (error) {
+    document.getElementById('vote-status-msg').textContent = 'Could not load votes.';
+    console.error(error);
+    return;
+  }
+
+  renderVoteResults(data);
+}
+
+function subscribeToVotes() {
+  if (!supabaseConfigured) return;
+
+  supabaseClient
+    .channel('captain_votes_changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'captain_votes' }, () => {
+      loadVotes();
+    })
+    .subscribe();
+}
+
+if (supabaseConfigured) {
+  supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+initVoteTab();
+loadVotes();
+subscribeToVotes();
 </script>
 
 </body>
