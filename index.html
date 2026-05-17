@@ -1178,11 +1178,31 @@
     font-style: italic;
   }
 
-  .vote-voters-list {
+  .vote-voters-label {
     font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     color: var(--gray-500);
-    margin-top: 0.3rem;
-    line-height: 1.5;
+    margin-bottom: 0.25rem;
+  }
+
+  .vote-voters-list {
+    font-size: 0.82rem;
+    color: var(--gray-800);
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+  }
+
+  .vote-hidden-msg {
+    margin-top: 0.75rem;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--green-dark);
+    background: var(--green-pale);
+    border-radius: 8px;
+    padding: 0.6rem;
   }
 
   #tab-vote { display: none !important; }
@@ -1290,20 +1310,23 @@
     <h2 class="section-title">Captain Vote</h2>
 
     <div class="vote-card" id="vote-form-card">
-      <h3>Who should be Team Captain?</h3>
+      <h3>Vote for two captains</h3>
       <div id="vote-form-inner">
         <select class="vote-select" id="vote-voter-select">
           <option value="">Select your name...</option>
         </select>
-        <select class="vote-select" id="vote-nominee-select">
-          <option value="">Vote for captain...</option>
+        <select class="vote-select" id="vote-nominee1-select">
+          <option value="">1st captain pick...</option>
+        </select>
+        <select class="vote-select" id="vote-nominee2-select">
+          <option value="">2nd captain pick...</option>
         </select>
         <button class="vote-submit-btn" id="vote-submit-btn" disabled>Cast Vote</button>
       </div>
     </div>
 
     <div class="vote-card">
-      <div class="vote-results-title">Live Results &mdash; <span id="vote-total-count">0</span> votes cast</div>
+      <div class="vote-results-title"><span id="vote-total-count">0</span> votes cast</div>
       <div id="vote-results-list"></div>
       <div class="vote-status-msg" id="vote-status-msg">Loading votes...</div>
     </div>
@@ -2301,7 +2324,9 @@ const SUPABASE_URL = 'https://fvogpbastdtmiawkljmh.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2b2dwYmFzdGR0bWlhd2tsam1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE5MjgsImV4cCI6MjA5NDYyNzkyOH0.NsonIaYSZsofL3_AXE0qJkwwxSX0KdX-FjK8gVWqkf4';
 
 const VOTE_VOTER_KEY = 'captain_vote_voter_2026';
-const VOTE_NOMINEE_KEY = 'captain_vote_nominee_2026';
+const VOTE_NOMINEE1_KEY = 'captain_vote_nominee1_2026';
+const VOTE_NOMINEE2_KEY = 'captain_vote_nominee2_2026';
+const RESULTS_REVEAL_DATE = new Date('2026-05-22T00:00:00');
 
 const supabaseConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
 
@@ -2309,46 +2334,49 @@ let supabaseClient = null;
 
 function initVoteTab() {
   const voterSelect = document.getElementById('vote-voter-select');
-  const nomineeSelect = document.getElementById('vote-nominee-select');
+  const nominee1Select = document.getElementById('vote-nominee1-select');
+  const nominee2Select = document.getElementById('vote-nominee2-select');
   const submitBtn = document.getElementById('vote-submit-btn');
-  const formCard = document.getElementById('vote-form-card');
 
   const allVoters = [...draftRound1, ...draftRound2].map(n => n.replace(/\s*[^\x00-\x7F]+/g, '').trim());
   const captainCandidates = players.map(p => p.name);
 
   allVoters.forEach(name => {
     const opt = document.createElement('option');
-    opt.value = name;
-    opt.textContent = name;
+    opt.value = name; opt.textContent = name;
     voterSelect.appendChild(opt);
   });
 
   captainCandidates.forEach(name => {
-    const opt = document.createElement('option');
-    opt.value = name;
-    opt.textContent = name;
-    nomineeSelect.appendChild(opt);
+    [nominee1Select, nominee2Select].forEach(sel => {
+      const opt = document.createElement('option');
+      opt.value = name; opt.textContent = name;
+      sel.appendChild(opt);
+    });
   });
 
   const savedVoter = localStorage.getItem(VOTE_VOTER_KEY);
-  const savedNominee = localStorage.getItem(VOTE_NOMINEE_KEY);
+  const savedNominee1 = localStorage.getItem(VOTE_NOMINEE1_KEY);
+  const savedNominee2 = localStorage.getItem(VOTE_NOMINEE2_KEY);
 
-  if (savedVoter && savedNominee) {
-    showAlreadyVoted(savedVoter, savedNominee, formCard);
+  if (savedVoter && savedNominee1 && savedNominee2) {
+    showAlreadyVoted(savedVoter, savedNominee1, savedNominee2);
+    return;
   }
 
-  voterSelect.addEventListener('change', updateSubmitState);
-  nomineeSelect.addEventListener('change', updateSubmitState);
+  [voterSelect, nominee1Select, nominee2Select].forEach(el => el.addEventListener('change', updateSubmitState));
 
   function updateSubmitState() {
-    const canSubmit = voterSelect.value && nomineeSelect.value && voterSelect.value !== nomineeSelect.value;
-    submitBtn.disabled = !canSubmit || !supabaseConfigured;
+    const v = voterSelect.value, n1 = nominee1Select.value, n2 = nominee2Select.value;
+    const valid = v && n1 && n2 && n1 !== n2 && v !== n1 && v !== n2;
+    submitBtn.disabled = !valid || !supabaseConfigured;
   }
 
   submitBtn.addEventListener('click', async () => {
     const voter = voterSelect.value;
-    const nominee = nomineeSelect.value;
-    if (!voter || !nominee) return;
+    const nominee1 = nominee1Select.value;
+    const nominee2 = nominee2Select.value;
+    if (!voter || !nominee1 || !nominee2) return;
 
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
@@ -2356,13 +2384,14 @@ function initVoteTab() {
     try {
       const { error } = await supabaseClient
         .from('captain_votes')
-        .upsert({ voter, nominee }, { onConflict: 'voter' });
+        .upsert({ voter, nominee1, nominee2 }, { onConflict: 'voter' });
 
       if (error) throw error;
 
       localStorage.setItem(VOTE_VOTER_KEY, voter);
-      localStorage.setItem(VOTE_NOMINEE_KEY, nominee);
-      showAlreadyVoted(voter, nominee, formCard);
+      localStorage.setItem(VOTE_NOMINEE1_KEY, nominee1);
+      localStorage.setItem(VOTE_NOMINEE2_KEY, nominee2);
+      showAlreadyVoted(voter, nominee1, nominee2);
     } catch (err) {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Cast Vote';
@@ -2372,26 +2401,24 @@ function initVoteTab() {
   });
 }
 
-function showAlreadyVoted(voter, nominee, formCard) {
+function showAlreadyVoted(voter, nominee1, nominee2) {
   const inner = document.getElementById('vote-form-inner');
   inner.innerHTML = `
     <div class="vote-already">
-      <div class="va-label">Your vote</div>
-      <div class="va-name">${nominee}</div>
+      <div class="va-label">Your picks</div>
+      <div class="va-name">${nominee1} &amp; ${nominee2}</div>
     </div>
     <button class="vote-change-btn" id="vote-change-btn">Change vote</button>
   `;
 
   document.getElementById('vote-change-btn').addEventListener('click', () => {
     localStorage.removeItem(VOTE_VOTER_KEY);
-    localStorage.removeItem(VOTE_NOMINEE_KEY);
+    localStorage.removeItem(VOTE_NOMINEE1_KEY);
+    localStorage.removeItem(VOTE_NOMINEE2_KEY);
     inner.innerHTML = `
-      <select class="vote-select" id="vote-voter-select">
-        <option value="">Select your name...</option>
-      </select>
-      <select class="vote-select" id="vote-nominee-select">
-        <option value="">Vote for captain...</option>
-      </select>
+      <select class="vote-select" id="vote-voter-select"><option value="">Select your name...</option></select>
+      <select class="vote-select" id="vote-nominee1-select"><option value="">1st captain pick...</option></select>
+      <select class="vote-select" id="vote-nominee2-select"><option value="">2nd captain pick...</option></select>
       <button class="vote-submit-btn" id="vote-submit-btn" disabled>Cast Vote</button>
     `;
     initVoteTab();
@@ -2413,30 +2440,43 @@ function renderVoteResults(votes) {
   statusMsg.textContent = '';
   totalEl.textContent = votes.length;
 
+  const voterNames = votes.map(v => v.voter).sort().join(', ');
+  const resultsHidden = new Date() < RESULTS_REVEAL_DATE;
+
+  if (resultsHidden) {
+    list.innerHTML = `
+      <div class="vote-voters-label">Voted so far</div>
+      <div class="vote-voters-list">${voterNames}</div>
+      <div class="vote-hidden-msg">Results revealed Friday May 22</div>
+    `;
+    return;
+  }
+
   const tally = {};
   votes.forEach(v => {
-    tally[v.nominee] = (tally[v.nominee] || { count: 0, voters: [] });
-    tally[v.nominee].count++;
-    tally[v.nominee].voters.push(v.voter);
+    [v.nominee1, v.nominee2].forEach(name => {
+      if (!tally[name]) tally[name] = 0;
+      tally[name]++;
+    });
   });
 
-  const sorted = Object.entries(tally).sort((a, b) => b[1].count - a[1].count);
-  const maxVotes = sorted[0][1].count;
+  const sorted = Object.entries(tally).sort((a, b) => b[1] - a[1]);
+  const maxVotes = sorted[0][1];
 
-  list.innerHTML = sorted.map(([name, data], i) => {
-    const pct = maxVotes > 0 ? (data.count / maxVotes) * 100 : 0;
-    const crown = i === 0 ? '<span class="vrr-crown">&#128081;</span>' : '';
-    return `
-      <div class="vote-result-row">
-        <span class="vrr-name">${name}${crown}</span>
-        <div class="vrr-bar-track">
-          <div class="vrr-bar-fill" style="width:${pct}%"></div>
-        </div>
-        <span class="vrr-count">${data.count}</span>
-      </div>
-      <div class="vote-voters-list">${data.voters.join(', ')}</div>
-    `;
-  }).join('');
+  list.innerHTML = `
+    <div class="vote-voters-label">Who voted</div>
+    <div class="vote-voters-list">${voterNames}</div>
+    ${sorted.map(([name, count], i) => {
+      const pct = (count / maxVotes) * 100;
+      const crown = i === 0 ? '<span class="vrr-crown">&#128081;</span>' : '';
+      return `
+        <div class="vote-result-row">
+          <span class="vrr-name">${name}${crown}</span>
+          <div class="vrr-bar-track"><div class="vrr-bar-fill" style="width:${pct}%"></div></div>
+          <span class="vrr-count">${count}</span>
+        </div>`;
+    }).join('')}
+  `;
 }
 
 async function loadVotes() {
@@ -2447,7 +2487,7 @@ async function loadVotes() {
 
   const { data, error } = await supabaseClient
     .from('captain_votes')
-    .select('voter, nominee');
+    .select('voter, nominee1, nominee2');
 
   if (error) {
     document.getElementById('vote-status-msg').textContent = 'Could not load votes.';
