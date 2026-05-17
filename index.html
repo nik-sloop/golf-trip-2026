@@ -370,6 +370,27 @@
   .draft-pill.round1 { background: #d4edda; color: #155724; }
   .draft-pill.round2 { background: #fff3cd; color: #856404; }
 
+  .captain-reveal-row {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.35rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .cr-label {
+    font-size: 0.72rem;
+    color: var(--gray-500);
+  }
+
+  .cr-timer {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--green-dark);
+  }
+
   /* ---- Player Grid ---- */
   .player-grid {
     display: grid;
@@ -1762,6 +1783,14 @@ function renderSchedule() {
       </div>
       ${draftHtml}
     `;
+
+    if (evt.format === 'Vote') {
+      const revealRow = document.createElement('div');
+      revealRow.className = 'captain-reveal-row';
+      revealRow.innerHTML = '<span class="cr-label">Results revealed:</span><span class="cr-timer" id="captain-reveal-timer">...</span>';
+      card.appendChild(revealRow);
+    }
+
     grid.appendChild(card);
   });
 }
@@ -2459,6 +2488,25 @@ const VOTE_VOTER_KEY = 'captain_vote_voter_2026';
 const VOTE_NOMINEE1_KEY = 'captain_vote_nominee1_2026';
 const VOTE_NOMINEE2_KEY = 'captain_vote_nominee2_2026';
 const RESULTS_REVEAL_DATE = new Date('2026-05-22T00:00:00');
+
+function updateCaptainRevealTimer() {
+  const el = document.getElementById('captain-reveal-timer');
+  if (!el) return;
+  const now = new Date();
+  if (now >= RESULTS_REVEAL_DATE) {
+    el.textContent = 'Captains announced!';
+    return;
+  }
+  const diff = RESULTS_REVEAL_DATE - now;
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+  const secs = Math.floor((diff % 60000) / 1000);
+  el.textContent = days > 0 ? `${days}d ${hours}h ${mins}m` : `${hours}h ${mins}m ${secs}s`;
+}
+
+updateCaptainRevealTimer();
+setInterval(updateCaptainRevealTimer, 1000);
 
 const supabaseConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
 
