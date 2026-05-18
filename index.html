@@ -391,6 +391,39 @@
     color: var(--green-dark);
   }
 
+  .schedule-vote-progress {
+    grid-column: 1 / -1;
+    margin-top: 0.35rem;
+  }
+
+  .svp-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .svp-bar-track {
+    flex: 1;
+    height: 7px;
+    background: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .svp-bar-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .svp-count {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    white-space: nowrap;
+  }
+
   /* ---- Player Grid ---- */
   .player-grid {
     display: grid;
@@ -1508,6 +1541,7 @@
 <script>
 const TOTAL_POINTS = 14;
 const WIN_POINTS = 7.5;
+const RESULTS_REVEAL_DATE = new Date('2026-05-22T00:00:00');
 
 let teamRedPoints = 0;
 let teamBluePoints = 0;
@@ -1750,7 +1784,12 @@ function renderSchedule() {
     const isNext = evt === nextEvent;
 
     const card = document.createElement('div');
-    card.className = 'schedule-card' + (isPast ? ' past' : '') + (isNext ? ' next' : '');
+    const isVoteCard = evt.format === 'Vote';
+    if (isVoteCard) {
+      card.className = new Date() < RESULTS_REVEAL_DATE ? 'schedule-card next' : 'schedule-card past';
+    } else {
+      card.className = 'schedule-card' + (isPast ? ' past' : '') + (isNext ? ' next' : '');
+    }
 
     let formatChip = '';
     if (evt.format && evt.format !== "Vote" && !evt.draft) {
@@ -1787,6 +1826,16 @@ function renderSchedule() {
       revealRow.className = 'captain-reveal-row';
       revealRow.innerHTML = '<span class="cr-label">Results revealed:</span><span class="cr-timer" id="captain-reveal-timer">...</span>';
       card.appendChild(revealRow);
+
+      const progressRow = document.createElement('div');
+      progressRow.className = 'schedule-vote-progress';
+      progressRow.id = 'schedule-vote-progress';
+      progressRow.innerHTML = `
+        <div class="svp-row">
+          <div class="svp-bar-track"><div class="svp-bar-fill" id="svp-bar" style="width:0%"></div></div>
+          <span class="svp-count" id="svp-count">— / ${draftRound1.length + draftRound2.length} voted</span>
+        </div>`;
+      card.appendChild(progressRow);
     }
 
     grid.appendChild(card);
@@ -2477,7 +2526,15 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const VOTE_VOTER_KEY = 'captain_vote_voter_2026';
 const VOTE_NOMINEE1_KEY = 'captain_vote_nominee1_2026';
 const VOTE_NOMINEE2_KEY = 'captain_vote_nominee2_2026';
-const RESULTS_REVEAL_DATE = new Date('2026-05-22T00:00:00');
+
+function updateScheduleVoteProgress(count) {
+  const bar = document.getElementById('svp-bar');
+  const label = document.getElementById('svp-count');
+  if (!bar || !label) return;
+  const total = draftRound1.length + draftRound2.length;
+  bar.style.width = (total > 0 ? (count / total) * 100 : 0) + '%';
+  label.textContent = `${count} / ${total} voted`;
+}
 
 function updateCaptainRevealTimer() {
   const el = document.getElementById('captain-reveal-timer');
@@ -2687,12 +2744,14 @@ function renderVoteResults(votes) {
   if (!votes || votes.length === 0) {
     list.innerHTML = '';
     totalEl.textContent = '0';
+    updateScheduleVoteProgress(0);
     statusMsg.textContent = 'No votes yet — be the first!';
     return;
   }
 
   statusMsg.textContent = '';
   totalEl.textContent = votes.length;
+  updateScheduleVoteProgress(votes.length);
 
   const voterNames = votes.map(v => v.voter).sort().join(', ');
   const resultsHidden = new Date() < RESULTS_REVEAL_DATE;
