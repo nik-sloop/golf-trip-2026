@@ -248,6 +248,34 @@
     gap: 1.25rem;
   }
 
+  .cvp-wrap {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .cvp-bar-track {
+    height: 8px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.4rem;
+  }
+
+  .cvp-bar-fill {
+    height: 100%;
+    background: white;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .cvp-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    opacity: 0.9;
+  }
+
   .countdown-unit {
     display: flex;
     flex-direction: column;
@@ -369,60 +397,6 @@
 
   .draft-pill.round1 { background: #d4edda; color: #155724; }
   .draft-pill.round2 { background: #fff3cd; color: #856404; }
-
-  .captain-reveal-row {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.35rem;
-    padding-top: 0.35rem;
-    border-top: 1px solid var(--gray-200);
-  }
-
-  .cr-label {
-    font-size: 0.72rem;
-    color: var(--gray-500);
-  }
-
-  .cr-timer {
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--green-dark);
-  }
-
-  .schedule-vote-progress {
-    grid-column: 1 / -1;
-    margin-top: 0.35rem;
-  }
-
-  .svp-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .svp-bar-track {
-    flex: 1;
-    height: 7px;
-    background: var(--gray-200);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .svp-bar-fill {
-    height: 100%;
-    background: var(--gold);
-    border-radius: 4px;
-    transition: width 0.5s ease;
-  }
-
-  .svp-count {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--gray-800);
-    white-space: nowrap;
-  }
 
   /* ---- Player Grid ---- */
   .player-grid {
@@ -1542,6 +1516,7 @@
 const TOTAL_POINTS = 14;
 const WIN_POINTS = 7.5;
 const RESULTS_REVEAL_DATE = new Date('2026-05-22T00:00:00');
+let currentVoteCount = 0;
 
 let teamRedPoints = 0;
 let teamBluePoints = 0;
@@ -1744,8 +1719,31 @@ renderRyderBar();
 // --- Countdown ---
 function updateCountdown() {
   const now = new Date();
-  const upcoming = schedule.filter(e => e.date > now);
 
+  // During voting window show captain vote status instead of next event
+  if (now < RESULTS_REVEAL_DATE) {
+    document.getElementById('countdown-event').textContent = 'Team Captains Vote';
+    const total = draftRound1.length + draftRound2.length;
+    const pct = total > 0 ? (currentVoteCount / total) * 100 : 0;
+    const diff = RESULTS_REVEAL_DATE - now;
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    const timeStr = days > 0 ? `${days}d ${hours}h ${mins}m` : `${hours}h ${mins}m ${secs}s`;
+    document.getElementById('countdown-units').innerHTML = `
+      <div class="cvp-wrap">
+        <div class="cvp-bar-track"><div class="cvp-bar-fill" id="cvp-bar" style="width:${pct}%"></div></div>
+        <div class="cvp-stats">
+          <span>${currentVoteCount} / ${total} voted</span>
+          <span>Results in ${timeStr}</span>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const upcoming = schedule.filter(e => e.date > now);
   if (upcoming.length === 0) {
     document.getElementById('countdown-event').textContent = "Trip Complete!";
     document.getElementById('countdown-units').innerHTML = '';
@@ -1821,22 +1819,6 @@ function renderSchedule() {
       ${draftHtml}
     `;
 
-    if (evt.format === 'Vote') {
-      const revealRow = document.createElement('div');
-      revealRow.className = 'captain-reveal-row';
-      revealRow.innerHTML = '<span class="cr-label">Results revealed:</span><span class="cr-timer" id="captain-reveal-timer">...</span>';
-      card.appendChild(revealRow);
-
-      const progressRow = document.createElement('div');
-      progressRow.className = 'schedule-vote-progress';
-      progressRow.id = 'schedule-vote-progress';
-      progressRow.innerHTML = `
-        <div class="svp-row">
-          <div class="svp-bar-track"><div class="svp-bar-fill" id="svp-bar" style="width:0%"></div></div>
-          <span class="svp-count" id="svp-count">— / ${draftRound1.length + draftRound2.length} voted</span>
-        </div>`;
-      card.appendChild(progressRow);
-    }
 
     grid.appendChild(card);
   });
@@ -2527,33 +2509,6 @@ const VOTE_VOTER_KEY = 'captain_vote_voter_2026';
 const VOTE_NOMINEE1_KEY = 'captain_vote_nominee1_2026';
 const VOTE_NOMINEE2_KEY = 'captain_vote_nominee2_2026';
 
-function updateScheduleVoteProgress(count) {
-  const bar = document.getElementById('svp-bar');
-  const label = document.getElementById('svp-count');
-  if (!bar || !label) return;
-  const total = draftRound1.length + draftRound2.length;
-  bar.style.width = (total > 0 ? (count / total) * 100 : 0) + '%';
-  label.textContent = `${count} / ${total} voted`;
-}
-
-function updateCaptainRevealTimer() {
-  const el = document.getElementById('captain-reveal-timer');
-  if (!el) return;
-  const now = new Date();
-  if (now >= RESULTS_REVEAL_DATE) {
-    el.textContent = 'Captains announced!';
-    return;
-  }
-  const diff = RESULTS_REVEAL_DATE - now;
-  const days = Math.floor(diff / 86400000);
-  const hours = Math.floor((diff % 86400000) / 3600000);
-  const mins = Math.floor((diff % 3600000) / 60000);
-  const secs = Math.floor((diff % 60000) / 1000);
-  el.textContent = days > 0 ? `${days}d ${hours}h ${mins}m` : `${hours}h ${mins}m ${secs}s`;
-}
-
-updateCaptainRevealTimer();
-setInterval(updateCaptainRevealTimer, 1000);
 
 const supabaseConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
 
@@ -2744,14 +2699,14 @@ function renderVoteResults(votes) {
   if (!votes || votes.length === 0) {
     list.innerHTML = '';
     totalEl.textContent = '0';
-    updateScheduleVoteProgress(0);
+    currentVoteCount = 0;
     statusMsg.textContent = 'No votes yet — be the first!';
     return;
   }
 
   statusMsg.textContent = '';
   totalEl.textContent = votes.length;
-  updateScheduleVoteProgress(votes.length);
+  currentVoteCount = votes.length;
 
   const voterNames = votes.map(v => v.voter).sort().join(', ');
   const resultsHidden = new Date() < RESULTS_REVEAL_DATE;
