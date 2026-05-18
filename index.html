@@ -388,6 +388,28 @@
     margin-top: 0.3rem;
   }
 
+  .draft-captains-row {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .draft-captain-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.3rem 0.7rem;
+    border-radius: 10px;
+    color: #fff;
+  }
+  .draft-captain-pill.red { background: var(--red); box-shadow: 0 2px 6px rgba(192,57,43,0.3); }
+  .draft-captain-pill.blue { background: var(--blue); box-shadow: 0 2px 6px rgba(36,113,163,0.3); }
+
   .draft-pill {
     font-size: 0.7rem;
     font-weight: 600;
@@ -397,6 +419,27 @@
 
   .draft-pill.round1 { background: #d4edda; color: #155724; }
   .draft-pill.round2 { background: #fff3cd; color: #856404; }
+  .draft-pill.captain-red {
+    background: var(--red);
+    color: #fff;
+    font-weight: 800;
+    box-shadow: 0 2px 6px rgba(192,57,43,0.3);
+  }
+  .draft-pill.captain-blue {
+    background: var(--blue);
+    color: #fff;
+    font-weight: 800;
+    box-shadow: 0 2px 6px rgba(36,113,163,0.3);
+  }
+  .captain-badge {
+    font-size: 0.6rem;
+    font-weight: 900;
+    background: rgba(255,255,255,0.35);
+    border-radius: 3px;
+    padding: 0 3px;
+    margin-left: 3px;
+    vertical-align: middle;
+  }
 
   /* ---- Player Grid ---- */
   .player-grid {
@@ -1387,6 +1430,338 @@
     .ryder-bar-blue { border-radius: 0 26px 26px 0; font-size: 1.3rem; }
     .scout-grid { grid-template-columns: 1fr 1fr; }
   }
+
+  /* ---- Captain Reveal Overlay ---- */
+  .reveal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+  .reveal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .reveal-stage { display: none; width: 100%; height: 100%; position: absolute; inset: 0; }
+  .reveal-stage.visible { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  /* Spotlight / particles */
+  .reveal-spotlight {
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(241,196,15,0.15) 0%, transparent 70%);
+    animation: spotlightPulse 2s ease-in-out infinite;
+  }
+  @keyframes spotlightPulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.3); opacity: 1; }
+  }
+
+  .reveal-label {
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: revealFadeUp 0.6s ease forwards;
+  }
+
+  .reveal-captain-name {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.3);
+    animation: captainNameReveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    text-shadow: 0 0 40px rgba(241,196,15,0.5), 0 0 80px rgba(241,196,15,0.2);
+    position: relative;
+    z-index: 2;
+  }
+
+  .reveal-captain-name .emoji {
+    display: block;
+    font-size: 3.5rem;
+    margin-bottom: 0.25rem;
+    filter: drop-shadow(0 0 20px rgba(241,196,15,0.6));
+  }
+
+  .reveal-votes-badge {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    opacity: 0;
+    animation: revealFadeUp 0.5s ease 0.4s forwards;
+  }
+
+  @keyframes revealFadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes captainNameReveal {
+    0% { opacity: 0; transform: scale(0.3) rotateX(40deg); }
+    60% { opacity: 1; transform: scale(1.1) rotateX(-5deg); }
+    100% { opacity: 1; transform: scale(1) rotateX(0); }
+  }
+
+  /* Particle burst */
+  .reveal-particles {
+    position: absolute;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .reveal-particle {
+    position: absolute;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    opacity: 0;
+  }
+
+  /* Face-off stage */
+  .faceoff-stage {
+    width: 100%; height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .faceoff-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a0a0a 0%, #0a0a0a 40%, #0a0a0a 60%, #0a0a1a 100%);
+  }
+
+  .faceoff-slash {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 4px;
+    background: var(--gold);
+    transform: translateX(-50%) skewX(-8deg);
+    box-shadow: 0 0 30px rgba(241,196,15,0.4);
+    opacity: 0;
+    animation: slashReveal 0.4s ease 0.3s forwards;
+  }
+  @keyframes slashReveal {
+    0% { opacity: 0; transform: translateX(-50%) skewX(-8deg) scaleY(0); }
+    100% { opacity: 1; transform: translateX(-50%) skewX(-8deg) scaleY(1); }
+  }
+
+  .faceoff-side {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    padding: 1rem;
+  }
+  .faceoff-side.left {
+    left: 0;
+    background: linear-gradient(135deg, rgba(192,57,43,0.12), transparent);
+    animation: sideSlideLeft 0.6s ease 0.5s forwards;
+  }
+  .faceoff-side.right {
+    right: 0;
+    background: linear-gradient(225deg, rgba(36,113,163,0.12), transparent);
+    animation: sideSlideRight 0.6s ease 0.5s forwards;
+  }
+  @keyframes sideSlideLeft {
+    0% { opacity: 0; transform: translateX(-40px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes sideSlideRight {
+    0% { opacity: 0; transform: translateX(40px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+
+  .faceoff-team-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+  .faceoff-side.left .faceoff-team-label { color: var(--red-light); }
+  .faceoff-side.right .faceoff-team-label { color: var(--blue-light); }
+
+  .faceoff-emoji {
+    font-size: 3rem;
+    margin-bottom: 0.25rem;
+    filter: drop-shadow(0 0 15px rgba(255,255,255,0.3));
+  }
+
+  .faceoff-name {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+
+  .faceoff-votes {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.25rem;
+  }
+
+  .faceoff-vs {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    opacity: 0;
+    animation: vsReveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.8s forwards;
+  }
+  .faceoff-vs span {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--gold);
+    text-shadow: 0 0 30px rgba(241,196,15,0.6), 0 0 60px rgba(241,196,15,0.3);
+    line-height: 1;
+  }
+  @keyframes vsReveal {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(3); }
+    60% { opacity: 1; transform: translate(-50%, -50%) scale(0.9); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+
+  .faceoff-subtitle {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    opacity: 0;
+    animation: revealFadeUp 0.6s ease 1.4s forwards;
+  }
+  .faceoff-subtitle span {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .reveal-close-btn {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.6rem 2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    opacity: 0;
+    animation: revealFadeUp 0.5s ease 2s forwards;
+    transition: background 0.2s;
+    z-index: 20;
+  }
+  .reveal-close-btn:active { background: rgba(255,255,255,0.2); }
+
+  /* Nominee animated pills */
+  .nominee-grid {
+    position: relative;
+    height: 90px;
+    margin: 0.75rem 0;
+    overflow: hidden;
+  }
+  .nominee-pill {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.4rem 0.75rem;
+    border-radius: 20px;
+    opacity: 0;
+    transform: scale(0.5);
+    animation: nomineePopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    box-shadow: 0 2px 8px rgba(26,71,42,0.25);
+    white-space: nowrap;
+  }
+  .nominee-pill .np-q { font-size: 0.7rem; opacity: 0.7; }
+
+  /* Banner variant (white on green background) */
+  .nominee-pill.banner-pill {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+
+  @keyframes nomineePopIn {
+    0% { opacity: 0; transform: scale(0.5) translateY(10px); }
+    60% { opacity: 1; transform: scale(1.08) translateY(-2px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+
+  .reveal-trigger-btn.banner-btn {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.5);
+    color: #fff;
+    margin-top: 0.75rem;
+    font-size: 0.82rem;
+    padding: 0.65rem 1.5rem;
+    display: inline-block;
+    width: auto;
+  }
+  .reveal-trigger-btn.banner-btn::before {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  }
+
+  .reveal-trigger-btn {
+    display: block;
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.9rem;
+    background: linear-gradient(135deg, var(--green-dark), #1a472a);
+    color: var(--gold);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s;
+  }
+  .reveal-trigger-btn:active { transform: scale(0.97); }
+  .reveal-trigger-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(241,196,15,0.15), transparent);
+    animation: btnShimmer 2s ease-in-out infinite;
+  }
+  @keyframes btnShimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
 </style>
 </head>
 <body>
@@ -1515,14 +1890,22 @@
 <script>
 const TOTAL_POINTS = 14;
 const WIN_POINTS = 7.5;
-const RESULTS_REVEAL_DATE = new Date('2026-05-22T00:00:00');
+const RESULTS_REVEAL_DATE = new Date('2026-05-22T19:30:00Z'); // 3:30 PM Eastern
+const IS_LOCAL_PREVIEW = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:';
+const PILL_SPEED = 25; // nominee pill bounce speed (px/sec)
 let currentVoteCount = 0;
+
+// Hide vote tab once voting window is over
+if (IS_LOCAL_PREVIEW || new Date() >= RESULTS_REVEAL_DATE) {
+  document.getElementById('tab-vote').style.display = 'none';
+  document.getElementById('vote-nav-tab').style.display = 'none';
+}
 
 let teamRedPoints = 0;
 let teamBluePoints = 0;
 
-const draftRound1 = ["Dan M", "Hadley", "Shane", "Nik", "Jon", "Dan", "Sam", "Garret", "Ant", "Dylan"];
-const draftRound2 = ["Chris", "Ryan"];
+const draftRound1 = ["Dan M", "Hadley", "Shane", "Nik", "Jon", "Dan", "Chris", "Sam", "Ryan", "Garret", "Ant", "Dylan"];
+const draftRound2 = [];
 
 const players = [
   { name: "Dan M", handicap: 9.9, strokes: 0, scores: [
@@ -1531,7 +1914,9 @@ const players = [
     { gross: 85, net: 75, par: 72 },
     { gross: 83, net: 75, par: 72 },
     { gross: 82, net: 71, par: 71 },
-    { gross: 80, net: 70, par: 71 }
+    { gross: 80, net: 70, par: 71 },
+    { gross: 76, net: 67, par: 72 },
+    { gross: 84, net: 75, par: 71 }
   ], scouting: { driving: { range: "8-9", avg: 8.5 }, irons: { range: "8-9", avg: 8.5 }, chipping: { range: "7-8", avg: 7.5 }, putting: { range: "7-8", avg: 7.5 }, mental: { range: "8-9", avg: 8.5 }, total: "38-43", avg: 40.5, avgAdj: 40.5 }},
   { name: "Hadley", handicap: 12.8, strokes: 3, scores: [
     { gross: 94, net: 85, par: 72 }
@@ -1540,11 +1925,14 @@ const players = [
     { gross: 97, net: 84, par: 72 },
     { gross: 93, net: 78, par: 72 },
     { gross: 94, net: 81, par: 72 },
-    { gross: 91, net: 77, par: 72 }
+    { gross: 91, net: 77, par: 72 },
+    { gross: 42, net: 34, par: 36 },
+    { gross: 105, net: 89, par: 72 }
   ], scouting: { driving: { range: "5-10", avg: 7 }, irons: { range: "7-9", avg: 8 }, chipping: { range: "6-9", avg: 7.5 }, putting: { range: "7-9", avg: 8 }, mental: { range: "7-9", avg: 8 }, total: "32-46", avg: 39, avgAdj: 38.5 }},
   { name: "Jon", handicap: 13.3, strokes: 3, scores: [
     { gross: 44, net: 38, par: 36 },
-    { gross: 87, net: 76, par: 71 }
+    { gross: 87, net: 76, par: 71 },
+    { gross: 88, net: 74, par: 72 }
   ], scouting: { driving: { range: "6-9", avg: 7 }, irons: { range: "7-8", avg: 7.5 }, chipping: { range: "6-9", avg: 7.5 }, putting: { range: "6-8", avg: 7 }, mental: { range: "7-8", avg: 7.5 }, total: "32-42", avg: 37, avgAdj: 36.5 }},
   { name: "Nik", handicap: 16.1, strokes: 6, scores: [
     { gross: 103, net: 91, par: 72 },
@@ -1553,16 +1941,19 @@ const players = [
   ], scouting: { driving: { range: "5-9", avg: 7 }, irons: { range: "4-7", avg: 6 }, chipping: { range: "6-8", avg: 7.5 }, putting: { range: "7-9", avg: 8 }, mental: { range: "7-8", avg: 7.5 }, total: "29-41", avg: 35, avgAdj: 36 }},
   { name: "Dan", handicap: 21.6, strokes: 12, scores: [
     { gross: 94, net: 75, par: 72 },
-    { gross: 96, net: 76, par: 71 }
+    { gross: 96, net: 76, par: 71 },
+    { gross: 47, net: 36, par: 35 }
   ], scouting: { driving: { range: "6-8", avg: 7 }, irons: { range: "6-8", avg: 7 }, chipping: { range: "3-7", avg: 6 }, putting: { range: "4-8", avg: 6 }, mental: { range: "5-8", avg: 7 }, total: "24-39", avg: 31.5, avgAdj: 33 }},
   { name: "Chris", handicap: 21.8, strokes: 12, scores: [
     { gross: 104, net: 80, par: 72 },
     { gross: 103, net: 79, par: 72 },
     { gross: 109, net: 87, par: 72 },
-    { gross: 103, net: 79, par: 70 }
+    { gross: 103, net: 79, par: 70 },
+    { gross: 103, net: 80, par: 72 }
   ], scouting: { driving: { range: "4-8", avg: 6 }, irons: { range: "5-7", avg: 6 }, chipping: { range: "5-7", avg: 6 }, putting: { range: "5-6", avg: 5.5 }, mental: { range: "7-8", avg: 7.5 }, total: "26-36", avg: 31, avgAdj: 31 }},
   { name: "Sam", handicap: 25.8, strokes: 15, scores: [
-    { gross: 49, net: 37, par: 34 }
+    { gross: 49, net: 37, par: 34 },
+    { gross: 50, net: 38, par: 35 }
   ], scouting: { driving: { range: "2-7", avg: 5 }, irons: { range: "4-7", avg: 6 }, chipping: { range: "5-7", avg: 6 }, putting: { range: "6-7", avg: 6.5 }, mental: { range: "5-8", avg: 7 }, total: "22-36", avg: 29, avgAdj: 30.5 }},
   { name: "Ryan", handicap: 26.8, strokes: 18, scores: [
     { gross: 99, net: 72, par: 72 },
@@ -1571,8 +1962,9 @@ const players = [
   ], scouting: { driving: { range: "1-7", avg: 4 }, irons: { range: "5-7", avg: 6 }, chipping: { range: "4-7", avg: 5.5 }, putting: { range: "5-6", avg: 5.5 }, mental: { range: "6-8", avg: 7 }, total: "21-35", avg: 28, avgAdj: 28 }},
   { name: "Dylan", handicap: 26.8, strokes: 18, scores: [],
     scouting: { driving: { range: "2-9", avg: 5 }, irons: { range: "5-8", avg: 7 }, chipping: { range: "5-7", avg: 6 }, putting: { range: "5-7", avg: 7 }, mental: { range: "5-8", avg: 7 }, total: "22-39", avg: 30.5, avgAdj: 32 }},
-  { name: "Ant", handicap: 26.9, strokes: 18, scores: [],
-    scouting: { driving: { range: "1-6", avg: 4 }, irons: { range: "4-8", avg: 6 }, chipping: { range: "5-8", avg: 6.5 }, putting: { range: "6-8", avg: 7 }, mental: { range: "5-8", avg: 7 }, total: "21-38", avg: 29.5, avgAdj: 30.5 }},
+  { name: "Ant", handicap: 26.9, strokes: 18, scores: [
+    { gross: 48, net: 35, par: 35 }
+  ], scouting: { driving: { range: "1-6", avg: 4 }, irons: { range: "4-8", avg: 6 }, chipping: { range: "5-8", avg: 6.5 }, putting: { range: "6-8", avg: 7 }, mental: { range: "5-8", avg: 7 }, total: "21-38", avg: 29.5, avgAdj: 30.5 }},
   { name: "Garret", handicap: 27.3, strokes: 18, scores: [],
     scouting: { driving: { range: "5-8", avg: 6 }, irons: { range: "3-7", avg: 5 }, chipping: { range: "2-6", avg: 4 }, putting: { range: "1-10", avg: 5 }, mental: { range: "6-8", avg: 7 }, total: "17-39", avg: 28, avgAdj: 27 }},
 ];
@@ -1597,8 +1989,8 @@ const schedule = [
     date: new Date(2026, 4, 29, 14, 0),
     dateLabel: "May 29",
     timeLabel: "2:00 PM",
-    name: "Draft (Rounds 1-4)",
-    format: "Arriving for Friday round",
+    name: "The Draft",
+    format: "All players",
     points: null,
     cost: null,
     tee: null,
@@ -1618,22 +2010,10 @@ const schedule = [
     draft: null
   },
   {
-    date: new Date(2026, 4, 29, 21, 0),
-    dateLabel: "May 29",
-    timeLabel: "9:00 PM",
-    name: "Draft (Round 5)",
-    format: "Arriving later Friday",
-    points: null,
-    cost: null,
-    tee: null,
-    note: null,
-    draft: 2
-  },
-  {
     date: new Date(2026, 4, 30, 8, 30),
     dateLabel: "Sat 5/30 AM",
     timeLabel: "8:30 AM",
-    name: "Queenstown Harbor (Lake)",
+    name: "Queenstown Harbor (River)",
     format: "Best Ball",
     points: 3,
     cost: "$196",
@@ -1645,7 +2025,7 @@ const schedule = [
     date: new Date(2026, 4, 30, 14, 20),
     dateLabel: "Sat 5/30 PM",
     timeLabel: "2:20 PM",
-    name: "Queenstown Harbor (River)",
+    name: "Queenstown Harbor (Lake)",
     format: "Scramble",
     points: 3,
     cost: null,
@@ -1707,9 +2087,14 @@ renderRyderBar();
 // --- Countdown ---
 function updateCountdown() {
   const now = new Date();
+  const revealReady = IS_LOCAL_PREVIEW || now >= RESULTS_REVEAL_DATE;
+
+  // Don't overwrite the banner if it's been locked (post-reveal) or showing vote results
+  if (window._bannerLocked) return;
+  if (revealReady && window._captainRevealData) return;
 
   // During voting window show captain vote status instead of next event
-  if (now < RESULTS_REVEAL_DATE) {
+  if (now < RESULTS_REVEAL_DATE && !IS_LOCAL_PREVIEW) {
     document.getElementById('countdown-event').textContent = 'Team Captains Vote';
     const total = draftRound1.length + draftRound2.length;
     const pct = total > 0 ? (currentVoteCount / total) * 100 : 0;
@@ -1788,9 +2173,9 @@ function renderSchedule() {
 
     let draftHtml = '';
     if (evt.draft === 1) {
-      draftHtml = '<div class="draft-players">' + draftRound1.map(n => `<span class="draft-pill round1">${n}</span>`).join('') + '</div>';
+      draftHtml = '<div class="draft-players">' + draftRound1.map(n => `<span class="draft-pill round1" data-draft-name="${n}">${n}</span>`).join('') + '</div>';
     } else if (evt.draft === 2) {
-      draftHtml = '<div class="draft-players">' + draftRound2.map(n => `<span class="draft-pill round2">${n}</span>`).join('') + '</div>';
+      draftHtml = '<div class="draft-players">' + draftRound2.map(n => `<span class="draft-pill round2" data-draft-name="${n}">${n}</span>`).join('') + '</div>';
     }
 
     card.innerHTML = `
@@ -2679,7 +3064,7 @@ function showAlreadyVoted(voter, nominee1, nominee2) {
   });
 }
 
-function renderVoteResults(votes) {
+function renderVoteResults(votes, forceReveal) {
   const list = document.getElementById('vote-results-list');
   const statusMsg = document.getElementById('vote-status-msg');
   const totalEl = document.getElementById('vote-total-count');
@@ -2697,7 +3082,7 @@ function renderVoteResults(votes) {
   currentVoteCount = votes.length;
 
   const voterNames = votes.map(v => v.voter).sort().join(', ');
-  const resultsHidden = new Date() < RESULTS_REVEAL_DATE;
+  const resultsHidden = !forceReveal && new Date() < RESULTS_REVEAL_DATE;
 
   if (resultsHidden) {
     list.innerHTML = `
@@ -2717,25 +3102,91 @@ function renderVoteResults(votes) {
   });
 
   const sorted = Object.entries(tally).sort((a, b) => b[1] - a[1]);
-  const maxVotes = sorted[0][1];
+
+  const captain1 = sorted[0];
+  const captain2 = sorted[1];
+
+  // Show nominees as animated pills (alphabetical, no counts) so it doesn't spoil the reveal
+  const nomineeNames = Object.keys(tally).sort();
 
   list.innerHTML = `
     <div class="vote-voters-label">Who voted</div>
     <div class="vote-voters-list">${voterNames}</div>
-    ${sorted.map(([name, count], i) => {
-      const pct = (count / maxVotes) * 100;
-      const crown = i === 0 ? '<span class="vrr-crown">&#128081;</span>' : '';
-      return `
-        <div class="vote-result-row">
-          <span class="vrr-name">${name}${crown}</span>
-          <div class="vrr-bar-track"><div class="vrr-bar-fill" style="width:${pct}%"></div></div>
-          <span class="vrr-count">${count}</span>
-        </div>`;
-    }).join('')}
+    <div class="vote-voters-label" style="margin-top: 0.75rem;">Nominees</div>
+    <div class="nominee-grid" id="vote-nominee-grid">
+      ${nomineeNames.map((name, i) => `<span class="nominee-pill" style="animation-delay: ${i * 0.1}s;">${name} <span class="np-q">?</span></span>`).join('')}
+    </div>
   `;
+  startNomineeDrift(document.getElementById('vote-nominee-grid'));
+
+  // Add reveal button if we have 2+ captains
+  if (captain1 && captain2) {
+    // Store globally so schedule banner can use it
+    window._captainRevealData = { captain1, captain2, totalVotes: votes.length, nomineeNames };
+
+    const revealBtn = document.createElement('button');
+    revealBtn.className = 'reveal-trigger-btn';
+    revealBtn.textContent = 'REVEAL CAPTAINS';
+    revealBtn.addEventListener('click', () => startCaptainReveal(captain1, captain2, votes.length));
+    list.appendChild(revealBtn);
+
+    // Update the schedule banner to show the reveal
+    renderScheduleBannerReveal();
+  }
 }
 
+function renderScheduleBannerReveal() {
+  const data = window._captainRevealData;
+  if (!data) return;
+  const banner = document.getElementById('countdown-banner');
+  if (!banner) return;
+
+  const labelEl = banner.querySelector('.label');
+  const eventEl = document.getElementById('countdown-event');
+  const unitsEl = document.getElementById('countdown-units');
+  if (!labelEl || !eventEl || !unitsEl) return;
+
+  labelEl.textContent = 'Captain Vote';
+  eventEl.textContent = 'Results Are In';
+
+  unitsEl.innerHTML = `
+    <div style="width:100%;">
+      <div class="nominee-grid" id="banner-nominee-grid">
+        ${data.nomineeNames.map((name, i) => `<span class="nominee-pill banner-pill" style="animation-delay: ${0.3 + i * 0.1}s;">${name} <span class="np-q">?</span></span>`).join('')}
+      </div>
+      <button class="reveal-trigger-btn banner-btn" id="banner-reveal-btn">REVEAL CAPTAINS</button>
+    </div>
+  `;
+  startNomineeDrift(document.getElementById('banner-nominee-grid'));
+
+  document.getElementById('banner-reveal-btn')?.addEventListener('click', () => {
+    startCaptainReveal(data.captain1, data.captain2, data.totalVotes);
+  });
+}
+
+// Mock vote data for local preview (localhost only)
+const MOCK_VOTES = [
+  { voter: "Nik", nominee1: "Dan M", nominee2: "Shane" },
+  { voter: "Dan", nominee1: "Dan M", nominee2: "Jon" },
+  { voter: "Jon", nominee1: "Shane", nominee2: "Dan M" },
+  { voter: "Sam", nominee1: "Dan M", nominee2: "Nik" },
+  { voter: "Hadley", nominee1: "Shane", nominee2: "Dan M" },
+  { voter: "Chris", nominee1: "Jon", nominee2: "Shane" },
+  { voter: "Dylan", nominee1: "Dan M", nominee2: "Jon" },
+  { voter: "Ant", nominee1: "Shane", nominee2: "Dan M" },
+  { voter: "Ryan", nominee1: "Dan M", nominee2: "Shane" },
+  { voter: "Garret", nominee1: "Jon", nominee2: "Dan M" },
+  { voter: "Shane", nominee1: "Dan M", nominee2: "Nik" },
+  { voter: "Dan M", nominee1: "Shane", nominee2: "Jon" },
+];
+
 async function loadVotes() {
+  // On localhost, use mock data to preview results
+  if (IS_LOCAL_PREVIEW) {
+    renderVoteResults(MOCK_VOTES, true);
+    return;
+  }
+
   if (!supabaseConfigured) {
     document.getElementById('vote-status-msg').textContent = 'Supabase not configured yet.';
     return;
@@ -2772,6 +3223,301 @@ if (supabaseConfigured) {
 initVoteTab();
 loadVotes();
 subscribeToVotes();
+
+// --- Nominee bouncing screensaver ---
+function startNomineeDrift(grid) {
+  if (!grid) return;
+  const pills = Array.from(grid.querySelectorAll('.nominee-pill'));
+  const gridW = grid.offsetWidth || 280;
+  const gridH = grid.offsetHeight || 90;
+  const count = pills.length;
+
+  // Spread pills out initially
+  const cols = Math.ceil(Math.sqrt(count * (gridW / gridH)));
+  const rows = Math.ceil(count / cols);
+  const zoneW = gridW / cols;
+  const zoneH = gridH / rows;
+
+  const pillData = pills.map((pill, i) => {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const x = col * zoneW + Math.random() * Math.max(0, zoneW - 75);
+    const y = row * zoneH + Math.random() * Math.max(0, zoneH - 28);
+    pill.style.left = x + 'px';
+    pill.style.top = y + 'px';
+    pill.style.transition = 'none';
+
+    // Random angle for initial direction
+    const angle = Math.random() * Math.PI * 2;
+    return { el: pill, x, y, vx: Math.cos(angle) * PILL_SPEED, vy: Math.sin(angle) * PILL_SPEED, ready: false };
+  });
+
+  // After pop-in, mark as ready for bouncing
+  pillData.forEach(pd => {
+    const popDelay = parseFloat(pd.el.style.animationDelay || 0) * 1000;
+    setTimeout(() => {
+      pd.el.style.opacity = '1';
+      pd.el.style.animation = 'none';
+      pd.el.style.transform = 'scale(1)';
+      pd.ready = true;
+    }, popDelay + 450);
+  });
+
+  let lastTime = performance.now();
+  function tick(now) {
+    const dt = Math.min((now - lastTime) / 1000, 0.05); // cap delta to avoid jumps
+    lastTime = now;
+    const gw = grid.offsetWidth || 280;
+    const gh = grid.offsetHeight || 90;
+
+    pillData.forEach(pd => {
+      if (!pd.ready) return;
+      const pw = pd.el.offsetWidth || 70;
+      const ph = pd.el.offsetHeight || 28;
+
+      pd.x += pd.vx * dt;
+      pd.y += pd.vy * dt;
+
+      // Bounce off edges
+      if (pd.x <= 0) { pd.x = 0; pd.vx = Math.abs(pd.vx); }
+      if (pd.x >= gw - pw) { pd.x = gw - pw; pd.vx = -Math.abs(pd.vx); }
+      if (pd.y <= 0) { pd.y = 0; pd.vy = Math.abs(pd.vy); }
+      if (pd.y >= gh - ph) { pd.y = gh - ph; pd.vy = -Math.abs(pd.vy); }
+
+      pd.el.style.left = pd.x + 'px';
+      pd.el.style.top = pd.y + 'px';
+    });
+
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// --- Captain Reveal Animation ---
+function createParticles(container, count, colors) {
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'reveal-particle';
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 80 + Math.random() * 200;
+    const dx = Math.cos(angle) * distance;
+    const dy = Math.sin(angle) * distance;
+    const size = 3 + Math.random() * 6;
+    p.style.cssText = `
+      left: 50%; top: 50%;
+      width: ${size}px; height: ${size}px;
+      background: ${color};
+      box-shadow: 0 0 ${size * 2}px ${color};
+      animation: particleBurst${i} ${0.6 + Math.random() * 0.8}s ease-out ${Math.random() * 0.2}s forwards;
+    `;
+    const keyframes = `@keyframes particleBurst${i} {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0); }
+      20% { opacity: 1; }
+      100% { opacity: 0; transform: translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(1); }
+    }`;
+    const style = document.createElement('style');
+    style.textContent = keyframes;
+    document.head.appendChild(style);
+    container.appendChild(p);
+  }
+}
+
+function startCaptainReveal(captain1, captain2, totalVotes) {
+  // Remove any existing overlay
+  document.querySelector('.reveal-overlay')?.remove();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'reveal-overlay';
+
+  overlay.innerHTML = `
+    <!-- Stage 1: Captain 2 / Team Blue (runner up) -->
+    <div class="reveal-stage" id="reveal-stage-1">
+      <div class="reveal-spotlight" style="background: radial-gradient(circle, rgba(36,113,163,0.2) 0%, transparent 70%);"></div>
+      <div class="reveal-particles" id="particles-1"></div>
+      <div class="reveal-label" style="animation-delay: 0.3s; color: var(--blue-light);">TEAM BLUE CAPTAIN</div>
+      <div class="reveal-captain-name" style="animation-delay: 0.8s; text-shadow: 0 0 40px rgba(36,113,163,0.5), 0 0 80px rgba(36,113,163,0.2);">
+        <span class="emoji" style="filter: drop-shadow(0 0 20px rgba(36,113,163,0.6));">🔵</span>
+        ${captain2[0]}
+      </div>
+      <div class="reveal-votes-badge">${captain2[1]} votes</div>
+    </div>
+
+    <!-- Stage 2: Captain 1 / Team Red (leader) -->
+    <div class="reveal-stage" id="reveal-stage-2">
+      <div class="reveal-spotlight" style="background: radial-gradient(circle, rgba(192,57,43,0.2) 0%, transparent 70%);"></div>
+      <div class="reveal-particles" id="particles-2"></div>
+      <div class="reveal-label" style="animation-delay: 0.3s; color: var(--red-light);">TEAM RED CAPTAIN</div>
+      <div class="reveal-captain-name" style="animation-delay: 0.8s; text-shadow: 0 0 40px rgba(192,57,43,0.5), 0 0 80px rgba(192,57,43,0.2);">
+        <span class="emoji" style="filter: drop-shadow(0 0 20px rgba(192,57,43,0.6));">🔴</span>
+        ${captain1[0]}
+      </div>
+      <div class="reveal-votes-badge">${captain1[1]} votes</div>
+    </div>
+
+    <!-- Stage 3: Face-off -->
+    <div class="reveal-stage" id="reveal-stage-3">
+      <div class="faceoff-stage">
+        <div class="faceoff-bg"></div>
+        <div class="faceoff-slash"></div>
+        <div class="faceoff-side left">
+          <div class="faceoff-team-label">TEAM RED</div>
+          <div class="faceoff-emoji">🔴</div>
+          <div class="faceoff-name">${captain1[0]}</div>
+          <div class="faceoff-votes">${captain1[1]} votes</div>
+        </div>
+        <div class="faceoff-side right">
+          <div class="faceoff-team-label">TEAM BLUE</div>
+          <div class="faceoff-emoji">🔵</div>
+          <div class="faceoff-name">${captain2[0]}</div>
+          <div class="faceoff-votes">${captain2[1]} votes</div>
+        </div>
+        <div class="faceoff-vs"><span>VS</span></div>
+        <div class="faceoff-subtitle"><span>THE DRAFT BEGINS</span></div>
+      </div>
+      <button class="reveal-close-btn" id="reveal-close-btn">TAP TO CLOSE</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  // Activate overlay
+  requestAnimationFrame(() => {
+    overlay.classList.add('active');
+  });
+
+  const blueColors = ['#2471a3', '#3498db', '#85c1e9', '#d4e6f1', '#fff'];
+  const redColors = ['#c0392b', '#e74c3c', '#f1948a', '#fadbd8', '#fff'];
+
+  // Stage 1: Captain 2 (Team Blue) reveal
+  setTimeout(() => {
+    document.getElementById('reveal-stage-1').classList.add('visible');
+    setTimeout(() => createParticles(document.getElementById('particles-1'), 40, blueColors), 800);
+  }, 400);
+
+  // Stage 2: Captain 1 (Team Red) reveal
+  setTimeout(() => {
+    document.getElementById('reveal-stage-1').classList.remove('visible');
+    document.getElementById('reveal-stage-2').classList.add('visible');
+    setTimeout(() => createParticles(document.getElementById('particles-2'), 60, redColors), 800);
+  }, 3800);
+
+  // Stage 3: Face-off
+  setTimeout(() => {
+    document.getElementById('reveal-stage-2').classList.remove('visible');
+    document.getElementById('reveal-stage-3').classList.add('visible');
+  }, 7200);
+
+  // Close button — after close, update the ryder bar and draft pills
+  setTimeout(() => {
+    document.getElementById('reveal-close-btn')?.addEventListener('click', () => {
+      overlay.classList.remove('active');
+      setTimeout(() => overlay.remove(), 600);
+      applyCaptainReveals(captain1[0], captain2[0]);
+    });
+  }, 7400);
+}
+
+function applyCaptainReveals(redCaptain, blueCaptain) {
+  // Update ryder bar header with captain names
+  const redLabel = document.querySelector('.ryder-header .team-red');
+  const blueLabel = document.querySelector('.ryder-header .team-blue');
+  if (redLabel) redLabel.innerHTML = `Team Red<br><span style="font-size:0.75rem;font-weight:600;opacity:0.85;">Capt. ${redCaptain}</span>`;
+  if (blueLabel) blueLabel.innerHTML = `Team Blue<br><span style="font-size:0.75rem;font-weight:600;opacity:0.85;">Capt. ${blueCaptain}</span>`;
+
+  // Restructure each draft-players section: captains on top, players below
+  document.querySelectorAll('.draft-players').forEach(container => {
+    const redPill = container.querySelector(`[data-draft-name="${redCaptain}"]`);
+    const bluePill = container.querySelector(`[data-draft-name="${blueCaptain}"]`);
+    if (!redPill && !bluePill) return;
+
+    // Build captain row
+    const captainRow = document.createElement('div');
+    captainRow.className = 'draft-captains-row';
+
+    if (redPill) {
+      redPill.remove();
+      captainRow.innerHTML += `<span class="draft-captain-pill red">${redCaptain} <span class="captain-badge">C</span></span>`;
+    }
+    if (bluePill) {
+      bluePill.remove();
+      captainRow.innerHTML += `<span class="draft-captain-pill blue">${blueCaptain} <span class="captain-badge">C</span></span>`;
+    }
+
+    // Insert captain row before remaining pills
+    container.parentNode.insertBefore(captainRow, container);
+  });
+
+  // Switch countdown banner to show the Draft with a live countdown
+  const banner = document.getElementById('countdown-banner');
+  if (banner) {
+    banner.querySelector('.label').textContent = 'Next Up';
+    document.getElementById('countdown-event').textContent = 'The Draft';
+
+    // Find the draft event date
+    const draftEvt = schedule.find(e => e.draft === 1);
+    const draftDate = draftEvt ? draftEvt.date : new Date(2026, 4, 29, 14, 0);
+
+    const otherPlayers = draftRound1.filter(n => n !== redCaptain && n !== blueCaptain);
+    const playersHtml = `<div class="draft-players" style="justify-content:center;margin-top:0.4rem;">
+      ${otherPlayers.map(n => `<span class="draft-pill round1" style="background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.25);">${n}</span>`).join('')}
+    </div>`;
+
+    function updateDraftCountdown() {
+      const now = new Date();
+      const diff = draftDate - now;
+      const countdownEl = document.getElementById('countdown-units');
+      if (diff <= 0) {
+        countdownEl.innerHTML = `
+          <div style="width:100%; text-align:center;">
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;">Draft is LIVE!</div>
+            <div class="draft-captains-row" style="margin-bottom:0.3rem;">
+              <span class="draft-captain-pill red">${redCaptain} <span class="captain-badge">C</span></span>
+              <span style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;">VS</span>
+              <span class="draft-captain-pill blue">${blueCaptain} <span class="captain-badge">C</span></span>
+            </div>
+            ${playersHtml}
+          </div>
+        `;
+        return;
+      }
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+
+      countdownEl.innerHTML = `
+        <div style="width:100%; text-align:center;">
+          <div class="countdown-units" style="display:flex;justify-content:center;gap:1.25rem;margin-bottom:0.5rem;">
+            <div class="countdown-unit"><span class="number">${days}</span><span class="unit-label">Days</span></div>
+            <div class="countdown-unit"><span class="number">${hours}</span><span class="unit-label">Hrs</span></div>
+            <div class="countdown-unit"><span class="number">${minutes}</span><span class="unit-label">Min</span></div>
+            <div class="countdown-unit"><span class="number">${seconds}</span><span class="unit-label">Sec</span></div>
+          </div>
+          <div class="draft-captains-row" style="margin-bottom:0.3rem;">
+            <span class="draft-captain-pill red">${redCaptain} <span class="captain-badge">C</span></span>
+            <span style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;">VS</span>
+            <span class="draft-captain-pill blue">${blueCaptain} <span class="captain-badge">C</span></span>
+          </div>
+          ${playersHtml}
+        </div>
+      `;
+    }
+    updateDraftCountdown();
+    setInterval(updateDraftCountdown, 1000);
+
+    // Prevent updateCountdown from overwriting
+    window._captainRevealData = null;
+    window._bannerLocked = true;
+  }
+
+  // Hide the draft schedule card since the banner now covers it
+  document.querySelectorAll('.schedule-card').forEach(card => {
+    if (card.querySelector('.sched-name')?.textContent === 'The Draft') {
+      card.style.display = 'none';
+    }
+  });
+}
 </script>
 
 </body>
