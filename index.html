@@ -118,6 +118,11 @@
       color: var(--green-dark);
     }
 
+    .nav-tab.nav-tab-disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
     .tab-content {
       display: none;
     }
@@ -1968,7 +1973,7 @@
     <span class="nav-icon">&#128200;</span>
     <span class="nav-label">Scouting</span>
   </button>
-  <button class="nav-tab" data-tab="vote" id="vote-nav-tab">
+  <button class="nav-tab nav-tab-disabled" data-tab="vote" id="vote-nav-tab" disabled>
     <span class="nav-icon">&#127937;</span>
     <span class="nav-label">Vote</span>
   </button>
@@ -3316,12 +3321,9 @@ function renderVoteResults(votes, forceReveal) {
     list.innerHTML = `
       <div class="vote-voters-label">Voted so far</div>
       <div class="vote-voters-list">${voterNames}</div>
-      <div class="vote-voters-label" style="margin-top: 0.75rem;">Nominees</div>
-      <div class="nominee-grid" id="vote-nominee-grid">
-        ${sneakNomineeNames.map((name, i) => `<span class="nominee-pill" style="animation-delay: ${i * 0.1}s;">${name} <span class="np-q">?</span></span>`).join('')}
-      </div>
+      <div class="vote-hidden-msg">Results revealed Friday May 22</div>
     `;
-    startNomineeDrift(document.getElementById('vote-nominee-grid'));
+    initBannerNomineePills(sneakNomineeNames);
     return;
   }
 
@@ -3675,6 +3677,33 @@ loadVotes();
 subscribeToVotes();
 
 // --- Nominee bouncing screensaver ---
+let bannerPillsInitialized = false;
+
+function initBannerNomineePills(names) {
+  if (bannerPillsInitialized || !names || names.length === 0) return;
+  if (new Date() >= RESULTS_REVEAL_DATE) return;
+  const banner = document.getElementById('countdown-banner');
+  if (!banner) return;
+
+  const grid = document.createElement('div');
+  grid.className = 'nominee-grid';
+  grid.id = 'banner-nominee-grid';
+  grid.style.marginTop = '0.5rem';
+  grid.style.marginBottom = '0';
+
+  names.forEach((name, i) => {
+    const pill = document.createElement('span');
+    pill.className = 'nominee-pill banner-pill';
+    pill.style.animationDelay = `${0.3 + i * 0.1}s`;
+    pill.innerHTML = `${name} <span class="np-q">?</span>`;
+    grid.appendChild(pill);
+  });
+
+  banner.appendChild(grid);
+  startNomineeDrift(grid);
+  bannerPillsInitialized = true;
+}
+
 function startNomineeDrift(grid) {
   if (!grid) return;
   const pills = Array.from(grid.querySelectorAll('.nominee-pill'));
