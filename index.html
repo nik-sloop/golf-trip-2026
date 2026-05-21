@@ -3303,12 +3303,25 @@ function renderVoteResults(votes, forceReveal) {
   const voterNames = votes.map(v => v.voter).sort().join(', ');
   const resultsHidden = !forceReveal && new Date() < RESULTS_REVEAL_DATE;
 
+  // Compute nominees for sneak peek (needed in both hidden and revealed states)
+  const sneakTally = {};
+  votes.forEach(v => {
+    [v.nominee1, v.nominee2].forEach(name => {
+      sneakTally[name] = (sneakTally[name] || 0) + 1;
+    });
+  });
+  const sneakNomineeNames = Object.keys(sneakTally).sort();
+
   if (resultsHidden) {
     list.innerHTML = `
       <div class="vote-voters-label">Voted so far</div>
       <div class="vote-voters-list">${voterNames}</div>
-      <div class="vote-hidden-msg">Results revealed Friday May 22</div>
+      <div class="vote-voters-label" style="margin-top: 0.75rem;">Nominees</div>
+      <div class="nominee-grid" id="vote-nominee-grid">
+        ${sneakNomineeNames.map((name, i) => `<span class="nominee-pill" style="animation-delay: ${i * 0.1}s;">${name} <span class="np-q">?</span></span>`).join('')}
+      </div>
     `;
+    startNomineeDrift(document.getElementById('vote-nominee-grid'));
     return;
   }
 
