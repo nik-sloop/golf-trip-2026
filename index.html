@@ -2020,6 +2020,9 @@ let currentVoteCount = 0;
 const RUNOFF_VOTER_KEY = 'captain_runoff_voter_2026';
 const RUNOFF_NOMINEE_KEY = 'captain_runoff_nominee_2026';
 let runoffActive = false;
+const RUNOFF2_VOTER_KEY = 'captain_runoff2_voter_2026';
+const RUNOFF2_NOMINEE_KEY = 'captain_runoff2_nominee_2026';
+let runoff2Active = false;
 
 function showVoteTabForRunoff() {
   document.getElementById('tab-vote').style.display = '';
@@ -2231,6 +2234,7 @@ function updateCountdown() {
   if (window._bannerLocked) return;
   if (revealReady && window._captainRevealData) return;
   if (runoffActive && window._runoffData) return;
+  if (runoff2Active && window._runoff2Data) return;
 
   // During voting window show captain vote status instead of next event
   if (now < RESULTS_REVEAL_DATE && !IS_LOCAL_PREVIEW) {
@@ -3541,6 +3545,12 @@ const MOCK_RUNOFF_VOTES = [
   // { voter: "Ant", nominee: "Shane" },
 ];
 
+// Mock second runoff votes (only used if first runoff ties)
+const MOCK_RUNOFF2_VOTES = [
+  // { voter: "Nik", nominee: "Shane" },
+  // { voter: "Dan", nominee: "Jon" },
+];
+
 async function loadVotes() {
   // On localhost, use mock data to preview results
   if (IS_LOCAL_PREVIEW) {
@@ -3610,6 +3620,276 @@ function subscribeToRunoffVotes() {
     .subscribe();
 }
 
+function activateRunoff2Phase() {
+  showVoteTabForRunoff();
+  renderRunoff2Form();
+  loadRunoff2Votes();
+  subscribeToRunoff2Votes();
+  renderScheduleBannerRunoff2();
+
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector('[data-tab="vote"]')?.classList.add('active');
+  document.getElementById('tab-vote')?.classList.add('active');
+}
+
+function renderRunoff2Form() {
+  const data = window._runoff2Data;
+  if (!data) return;
+
+  const inner = document.getElementById('vote-form-inner');
+  if (!inner) return;
+
+  const savedVoter = localStorage.getItem(RUNOFF2_VOTER_KEY);
+  const savedNominee = localStorage.getItem(RUNOFF2_NOMINEE_KEY);
+  if (savedVoter && savedNominee) {
+    showAlreadyVotedRunoff2(savedVoter, savedNominee);
+    return;
+  }
+
+  const allVoters = [...draftRound1, ...draftRound2].map(n => n.replace(/\s*[^\x00-\x7F]+/g, '').trim());
+  const excluded = [data.confirmedCaptain, ...data.tiedCandidates];
+  const eligibleVoters = allVoters.filter(n => !excluded.includes(n));
+
+  inner.innerHTML = `
+    <div class="runoff-confirmed">
+      <div class="rc-label">Team Red Captain (Confirmed)</div>
+      <div class="rc-name">\u{1F534} ${data.confirmedCaptain}</div>
+    </div>
+    <div class="runoff-tied-label">Second Runoff — Team Blue Captain</div>
+    <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+      ${data.tiedCandidates.map((name, i) => `<span class="nominee-pill" style="position:static;animation:none;">${name}</span>${i < data.tiedCandidates.length - 1 ? '<span class="runoff-banner-vs">vs</span>' : ''}`).join('')}
+    </div>
+    <select class="vote-select" id="runoff2-voter-select"><option value="">Select your name...</option></select>
+    <div class="runoff-tied-label" style="margin-top:0.75rem;color:rgba(255,255,255,0.5);font-size:0.75rem;">Pick one for Blue Captain (second runoff)</div>
+    <div class="runoff-candidate-grid" id="runoff2-candidate-grid">
+      ${data.tiedCandidates.map(name => `<div class="runoff-candidate-card" data-candidate="${name}">${name}</div>`).join('')}
+    </div>
+    <button class="vote-submit-btn" id="runoff2-submit-btn" disabled>Cast Second Runoff Vote</button>
+  `;
+
+  const voterSelect = document.getElementById('runoff2-voter-select');
+  eligibleVoters.forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name; opt.textContent = name;
+    voterSelect.appendChild(opt);
+  });
+
+  let selectedCandidate = null;
+  const cards = document.querySelectorAll('#runoff2-candidate-grid .runoff-candidate-card');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedCandidate = card.dataset.candidate;
+      updateRunoff2SubmitState();
+    });
+  });
+
+  const submitBtn = document.getElementById('runoff2-submit-btn');
+  function updateRunoff2SubmitState() {
+    submitBtn.disabled = !voterSelect.value || !selectedCandidate;
+  }
+  voterSelect.addEventListener('change', updateRunoff2SubmitState);
+
+  submitBtn.addEventListener('click', async () => {
+    const voter = voterSelect.value;
+    if (!voter || !selectedCandidate) return;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    try {
+      if (supabaseConfigured && supabaseClient) {
+        const { error } = await supabaseClient
+          .from('captain_runoff2_votes')
+          .upsert({ voter, nominee: selectedCandidate }, { onConflict: 'voter' });
+        if (error) throw error;
+      }
+      localStorage.setItem(RUNOFF2_VOTER_KEY, voter);
+      localStorage.setItem(RUNOFF2_NOMINEE_KEY, selectedCandidate);
+      showAlreadyVotedRunoff2(voter, selectedCandidate);
+      loadRunoff2Votes();
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Cast Second Runoff Vote';
+      alert('Error submitting second runoff vote. Please try again.');
+      console.error(err);
+    }
+  });
+}
+
+function showAlreadyVotedRunoff2(voter, nominee) {
+  const inner = document.getElementById('vote-form-inner');
+  if (!inner) return;
+  const data = window._runoff2Data;
+
+  inner.innerHTML = `
+    <div class="runoff-confirmed">
+      <div class="rc-label">Team Red Captain (Confirmed)</div>
+      <div class="rc-name">\u{1F534} ${data ? data.confirmedCaptain : '?'}</div>
+    </div>
+    <div class="vote-already">
+      <div class="va-label">Your second runoff pick</div>
+      <div class="va-name">${nominee}</div>
+    </div>
+    <button class="vote-change-btn" id="runoff2-change-btn">Change second runoff vote</button>
+    <div id="runoff2-tally-container"></div>
+  `;
+
+  document.getElementById('runoff2-change-btn').addEventListener('click', () => {
+    localStorage.removeItem(RUNOFF2_VOTER_KEY);
+    localStorage.removeItem(RUNOFF2_NOMINEE_KEY);
+    renderRunoff2Form();
+  });
+
+  loadRunoff2Votes();
+}
+
+function renderRunoff2Results(runoffVotes) {
+  const data = window._runoff2Data;
+  if (!data) return;
+
+  const container = document.getElementById('runoff2-tally-container');
+  if (!container) return;
+
+  if (!runoffVotes || runoffVotes.length === 0) {
+    container.innerHTML = '<div style="text-align:center;font-size:0.8rem;color:rgba(255,255,255,0.4);margin-top:0.75rem;">No second runoff votes yet</div>';
+    return;
+  }
+
+  const runoffTally = {};
+  data.tiedCandidates.forEach(name => { runoffTally[name] = 0; });
+  runoffVotes.forEach(v => {
+    if (runoffTally[v.nominee] !== undefined) runoffTally[v.nominee]++;
+  });
+
+  const totalRunoffVotes = runoffVotes.length;
+  const candidates = Object.entries(runoffTally).sort((a, b) => b[1] - a[1]);
+
+  let barHtml = '<div class="runoff-progress"><div class="runoff-tally-bar">';
+  candidates.forEach(([name, count], i) => {
+    const pct = totalRunoffVotes > 0 ? (count / totalRunoffVotes) * 100 : 0;
+    barHtml += `<div class="runoff-tally-segment seg-${i}" style="width:${pct}%;">${count > 0 ? name + ' ' + count : ''}</div>`;
+  });
+  barHtml += '</div><div class="runoff-tally-labels">';
+  candidates.forEach(([name, count]) => {
+    barHtml += `<span>${name}: ${count}</span>`;
+  });
+  barHtml += '</div></div>';
+
+  const allVoters = [...draftRound1, ...draftRound2].map(n => n.replace(/\s*[^\x00-\x7F]+/g, '').trim());
+  const excluded = [data.confirmedCaptain, ...data.tiedCandidates];
+  const eligibleCount = allVoters.filter(n => !excluded.includes(n)).length;
+
+  const maxVotes = candidates[0][1];
+  const topCandidates = candidates.filter(([, count]) => count === maxVotes);
+  let winnerEntry = null;
+  let winnerMsg = '';
+
+  if (totalRunoffVotes >= eligibleCount && topCandidates.length === 1 && maxVotes > 0) {
+    winnerEntry = [topCandidates[0][0], topCandidates[0][1]];
+    winnerMsg = `${winnerEntry[0]} wins the second runoff!`;
+  } else if (totalRunoffVotes >= eligibleCount && topCandidates.length > 1) {
+    // Absolute final tiebreaker — use original nominee1 tallyfrom the first vote
+    const sorted = topCandidates.sort((a, b) => (data.nominee1Tally[b[0]] || 0) - (data.nominee1Tally[a[0]] || 0));
+    winnerEntry = [sorted[0][0], sorted[0][1]];
+    winnerMsg = `${winnerEntry[0]} wins by first-pick tiebreaker!`;
+  }
+
+  if (winnerEntry) {
+    barHtml += `<div class="runoff-winner-msg">${winnerMsg}</div>`;
+  } else if (totalRunoffVotes < eligibleCount) {
+    const remaining = eligibleCount - totalRunoffVotes;
+    barHtml += `<div style="text-align:center;font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.5rem;">${totalRunoffVotes} / ${eligibleCount} voted &mdash; ${remaining} more needed to reveal</div>`;
+  }
+
+  container.innerHTML = barHtml;
+
+  if (winnerEntry) {
+    const captain2 = [winnerEntry[0], winnerEntry[1]];
+    window._captainRevealData = {
+      captain1: data.confirmedCaptainEntry,
+      captain2,
+      totalVotes: data.totalVotes,
+      nomineeNames: data.nomineeNames
+    };
+
+    if (!container.querySelector('.reveal-trigger-btn')) {
+      const revealBtn = document.createElement('button');
+      revealBtn.className = 'reveal-trigger-btn';
+      revealBtn.textContent = 'REVEAL CAPTAINS';
+      revealBtn.style.marginTop = '0.75rem';
+      revealBtn.addEventListener('click', () => startCaptainReveal(data.confirmedCaptainEntry, captain2, data.totalVotes));
+      container.appendChild(revealBtn);
+    }
+
+    runoff2Active = false;
+    hideVoteTab();
+    renderScheduleBannerReveal();
+  }
+}
+
+async function loadRunoff2Votes() {
+  if (!runoff2Active || !window._runoff2Data) return;
+
+  if (IS_LOCAL_PREVIEW) {
+    renderRunoff2Results(MOCK_RUNOFF2_VOTES);
+    return;
+  }
+
+  if (!supabaseConfigured || !supabaseClient) return;
+
+  const { data, error } = await supabaseClient
+    .from('captain_runoff2_votes')
+    .select('voter, nominee');
+
+  if (error) {
+    console.error('Runoff2 load error:', error);
+    return;
+  }
+
+  renderRunoff2Results(data || []);
+}
+
+function subscribeToRunoff2Votes() {
+  if (!supabaseConfigured || !supabaseClient) return;
+
+  supabaseClient
+    .channel('captain_runoff2_votes_changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'captain_runoff2_votes' }, () => {
+      loadRunoff2Votes();
+    })
+    .subscribe();
+}
+
+function renderScheduleBannerRunoff2() {
+  const data = window._runoff2Data;
+  if (!data) return;
+  const banner = document.getElementById('countdown-banner');
+  if (!banner) return;
+
+  const labelEl = banner.querySelector('.label');
+  const eventEl = document.getElementById('countdown-event');
+  const unitsEl = document.getElementById('countdown-units');
+  if (!labelEl || !eventEl || !unitsEl) return;
+
+  labelEl.textContent = 'Captain Vote';
+  eventEl.textContent = 'Second Runoff';
+
+  unitsEl.innerHTML = `
+    <div style="width:100%;text-align:center;">
+      <div style="font-size:0.8rem;margin-bottom:0.5rem;">
+        <span style="color:#e74c3c;font-weight:700;">\u{1F534} ${data.confirmedCaptain}</span>
+        <span style="color:rgba(255,255,255,0.4);font-size:0.7rem;margin:0 0.25rem;">confirmed Red</span>
+      </div>
+      <div style="display:flex;justify-content:center;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+        ${data.tiedCandidates.map((name, i) => `<span class="nominee-pill banner-pill" style="position:static;animation:none;">${name}</span>${i < data.tiedCandidates.length - 1 ? '<span class="runoff-banner-vs">vs</span>' : ''}`).join('')}
+      </div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.55);">Cast your second runoff vote on the Vote tab</div>
+    </div>
+  `;
+}
+
 function renderRunoffResults(runoffVotes) {
   const data = window._runoffData;
   if (!data) return;
@@ -3659,10 +3939,22 @@ function renderRunoffResults(runoffVotes) {
     winnerEntry = [topCandidates[0][0], topCandidates[0][1]];
     winnerMsg = `${winnerEntry[0]} wins the runoff!`;
   } else if (totalRunoffVotes >= eligibleCount && topCandidates.length > 1) {
-    // Runoff tied and all eligible voters have voted — nominee1 tiebreak
-    const sorted = topCandidates.sort((a, b) => (data.nominee1Tally[b[0]] || 0) - (data.nominee1Tally[a[0]] || 0));
-    winnerEntry = [sorted[0][0], sorted[0][1]];
-    winnerMsg = `${winnerEntry[0]} wins by first-pick tiebreaker!`;
+    // Runoff still tied after all votes — trigger a second runoff between these 2
+    const tied2Names = topCandidates.map(([name]) => name);
+    runoff2Active = true;
+    window._runoff2Data = {
+      confirmedCaptain: data.confirmedCaptain,
+      confirmedCaptainEntry: data.confirmedCaptainEntry,
+      tiedCandidates: tied2Names,
+      nominee1Tally: data.nominee1Tally,
+      nomineeNames: data.nomineeNames,
+      totalVotes: data.totalVotes
+    };
+    runoffActive = false;
+    window._captainRevealData = null;
+    container.innerHTML = barHtml + '<div class="runoff-winner-msg" style="color:#f39c12;">Still tied — a second runoff is needed!</div>';
+    setTimeout(activateRunoff2Phase, 2000);
+    return;
   }
 
   if (winnerEntry) {
