@@ -3473,13 +3473,19 @@ function renderScheduleBannerReveal() {
 
   unitsEl.innerHTML = `
     <div style="width:100%;">
+      ${data.runoff2Tally ? `
+        <div style="display:flex;justify-content:center;gap:1.5rem;margin-bottom:0.5rem;font-size:0.85rem;font-weight:600;">
+          ${data.runoff2Tally.map(([name, count]) => `<span style="color:rgba(255,255,255,0.9);">${name} <span style="color:#f1c40f;">${count}</span></span>`).join('<span style="color:rgba(255,255,255,0.3);margin:0 0.25rem;">–</span>')}
+        </div>
+      ` : `
       <div class="nominee-grid" id="banner-nominee-grid">
         ${data.nomineeNames.map((name, i) => `<span class="nominee-pill banner-pill" style="animation-delay: ${0.3 + i * 0.1}s;">${name} <span class="np-q">?</span></span>`).join('')}
       </div>
+      `}
       <button class="reveal-trigger-btn banner-btn" id="banner-reveal-btn">REVEAL CAPTAINS</button>
     </div>
   `;
-  startNomineeDrift(document.getElementById('banner-nominee-grid'));
+  if (!data.runoff2Tally) startNomineeDrift(document.getElementById('banner-nominee-grid'));
 
   document.getElementById('banner-reveal-btn')?.addEventListener('click', () => {
     startCaptainReveal(data.captain1, data.captain2, data.totalVotes);
@@ -3811,7 +3817,8 @@ function renderRunoff2Results(runoffVotes) {
       captain1: data.confirmedCaptainEntry,
       captain2,
       totalVotes: data.totalVotes,
-      nomineeNames: data.nomineeNames
+      nomineeNames: data.nomineeNames,
+      runoff2Tally: candidates
     };
 
     if (!container.querySelector('.reveal-trigger-btn')) {
