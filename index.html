@@ -3656,6 +3656,16 @@ function renderRunoff2Form() {
       <div class="rc-label">Team Red Captain (Confirmed)</div>
       <div class="rc-name">\u{1F534} ${data.confirmedCaptain}</div>
     </div>
+    ${data.firstRunoffResults ? `
+    <div class="runoff-tied-label" style="margin-top:0.5rem;">Round 1 Results</div>
+    <div class="runoff-progress" style="margin-bottom:0.75rem;">
+      <div class="runoff-tally-bar">
+        ${data.firstRunoffResults.map(([name, count], i) => { const total = data.firstRunoffResults.reduce((s,[,c])=>s+c,0); const pct = total>0?(count/total)*100:0; return `<div class="runoff-tally-segment seg-${i}" style="width:${pct}%;">${count>0?name+' '+count:''}</div>`; }).join('')}
+      </div>
+      <div class="runoff-tally-labels">
+        ${data.firstRunoffResults.map(([name, count]) => `<span>${name}: ${count}</span>`).join('')}
+      </div>
+    </div>` : ''}
     <div class="runoff-tied-label">Second Runoff — Team Blue Captain</div>
     <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
       ${data.tiedCandidates.map((name, i) => `<span class="nominee-pill" style="position:static;animation:none;">${name}</span>${i < data.tiedCandidates.length - 1 ? '<span class="runoff-banner-vs">vs</span>' : ''}`).join('')}
@@ -3728,6 +3738,16 @@ function showAlreadyVotedRunoff2(voter, nominee) {
       <div class="rc-label">Team Red Captain (Confirmed)</div>
       <div class="rc-name">\u{1F534} ${data ? data.confirmedCaptain : '?'}</div>
     </div>
+    ${data && data.firstRunoffResults ? `
+    <div class="runoff-tied-label" style="margin-top:0.5rem;">Round 1 Results</div>
+    <div class="runoff-progress" style="margin-bottom:0.75rem;">
+      <div class="runoff-tally-bar">
+        ${data.firstRunoffResults.map(([name, count], i) => { const total = data.firstRunoffResults.reduce((s,[,c])=>s+c,0); const pct = total>0?(count/total)*100:0; return `<div class="runoff-tally-segment seg-${i}" style="width:${pct}%;">${count>0?name+' '+count:''}</div>`; }).join('')}
+      </div>
+      <div class="runoff-tally-labels">
+        ${data.firstRunoffResults.map(([name, count]) => `<span>${name}: ${count}</span>`).join('')}
+      </div>
+    </div>` : ''}
     <div class="vote-already">
       <div class="va-label">Your second runoff pick</div>
       <div class="va-name">${nominee}</div>
@@ -3948,7 +3968,8 @@ function renderRunoffResults(runoffVotes) {
       tiedCandidates: tied2Names,
       nominee1Tally: data.nominee1Tally,
       nomineeNames: data.nomineeNames,
-      totalVotes: data.totalVotes
+      totalVotes: data.totalVotes,
+      firstRunoffResults: candidates
     };
     runoffActive = false;
     window._captainRevealData = null;
