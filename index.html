@@ -4002,6 +4002,9 @@ initVoteTab();
 loadVotes();
 subscribeToVotes();
 
+// Captains are confirmed — apply immediately on every page load
+applyCaptainReveals('Nik', 'Dan');
+
 // --- Nominee bouncing screensaver ---
 let bannerPillsInitialized = false;
 
