@@ -3473,19 +3473,13 @@ function renderScheduleBannerReveal() {
 
   unitsEl.innerHTML = `
     <div style="width:100%;">
-      ${data.runoff2Tally ? `
-        <div style="display:flex;justify-content:center;gap:1.5rem;margin-bottom:0.5rem;font-size:0.85rem;font-weight:600;">
-          ${data.runoff2Tally.map(([name, count]) => `<span style="color:rgba(255,255,255,0.9);">${name} <span style="color:#f1c40f;">${count}</span></span>`).join('<span style="color:rgba(255,255,255,0.3);margin:0 0.25rem;">–</span>')}
-        </div>
-      ` : `
       <div class="nominee-grid" id="banner-nominee-grid">
         ${data.nomineeNames.map((name, i) => `<span class="nominee-pill banner-pill" style="animation-delay: ${0.3 + i * 0.1}s;">${name} <span class="np-q">?</span></span>`).join('')}
       </div>
-      `}
       <button class="reveal-trigger-btn banner-btn" id="banner-reveal-btn">REVEAL CAPTAINS</button>
     </div>
   `;
-  if (!data.runoff2Tally) startNomineeDrift(document.getElementById('banner-nominee-grid'));
+  startNomineeDrift(document.getElementById('banner-nominee-grid'));
 
   document.getElementById('banner-reveal-btn')?.addEventListener('click', () => {
     startCaptainReveal(data.captain1, data.captain2, data.totalVotes);
@@ -4292,9 +4286,31 @@ function startCaptainReveal(captain1, captain2, totalVotes) {
   const overlay = document.createElement('div');
   overlay.className = 'reveal-overlay';
 
+  const runoff2Tally = window._captainRevealData?.runoff2Tally || null;
+  const stageOffset = runoff2Tally ? 1 : 0;
+
   overlay.innerHTML = `
-    <!-- Stage 1: Captain 2 / Team Blue (runner up) -->
+    ${runoff2Tally ? `
+    <!-- Stage 1: Runoff results -->
     <div class="reveal-stage" id="reveal-stage-1">
+      <div class="reveal-spotlight" style="background: radial-gradient(circle, rgba(241,196,15,0.15) 0%, transparent 70%);"></div>
+      <div class="reveal-particles" id="particles-0"></div>
+      <div class="reveal-label" style="animation-delay: 0.3s; color: #f1c40f;">RUNOFF RESULTS</div>
+      <div style="display:flex;gap:2.5rem;justify-content:center;align-items:flex-start;margin-top:1.5rem;flex-wrap:wrap;">
+        ${runoff2Tally.map(([name, count], i) => `
+          <div style="text-align:center;animation:revealFadeIn 0.6s ease-out ${0.8 + i * 0.35}s both;">
+            <div style="font-size:0.75rem;letter-spacing:0.12em;color:rgba(255,255,255,0.5);margin-bottom:0.4rem;">${i === 0 ? 'WINNER' : 'RUNNER UP'}</div>
+            <div class="reveal-captain-name" style="font-size:2rem;animation:none;">${name}</div>
+            <div class="reveal-votes-badge" style="margin-top:0.4rem;">${count} vote${count !== 1 ? 's' : ''}</div>
+          </div>
+          ${i === 0 ? `<div style="font-size:1.25rem;color:rgba(255,255,255,0.25);align-self:center;padding-top:1.5rem;">vs</div>` : ''}
+        `).join('')}
+      </div>
+    </div>
+    ` : ''}
+
+    <!-- Stage ${stageOffset + 1}: Captain 2 / Team Blue (runner up) -->
+    <div class="reveal-stage" id="reveal-stage-${stageOffset + 1}">
       <div class="reveal-spotlight" style="background: radial-gradient(circle, rgba(36,113,163,0.2) 0%, transparent 70%);"></div>
       <div class="reveal-particles" id="particles-1"></div>
       <div class="reveal-label" style="animation-delay: 0.3s; color: var(--blue-light);">TEAM BLUE CAPTAIN</div>
@@ -4305,8 +4321,8 @@ function startCaptainReveal(captain1, captain2, totalVotes) {
       <div class="reveal-votes-badge">${captain2[1]} votes</div>
     </div>
 
-    <!-- Stage 2: Captain 1 / Team Red (leader) -->
-    <div class="reveal-stage" id="reveal-stage-2">
+    <!-- Stage ${stageOffset + 2}: Captain 1 / Team Red (leader) -->
+    <div class="reveal-stage" id="reveal-stage-${stageOffset + 2}">
       <div class="reveal-spotlight" style="background: radial-gradient(circle, rgba(192,57,43,0.2) 0%, transparent 70%);"></div>
       <div class="reveal-particles" id="particles-2"></div>
       <div class="reveal-label" style="animation-delay: 0.3s; color: var(--red-light);">TEAM RED CAPTAIN</div>
@@ -4317,8 +4333,8 @@ function startCaptainReveal(captain1, captain2, totalVotes) {
       <div class="reveal-votes-badge">${captain1[1]} votes</div>
     </div>
 
-    <!-- Stage 3: Face-off -->
-    <div class="reveal-stage" id="reveal-stage-3">
+    <!-- Stage ${stageOffset + 3}: Face-off -->
+    <div class="reveal-stage" id="reveal-stage-${stageOffset + 3}">
       <div class="faceoff-stage">
         <div class="faceoff-bg"></div>
         <div class="faceoff-slash"></div>
@@ -4350,25 +4366,36 @@ function startCaptainReveal(captain1, captain2, totalVotes) {
 
   const blueColors = ['#2471a3', '#3498db', '#85c1e9', '#d4e6f1', '#fff'];
   const redColors = ['#c0392b', '#e74c3c', '#f1948a', '#fadbd8', '#fff'];
+  const yellowColors = ['#f1c40f', '#f39c12', '#fdebd0', '#fff'];
+  const t = stageOffset * 3400; // extra time when runoff stage is prepended
 
-  // Stage 1: Captain 2 (Team Blue) reveal
+  if (runoff2Tally) {
+    // Stage 1: Runoff results
+    setTimeout(() => {
+      document.getElementById('reveal-stage-1').classList.add('visible');
+      setTimeout(() => createParticles(document.getElementById('particles-0'), 40, yellowColors), 800);
+    }, 400);
+  }
+
+  // Stage (offset+1): Captain 2 (Team Blue) reveal
   setTimeout(() => {
-    document.getElementById('reveal-stage-1').classList.add('visible');
+    if (runoff2Tally) document.getElementById('reveal-stage-1').classList.remove('visible');
+    document.getElementById(`reveal-stage-${stageOffset + 1}`).classList.add('visible');
     setTimeout(() => createParticles(document.getElementById('particles-1'), 40, blueColors), 800);
-  }, 400);
+  }, 400 + t);
 
-  // Stage 2: Captain 1 (Team Red) reveal
+  // Stage (offset+2): Captain 1 (Team Red) reveal
   setTimeout(() => {
-    document.getElementById('reveal-stage-1').classList.remove('visible');
-    document.getElementById('reveal-stage-2').classList.add('visible');
+    document.getElementById(`reveal-stage-${stageOffset + 1}`).classList.remove('visible');
+    document.getElementById(`reveal-stage-${stageOffset + 2}`).classList.add('visible');
     setTimeout(() => createParticles(document.getElementById('particles-2'), 60, redColors), 800);
-  }, 3800);
+  }, 3800 + t);
 
-  // Stage 3: Face-off
+  // Stage (offset+3): Face-off
   setTimeout(() => {
-    document.getElementById('reveal-stage-2').classList.remove('visible');
-    document.getElementById('reveal-stage-3').classList.add('visible');
-  }, 7200);
+    document.getElementById(`reveal-stage-${stageOffset + 2}`).classList.remove('visible');
+    document.getElementById(`reveal-stage-${stageOffset + 3}`).classList.add('visible');
+  }, 7200 + t);
 
   // Close button — after close, update the ryder bar and draft pills
   setTimeout(() => {
@@ -4377,7 +4404,7 @@ function startCaptainReveal(captain1, captain2, totalVotes) {
       setTimeout(() => overlay.remove(), 600);
       applyCaptainReveals(captain1[0], captain2[0]);
     });
-  }, 7400);
+  }, 7400 + t);
 }
 
 function applyCaptainReveals(redCaptain, blueCaptain) {
