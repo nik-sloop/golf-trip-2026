@@ -446,37 +446,33 @@
     vertical-align: middle;
   }
 
-  /* ---- Player Roster (schedule cards + countdown) ---- */
-  .draft-roster { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.5rem; }
+  /* ---- Player Roster (draft tab captain mode) ---- */
+  .draft-roster { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.25rem 1rem 0.75rem; }
   .roster-player-row {
     display: flex; flex-direction: column;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 8px; overflow: hidden; cursor: pointer;
+    background: white; border: 1px solid var(--gray-200);
+    border-radius: 10px; overflow: hidden; cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    -webkit-tap-highlight-color: transparent;
   }
-  .roster-row-main {
-    display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.6rem; flex-wrap: wrap;
-  }
-  .roster-player-name { font-size: 0.9rem; font-weight: 700; flex: 1; min-width: 60px; color: #fff; }
-  .roster-chip {
-    font-size: 0.65rem; font-weight: 600;
-    padding: 0.12rem 0.4rem; border-radius: 5px;
-    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.65); white-space: nowrap;
-  }
-  .roster-chevron { font-size: 0.65rem; color: rgba(255,255,255,0.3); margin-left: auto; transition: transform 0.15s; flex-shrink: 0; }
+  .roster-player-row.expanded { border-color: var(--green-light); }
+  .roster-row-main { display: flex; align-items: center; gap: 0.4rem; padding: 0.6rem 0.75rem; flex-wrap: wrap; }
+  .roster-player-name { font-size: 0.95rem; font-weight: 700; flex: 1; min-width: 60px; color: var(--gray-800); }
+  .roster-chip { font-size: 0.65rem; font-weight: 600; padding: 0.12rem 0.4rem; border-radius: 5px; background: var(--sand); color: var(--green-dark); white-space: nowrap; }
+  .roster-chevron { font-size: 0.65rem; color: var(--gray-500); margin-left: auto; transition: transform 0.15s; flex-shrink: 0; }
   .roster-player-row.expanded .roster-chevron { transform: rotate(90deg); }
-  .roster-row-detail { display: none; padding: 0 0.6rem 0.6rem; border-top: 1px solid rgba(255,255,255,0.07); }
+  .roster-row-detail { display: none; padding: 0 0.75rem 0.75rem; border-top: 1px solid var(--gray-200); }
   .roster-player-row.expanded .roster-row-detail { display: block; }
   .roster-round-table { width: 100%; border-collapse: collapse; font-size: 0.73rem; margin: 0.4rem 0 0.5rem; }
-  .roster-round-table th { color: rgba(255,255,255,0.4); font-weight: 600; padding: 0.2rem 0.35rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.07); }
-  .roster-round-table td { padding: 0.2rem 0.35rem; color: rgba(255,255,255,0.85); }
+  .roster-round-table th { color: var(--gray-500); font-weight: 600; padding: 0.2rem 0.35rem; text-align: left; border-bottom: 1px solid var(--gray-200); }
+  .roster-round-table td { padding: 0.2rem 0.35rem; color: var(--gray-800); }
   .roster-scout-section { margin-top: 0.3rem; }
   .roster-scout-row { display: flex; align-items: center; gap: 0.4rem; margin: 0.25rem 0; font-size: 0.7rem; }
-  .roster-scout-label { width: 52px; color: rgba(255,255,255,0.45); flex-shrink: 0; }
-  .roster-scout-bar { flex: 1; height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; position: relative; }
-  .roster-scout-fill { position: absolute; top: 0; height: 100%; border-radius: 3px; background: linear-gradient(90deg,rgba(74,144,226,0.55),rgba(74,214,162,0.75)); }
-  .roster-scout-marker { position: absolute; top: -3px; width: 2px; height: 11px; background: #fff; border-radius: 1px; transform: translateX(-50%); }
-  .roster-scout-val { width: 20px; text-align: right; color: rgba(255,255,255,0.65); flex-shrink: 0; }
+  .roster-scout-label { width: 52px; color: var(--gray-500); flex-shrink: 0; }
+  .roster-scout-bar { flex: 1; height: 5px; background: var(--gray-200); border-radius: 3px; position: relative; }
+  .roster-scout-fill { position: absolute; top: 0; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--blue-light), var(--green-light)); }
+  .roster-scout-marker { position: absolute; top: -3px; width: 2px; height: 11px; background: var(--green-dark); border-radius: 1px; transform: translateX(-50%); }
+  .roster-scout-val { width: 20px; text-align: right; color: var(--gray-800); flex-shrink: 0; }
 
   /* ---- Player Grid ---- */
   .player-grid {
@@ -1916,17 +1912,18 @@
     font-weight: 700;
     margin: 0 0.25rem;
   }
-  /* ---- Draft tab: always full-screen dark overlay when active ---- */
+  /* ---- Draft tab: full-screen overlay, light theme to match app ---- */
   #tab-draft.active {
     display: block !important;
     position: fixed;
     inset: 0;
     overflow-y: auto;
-    background: #0d0d18;
+    background: var(--gray-100);
+    color: var(--gray-800);
     z-index: 50;
   }
 
-  /* ---- Draft Display Mode (body class applied when laptop/TV) ---- */
+  /* ---- Draft Display Mode (TV/laptop) — keeps dark theme intentionally ---- */
   body.draft-display-active .container,
   body.draft-display-active #bottom-nav,
   body.draft-display-active #countdown-banner { display: none !important; }
@@ -1936,26 +1933,27 @@
     inset: 0;
     overflow-y: auto;
     background: #0d0d18;
+    color: #fff;
     z-index: 100;
   }
 
   /* ---- Draft mode selector ---- */
-  .dms-wrap { padding: 2.5rem 1.5rem; text-align: center; }
-  .dms-title { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 1.75rem; }
-  .dms-btns { display: flex; flex-direction: column; gap: 0.75rem; max-width: 300px; margin: 0 auto; }
+  .dms-wrap { padding: 2.5rem 1rem; text-align: center; max-width: 400px; margin: 0 auto; }
+  .dms-title { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 1.75rem; }
+  .dms-btns { display: flex; flex-direction: column; gap: 0.75rem; }
   .dms-btn {
     display: flex; align-items: center; gap: 0.75rem;
     padding: 0.9rem 1.25rem; border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06);
-    color: #fff; font-size: 0.95rem; font-weight: 700; cursor: pointer; text-align: left;
+    border: 1px solid var(--gray-200); background: white;
+    color: var(--gray-800); font-size: 0.95rem; font-weight: 700; cursor: pointer; text-align: left;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
   }
-  .dms-btn span { font-size: 0.68rem; font-weight: 400; color: rgba(255,255,255,0.4); display: block; margin-top: 0.1rem; }
+  .dms-btn span { font-size: 0.68rem; font-weight: 400; color: var(--gray-500); display: block; margin-top: 0.1rem; }
   .dms-btn .dms-icon { font-size: 1.4rem; flex-shrink: 0; }
-  .dms-btn.display { border-color: rgba(255,255,255,0.22); }
-  .dms-btn.red { border-color: rgba(231,76,60,0.45); }
-  .dms-btn.blue { border-color: rgba(52,152,219,0.45); }
+  .dms-btn.red { border-left: 4px solid var(--red); }
+  .dms-btn.blue { border-left: 4px solid var(--blue); }
 
-  /* ---- Draft display board (laptop/TV) ---- */
+  /* ---- Draft display board (laptop/TV — dark theme) ---- */
   .draft-clock {
     padding: 1.25rem 2rem 1rem; text-align: center;
     border-bottom: 1px solid rgba(255,255,255,0.07);
@@ -1965,143 +1963,49 @@
   .draft-clock-team.red { color: var(--red-light); }
   .draft-clock-team.blue { color: var(--blue-light); }
   .draft-clock-team.done { color: #f1c40f; }
-  .draft-board {
-    display: grid; grid-template-columns: 1fr 1.1fr 1fr;
-    gap: 1rem; padding: 1rem 1rem 0.5rem;
-  }
-  .ddb-col {
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 12px; padding: 0.75rem;
-  }
+  .draft-board { display: grid; grid-template-columns: 1fr 1.1fr 1fr; gap: 1rem; padding: 1rem 1rem 0.5rem; }
+  .ddb-col { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 0.75rem; }
   .ddb-col.ddb-red { border-color: rgba(231,76,60,0.2); }
   .ddb-col.ddb-blue { border-color: rgba(52,152,219,0.2); }
   .ddb-col.ddb-avail { border-color: rgba(241,196,15,0.15); }
-  .ddb-col-header {
-    font-size: 0.62rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
-    text-align: center; padding-bottom: 0.45rem; margin-bottom: 0.45rem;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-  }
+  .ddb-col-header { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; text-align: center; padding-bottom: 0.45rem; margin-bottom: 0.45rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
   .ddb-col-header.red { color: var(--red-light); }
   .ddb-col-header.blue { color: var(--blue-light); }
   .ddb-col-header.avail { color: rgba(241,196,15,0.75); }
-  .ddb-pick-item {
-    font-size: clamp(0.82rem, 1.8vw, 1.15rem); font-weight: 600;
-    color: rgba(255,255,255,0.85); padding: 0.28rem 0.2rem;
-    display: flex; align-items: center; gap: 0.4rem;
-  }
+  .ddb-pick-item { font-size: clamp(0.82rem, 1.8vw, 1.15rem); font-weight: 600; color: rgba(255,255,255,0.85); padding: 0.28rem 0.2rem; display: flex; align-items: center; gap: 0.4rem; }
   .ddb-pick-num { font-size: 0.55rem; color: rgba(255,255,255,0.22); min-width: 1.2rem; }
   .ddb-avail-item { font-size: clamp(0.78rem, 1.6vw, 1rem); color: rgba(255,255,255,0.55); padding: 0.22rem 0.2rem; }
   .ddb-empty { font-size: 0.72rem; color: rgba(255,255,255,0.2); padding: 0.25rem; }
 
-  /* ---- Captain waiting screen ---- */
-  .captain-waiting {
-    text-align: center; padding: 2rem 1.25rem;
-  }
-  .captain-waiting-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 0.5rem; }
-  .captain-waiting-team { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.3rem; }
-  .captain-waiting-team.red { color: var(--red-light); }
-  .captain-waiting-team.blue { color: var(--blue-light); }
+  /* ---- Captain mode (light theme) ---- */
   .draft-header {
-    background: linear-gradient(180deg, rgba(20,20,30,0.95), rgba(15,15,25,0.9));
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+    color: white;
     padding: 1rem 1.25rem 0.85rem;
     text-align: center;
   }
-  .draft-on-clock-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-    margin-bottom: 0.3rem;
-  }
-  .draft-on-clock-team {
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: 0.01em;
-  }
-  .draft-on-clock-team.red { color: var(--red-light); }
-  .draft-on-clock-team.blue { color: var(--blue-light); }
-  .draft-section-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
-    padding: 0.75rem 1.25rem 0.3rem;
-  }
-  .draft-available-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 0.5rem;
-    padding: 0 1rem 0.75rem;
-  }
-  .draft-player-card {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 0.65rem 0.4rem;
-    text-align: center;
-    cursor: pointer;
-    transition: background 0.12s, transform 0.1s;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .draft-player-card:active { transform: scale(0.93); background: rgba(255,255,255,0.13); }
-  .draft-player-card .dpc-name { font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.2rem; }
-  .draft-player-card .dpc-hcp { font-size: 0.62rem; color: rgba(255,255,255,0.4); }
-  .draft-player-card .dpc-overall { font-size: 0.72rem; font-weight: 700; color: #f1c40f; margin-top: 0.15rem; }
-  .draft-teams-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    padding: 0 1rem 5rem;
-  }
-  .draft-team-col {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px;
-    padding: 0.5rem;
-  }
-  .draft-team-col.red { border-color: rgba(231,76,60,0.3); }
-  .draft-team-col.blue { border-color: rgba(52,152,219,0.3); }
-  .draft-team-col-header {
-    font-size: 0.6rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-align: center;
-    padding-bottom: 0.3rem;
-    margin-bottom: 0.3rem;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-  }
-  .draft-team-col.red .draft-team-col-header { color: var(--red-light); }
-  .draft-team-col.blue .draft-team-col-header { color: var(--blue-light); }
-  .draft-pick-entry {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: rgba(255,255,255,0.85);
-    padding: 0.22rem 0.25rem;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-  }
-  .draft-pick-entry .dpe-num { font-size: 0.58rem; color: rgba(255,255,255,0.28); min-width: 1rem; }
-  .draft-admin-bar {
-    display: flex;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 0.4rem 1rem 0;
-  }
-  .draft-admin-btn {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 6px;
-    color: rgba(255,255,255,0.45);
-    font-size: 0.68rem;
-    font-weight: 600;
-    padding: 0.28rem 0.7rem;
-    cursor: pointer;
-    letter-spacing: 0.04em;
-  }
-  .draft-admin-btn:disabled { opacity: 0.3; cursor: default; }
+  .draft-on-clock-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-bottom: 0.3rem; }
+  .draft-on-clock-team { font-size: 1.5rem; font-weight: 800; color: white; }
+  .draft-on-clock-team.red { color: #ffb3ab; }
+  .draft-on-clock-team.blue { color: #a8d8f0; }
+  .draft-section-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green-dark); font-weight: 700; padding: 0.75rem 1rem 0.3rem; }
+  .captain-waiting { text-align: center; padding: 2rem 1.25rem; }
+  .captain-waiting-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 0.5rem; }
+  .captain-waiting-team { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.3rem; color: var(--gray-800); }
+  .captain-waiting-team.red { color: var(--red); }
+  .captain-waiting-team.blue { color: var(--blue); }
+  .draft-teams-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0 1rem 5rem; }
+  .draft-team-col { background: white; border: 1px solid var(--gray-200); border-radius: 10px; padding: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+  .draft-team-col.red { border-left: 3px solid var(--red); }
+  .draft-team-col.blue { border-left: 3px solid var(--blue); }
+  .draft-team-col-header { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em; text-align: center; padding-bottom: 0.3rem; margin-bottom: 0.3rem; border-bottom: 1px solid var(--gray-200); }
+  .draft-team-col.red .draft-team-col-header { color: var(--red); }
+  .draft-team-col.blue .draft-team-col-header { color: var(--blue); }
+  .draft-pick-entry { font-size: 0.82rem; font-weight: 600; color: var(--gray-800); padding: 0.22rem 0.25rem; display: flex; align-items: center; gap: 0.3rem; }
+  .draft-pick-entry .dpe-num { font-size: 0.6rem; color: var(--gray-500); min-width: 1rem; }
+  .draft-admin-bar { display: flex; justify-content: center; gap: 0.75rem; padding: 0.5rem 1rem; border-top: 1px solid var(--gray-200); background: white; position: sticky; bottom: 0; }
+  .draft-admin-btn { background: white; border: 1px solid var(--gray-200); border-radius: 6px; color: var(--gray-800); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.9rem; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+  .draft-admin-btn:disabled { opacity: 0.35; cursor: default; }
 
   /* Walk-up animation overlay */
   .walkup-overlay {
