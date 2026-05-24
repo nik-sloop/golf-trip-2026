@@ -446,6 +446,38 @@
     vertical-align: middle;
   }
 
+  /* ---- Player Roster (schedule cards + countdown) ---- */
+  .draft-roster { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.5rem; }
+  .roster-player-row {
+    display: flex; flex-direction: column;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px; overflow: hidden; cursor: pointer;
+  }
+  .roster-row-main {
+    display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.6rem; flex-wrap: wrap;
+  }
+  .roster-player-name { font-size: 0.9rem; font-weight: 700; flex: 1; min-width: 60px; color: #fff; }
+  .roster-chip {
+    font-size: 0.65rem; font-weight: 600;
+    padding: 0.12rem 0.4rem; border-radius: 5px;
+    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.65); white-space: nowrap;
+  }
+  .roster-chevron { font-size: 0.65rem; color: rgba(255,255,255,0.3); margin-left: auto; transition: transform 0.15s; flex-shrink: 0; }
+  .roster-player-row.expanded .roster-chevron { transform: rotate(90deg); }
+  .roster-row-detail { display: none; padding: 0 0.6rem 0.6rem; border-top: 1px solid rgba(255,255,255,0.07); }
+  .roster-player-row.expanded .roster-row-detail { display: block; }
+  .roster-round-table { width: 100%; border-collapse: collapse; font-size: 0.73rem; margin: 0.4rem 0 0.5rem; }
+  .roster-round-table th { color: rgba(255,255,255,0.4); font-weight: 600; padding: 0.2rem 0.35rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .roster-round-table td { padding: 0.2rem 0.35rem; color: rgba(255,255,255,0.85); }
+  .roster-scout-section { margin-top: 0.3rem; }
+  .roster-scout-row { display: flex; align-items: center; gap: 0.4rem; margin: 0.25rem 0; font-size: 0.7rem; }
+  .roster-scout-label { width: 52px; color: rgba(255,255,255,0.45); flex-shrink: 0; }
+  .roster-scout-bar { flex: 1; height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; position: relative; }
+  .roster-scout-fill { position: absolute; top: 0; height: 100%; border-radius: 3px; background: linear-gradient(90deg,rgba(74,144,226,0.55),rgba(74,214,162,0.75)); }
+  .roster-scout-marker { position: absolute; top: -3px; width: 2px; height: 11px; background: #fff; border-radius: 1px; transform: translateX(-50%); }
+  .roster-scout-val { width: 20px; text-align: right; color: rgba(255,255,255,0.65); flex-shrink: 0; }
+
   /* ---- Player Grid ---- */
   .player-grid {
     display: grid;
@@ -2157,6 +2189,7 @@
       <div class="label">Next Up</div>
       <div class="event-name" id="countdown-event"></div>
       <div class="countdown-units" id="countdown-units"></div>
+      <div id="draft-player-roster" style="padding:0 0.25rem;"></div>
     </div>
 
     <div class="ryder-bar-wrap">
@@ -2595,6 +2628,75 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
+// --- Player Roster helpers (used in schedule cards + countdown) ---
+const ROSTER_SKILLS = ['driving','irons','chipping','putting','mental'];
+const ROSTER_SKILL_LABELS = { driving:'Drive', irons:'Irons', chipping:'Chip', putting:'Putt', mental:'Mental' };
+
+function buildRosterDetailHtml(p) {
+  let html = '';
+  if (p.scores.length > 0) {
+    html += `<table class="roster-round-table">
+      <thead><tr><th>Rd</th><th>Gross(Net)</th><th>Par</th><th>vs Par</th></tr></thead>
+      <tbody>${p.scores.map((s,i) => {
+        const vp = getVsPar(s);
+        return `<tr><td>R${i+1}</td><td><strong>${s.gross}(${s.net})</strong></td><td>${s.par}</td><td class="${getDiffTextClass(vp)}">${formatVsPar(vp)}</td></tr>`;
+      }).join('')}</tbody></table>`;
+  } else {
+    html += '<div style="font-size:0.73rem;color:rgba(255,255,255,0.35);padding:0.4rem 0;">No rounds on file</div>';
+  }
+  if (p.scouting) {
+    html += '<div class="roster-scout-section">';
+    ROSTER_SKILLS.forEach(cat => {
+      const d = p.scouting[cat];
+      const parts = d.range.split('-');
+      const fl = parseFloat(parts[0]), ce = parseFloat(parts[1]);
+      html += `<div class="roster-scout-row">
+        <span class="roster-scout-label">${ROSTER_SKILL_LABELS[cat]}</span>
+        <div class="roster-scout-bar">
+          <div class="roster-scout-fill" style="left:${(fl/10)*100}%;width:${((ce-fl)/10)*100}%"></div>
+          <div class="roster-scout-marker" style="left:${(d.avg/10)*100}%"></div>
+        </div>
+        <span class="roster-scout-val">${d.avg}</span>
+      </div>`;
+    });
+    html += '</div>';
+  }
+  return html;
+}
+
+function buildRosterHtml(names) {
+  const rows = names.map(name => {
+    const p = players.find(pl => pl.name === name);
+    if (!p) return '';
+    const vsParArr = p.scores.map(s => getVsPar(s));
+    const avgVsPar = vsParArr.length > 0 ? Math.round(vsParArr.reduce((a,b)=>a+b,0)/vsParArr.length) : null;
+    const avgChip = avgVsPar !== null
+      ? `<span class="roster-chip ${getDiffTextClass(avgVsPar)}">Avg ${formatVsPar(avgVsPar)}</span>`
+      : `<span class="roster-chip" style="opacity:0.45">No rounds</span>`;
+    const scoutAvg = p.scouting
+      ? (ROSTER_SKILLS.reduce((s,c)=>s+p.scouting[c].avg,0)/ROSTER_SKILLS.length).toFixed(1)
+      : null;
+    const scoutChip = scoutAvg ? `<span class="roster-chip">Scout ${scoutAvg}</span>` : '';
+    return `<div class="roster-player-row" data-roster-name="${name}">
+      <div class="roster-row-main">
+        <span class="roster-player-name">${name}</span>
+        <span class="roster-chip">HCP ${p.handicap}</span>
+        <span class="roster-chip">${p.strokes > 0 ? p.strokes+' str' : 'scratch'}</span>
+        ${avgChip}${scoutChip}
+        <span class="roster-chevron">&#9658;</span>
+      </div>
+      <div class="roster-row-detail">${buildRosterDetailHtml(p)}</div>
+    </div>`;
+  }).join('');
+  return `<div class="draft-roster">${rows}</div>`;
+}
+
+function attachRosterListeners(container) {
+  container.querySelectorAll('.roster-player-row').forEach(row => {
+    row.addEventListener('click', () => row.classList.toggle('expanded'));
+  });
+}
+
 // --- Schedule ---
 function renderSchedule() {
   const now = new Date();
@@ -2623,12 +2725,9 @@ function renderSchedule() {
     if (evt.note) metaParts.push(evt.note);
     if (evt.tee) metaParts.push('Tee: ' + evt.tee);
 
-    let draftHtml = '';
-    if (evt.draft === 1) {
-      draftHtml = '<div class="draft-players">' + draftRound1.map(n => `<span class="draft-pill round1" data-draft-name="${n}">${n}</span>`).join('') + '</div>';
-    } else if (evt.draft === 2) {
-      draftHtml = '<div class="draft-players">' + draftRound2.map(n => `<span class="draft-pill round2" data-draft-name="${n}">${n}</span>`).join('') + '</div>';
-    }
+    let draftNames = null;
+    if (evt.draft === 1) draftNames = draftRound1;
+    else if (evt.draft === 2) draftNames = draftRound2;
 
     card.innerHTML = `
       <div class="sched-top">
@@ -2641,11 +2740,11 @@ function renderSchedule() {
         ${evt.points ? `<span class="sched-points">${evt.points} pts</span>` : ''}
         ${evt.cost ? `<span class="sched-cost">${evt.cost}</span>` : ''}
       </div>
-      ${draftHtml}
+      ${draftNames ? buildRosterHtml(draftNames) : ''}
     `;
 
-
     grid.appendChild(card);
+    if (draftNames) attachRosterListeners(card);
   });
 }
 
@@ -4726,28 +4825,16 @@ function applyCaptainReveals(redCaptain, blueCaptain) {
   if (redLabel) redLabel.innerHTML = `Team Red<br><span style="font-size:0.75rem;font-weight:600;opacity:0.85;">Capt. ${redCaptain}</span>`;
   if (blueLabel) blueLabel.innerHTML = `Team Blue<br><span style="font-size:0.75rem;font-weight:600;opacity:0.85;">Capt. ${blueCaptain}</span>`;
 
-  // Restructure each draft-players section: captains on top, players below
-  document.querySelectorAll('.draft-players').forEach(container => {
-    const redPill = container.querySelector(`[data-draft-name="${redCaptain}"]`);
-    const bluePill = container.querySelector(`[data-draft-name="${blueCaptain}"]`);
-    if (!redPill && !bluePill) return;
-
-    // Build captain row
-    const captainRow = document.createElement('div');
-    captainRow.className = 'draft-captains-row';
-
-    if (redPill) {
-      redPill.remove();
-      captainRow.innerHTML += `<span class="draft-captain-pill red">${redCaptain} <span class="captain-badge">C</span></span>`;
-    }
-    if (bluePill) {
-      bluePill.remove();
-      captainRow.innerHTML += `<span class="draft-captain-pill blue">${blueCaptain} <span class="captain-badge">C</span></span>`;
-    }
-
-    // Insert captain row before remaining pills
-    container.parentNode.insertBefore(captainRow, container);
-  });
+  // Mark captains in any rendered roster
+  function markCaptainInRoster(name, teamClass) {
+    document.querySelectorAll(`.roster-player-row[data-roster-name="${name}"] .roster-player-name`).forEach(el => {
+      if (!el.querySelector('.captain-badge')) {
+        el.insertAdjacentHTML('beforeend', ` <span class="captain-badge" style="background:${teamClass==='red'?'var(--red)':'var(--blue)'};padding:1px 5px;border-radius:4px;font-size:0.6rem;">C</span>`);
+      }
+    });
+  }
+  markCaptainInRoster(redCaptain, 'red');
+  markCaptainInRoster(blueCaptain, 'blue');
 
   // Switch countdown banner to show the Draft with a live countdown
   const banner = document.getElementById('countdown-banner');
@@ -4759,27 +4846,24 @@ function applyCaptainReveals(redCaptain, blueCaptain) {
     const draftEvt = schedule.find(e => e.draft === 1);
     const draftDate = draftEvt ? draftEvt.date : new Date(2026, 4, 29, 14, 0);
 
-    const otherPlayers = draftRound1.filter(n => n !== redCaptain && n !== blueCaptain);
-    const playersHtml = `<div class="draft-players" style="justify-content:center;margin-top:0.4rem;">
-      ${otherPlayers.map(n => `<span class="draft-pill round1" style="background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.25);">${n}</span>`).join('')}
+    // Build the captains row (static) and roster (separate persistent element)
+    const captainsRowHtml = `<div class="draft-captains-row" style="margin-bottom:0.4rem;">
+      <span class="draft-captain-pill red">${redCaptain} <span class="captain-badge">C</span></span>
+      <span style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;">VS</span>
+      <span class="draft-captain-pill blue">${blueCaptain} <span class="captain-badge">C</span></span>
     </div>`;
+
+    const rosterEl = document.getElementById('draft-player-roster');
+    const allDraftPlayers = draftRound1;
+    rosterEl.innerHTML = captainsRowHtml + buildRosterHtml(allDraftPlayers);
+    attachRosterListeners(rosterEl);
 
     function updateDraftCountdown() {
       const now = new Date();
       const diff = draftDate - now;
       const countdownEl = document.getElementById('countdown-units');
       if (diff <= 0) {
-        countdownEl.innerHTML = `
-          <div style="width:100%; text-align:center;">
-            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;">Draft is LIVE!</div>
-            <div class="draft-captains-row" style="margin-bottom:0.3rem;">
-              <span class="draft-captain-pill red">${redCaptain} <span class="captain-badge">C</span></span>
-              <span style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;">VS</span>
-              <span class="draft-captain-pill blue">${blueCaptain} <span class="captain-badge">C</span></span>
-            </div>
-            ${playersHtml}
-          </div>
-        `;
+        countdownEl.innerHTML = '<div style="font-size:0.85rem;font-weight:700;text-align:center;padding:0.25rem 0;">Draft is LIVE!</div>';
         return;
       }
       const days = Math.floor(diff / 86400000);
@@ -4788,19 +4872,11 @@ function applyCaptainReveals(redCaptain, blueCaptain) {
       const seconds = Math.floor((diff % 60000) / 1000);
 
       countdownEl.innerHTML = `
-        <div style="width:100%; text-align:center;">
-          <div class="countdown-units" style="display:flex;justify-content:center;gap:1.25rem;margin-bottom:0.5rem;">
-            <div class="countdown-unit"><span class="number">${days}</span><span class="unit-label">Days</span></div>
-            <div class="countdown-unit"><span class="number">${hours}</span><span class="unit-label">Hrs</span></div>
-            <div class="countdown-unit"><span class="number">${minutes}</span><span class="unit-label">Min</span></div>
-            <div class="countdown-unit"><span class="number">${seconds}</span><span class="unit-label">Sec</span></div>
-          </div>
-          <div class="draft-captains-row" style="margin-bottom:0.3rem;">
-            <span class="draft-captain-pill red">${redCaptain} <span class="captain-badge">C</span></span>
-            <span style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;">VS</span>
-            <span class="draft-captain-pill blue">${blueCaptain} <span class="captain-badge">C</span></span>
-          </div>
-          ${playersHtml}
+        <div class="countdown-units" style="display:flex;justify-content:center;gap:1.25rem;margin-bottom:0.5rem;">
+          <div class="countdown-unit"><span class="number">${days}</span><span class="unit-label">Days</span></div>
+          <div class="countdown-unit"><span class="number">${hours}</span><span class="unit-label">Hrs</span></div>
+          <div class="countdown-unit"><span class="number">${minutes}</span><span class="unit-label">Min</span></div>
+          <div class="countdown-unit"><span class="number">${seconds}</span><span class="unit-label">Sec</span></div>
         </div>
       `;
     }
