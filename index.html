@@ -1916,6 +1916,16 @@
     font-weight: 700;
     margin: 0 0.25rem;
   }
+  /* ---- Draft tab: always full-screen dark overlay when active ---- */
+  #tab-draft.active {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    overflow-y: auto;
+    background: #0d0d18;
+    z-index: 50;
+  }
+
   /* ---- Draft Display Mode (body class applied when laptop/TV) ---- */
   body.draft-display-active .container,
   body.draft-display-active #bottom-nav,
@@ -1925,7 +1935,7 @@
     position: fixed;
     inset: 0;
     overflow-y: auto;
-    background: var(--bg, #0d0d18);
+    background: #0d0d18;
     z-index: 100;
   }
 
@@ -2370,8 +2380,12 @@ function hideVoteTab() {
 
 // Show draft tab only when URL contains #draft-live
 if (location.hash === '#draft-live') {
-  document.getElementById('tab-draft').style.display = 'block';
   document.getElementById('draft-nav-tab').style.display = '';
+  // Auto-navigate to draft tab so it gets the active class (and dark full-screen overlay)
+  document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+  document.getElementById('tab-draft').classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('draft-nav-tab').classList.add('active');
 }
 
 // Hide vote tab once voting window is over
