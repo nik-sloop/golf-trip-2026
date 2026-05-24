@@ -5051,7 +5051,11 @@ function renderDisplayBoard(picks) {
     : '<div class="ddb-empty">No picks yet</div>';
   const availEl = document.getElementById('ddb-available');
   if (remaining.length) {
-    availEl.innerHTML = buildRosterHtml(remaining);
+    availEl.innerHTML = remaining.map(n => {
+      const pd = players.find(p => p.name === n);
+      const strokes = pd?.strokes > 0 ? `<span class="ddb-pick-num">${pd.strokes} str</span>` : '';
+      return `<div class="ddb-avail-item" style="display:flex;justify-content:space-between;">${n}${strokes}</div>`;
+    }).join('');
     attachRosterListeners(availEl);
   } else {
     availEl.innerHTML = '<div class="ddb-empty">All drafted</div>';
@@ -5096,36 +5100,37 @@ function renderCaptainView(picks, team) {
     return;
   }
 
+  const remaining = getDraftablePlayers().filter(n => !picks.map(p => p.player).includes(n));
+
   if (isMyTurn) {
     const captain = team === 'red' ? 'Nik' : 'Dan';
     header.innerHTML = `<div class="draft-on-clock-label">Your Pick — ${idx + 1} of ${DRAFT_ORDER.length}</div>
       <div class="draft-on-clock-team ${team}">Team ${team === 'red' ? 'Red' : 'Blue'} — ${captain}</div>`;
-
-    const remaining = getDraftablePlayers().filter(n => !picks.map(p => p.player).includes(n));
-    body.innerHTML = '<div class="draft-section-label" style="display:block;">Select a player</div><div id="captain-roster"></div>' + captainTeamsHtml(picks);
-
-    const rosterContainer = document.getElementById('captain-roster');
-    rosterContainer.innerHTML = buildRosterHtml(remaining);
-    rosterContainer.querySelectorAll('.roster-player-row').forEach(row => {
-      const name = row.dataset.rosterName;
-      // First tap expands; second tap on the Pick button picks
-      row.querySelector('.roster-row-detail').insertAdjacentHTML('beforeend',
-        `<button class="draft-pick-btn" style="margin-top:0.5rem;width:100%;padding:0.45rem;background:${team==='red'?'var(--red)':'var(--blue)'};color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">Pick ${name}</button>`
-      );
-      row.addEventListener('click', e => {
-        if (e.target.classList.contains('draft-pick-btn')) {
-          captainPick(name, team, idx + 1);
-        } else {
-          row.classList.toggle('expanded');
-        }
-      });
-    });
   } else {
     const otherCaptain = otherTeam === 'red' ? 'Nik' : 'Dan';
     header.innerHTML = `<div class="draft-on-clock-label">Pick ${idx + 1} of ${DRAFT_ORDER.length}</div>
       <div class="draft-on-clock-team ${otherTeam}">Team ${otherTeam === 'red' ? 'Red' : 'Blue'} — ${otherCaptain} is picking…</div>`;
-    body.innerHTML = captainTeamsHtml(picks);
   }
+
+  body.innerHTML = '<div class="draft-section-label" style="display:block;">Available Players</div><div id="captain-roster"></div>' + captainTeamsHtml(picks);
+
+  const rosterContainer = document.getElementById('captain-roster');
+  rosterContainer.innerHTML = buildRosterHtml(remaining);
+  rosterContainer.querySelectorAll('.roster-player-row').forEach(row => {
+    const name = row.dataset.rosterName;
+    if (isMyTurn) {
+      row.querySelector('.roster-row-detail').insertAdjacentHTML('beforeend',
+        `<button class="draft-pick-btn" style="margin-top:0.5rem;width:100%;padding:0.5rem;background:${team==='red'?'var(--red)':'var(--blue)'};color:#fff;border:none;border-radius:8px;font-size:0.9rem;font-weight:700;cursor:pointer;">Pick ${name}</button>`
+      );
+    }
+    row.addEventListener('click', e => {
+      if (e.target.classList.contains('draft-pick-btn')) {
+        captainPick(name, team, idx + 1);
+      } else {
+        row.classList.toggle('expanded');
+      }
+    });
+  });
 }
 
 function captainTeamsHtml(picks) {
