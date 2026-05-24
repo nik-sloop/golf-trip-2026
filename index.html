@@ -1914,13 +1914,14 @@
   }
   /* ---- Draft tab: full-screen overlay, light theme to match app ---- */
   #tab-draft.active {
-    display: block !important;
+    display: flex !important;
+    flex-direction: column;
     position: fixed;
     inset: 0;
-    overflow-y: auto;
     background: var(--gray-100);
     color: var(--gray-800);
     z-index: 50;
+    overflow: hidden;
   }
 
   /* ---- Draft Display Mode (TV/laptop) — keeps dark theme intentionally ---- */
@@ -1928,14 +1929,17 @@
   body.draft-display-active #bottom-nav,
   body.draft-display-active #countdown-banner { display: none !important; }
   body.draft-display-active #tab-draft {
-    display: block !important;
+    display: flex !important;
+    flex-direction: column;
     position: fixed;
     inset: 0;
-    overflow-y: auto;
+    overflow: hidden;
     background: #0d0d18;
     color: #fff;
     z-index: 100;
   }
+  #draft-display-mode { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  #draft-board { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
   /* ---- Draft mode selector ---- */
   .dms-wrap { padding: 2.5rem 1rem; text-align: center; max-width: 400px; margin: 0 auto; }
@@ -1994,7 +1998,7 @@
   .captain-waiting-team { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.3rem; color: var(--gray-800); }
   .captain-waiting-team.red { color: var(--red); }
   .captain-waiting-team.blue { color: var(--blue); }
-  .draft-teams-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0 1rem 5rem; }
+  .draft-teams-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0 1rem 1rem; }
   .draft-team-col { background: white; border: 1px solid var(--gray-200); border-radius: 10px; padding: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
   .draft-team-col.red { border-left: 3px solid var(--red); }
   .draft-team-col.blue { border-left: 3px solid var(--blue); }
@@ -2003,7 +2007,10 @@
   .draft-team-col.blue .draft-team-col-header { color: var(--blue); }
   .draft-pick-entry { font-size: 0.82rem; font-weight: 600; color: var(--gray-800); padding: 0.22rem 0.25rem; display: flex; align-items: center; gap: 0.3rem; }
   .draft-pick-entry .dpe-num { font-size: 0.6rem; color: var(--gray-500); min-width: 1rem; }
-  .draft-admin-bar { display: flex; justify-content: center; gap: 0.75rem; padding: 0.5rem 1rem; border-top: 1px solid var(--gray-200); background: white; position: sticky; bottom: 0; }
+  #draft-captain-mode { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  #draft-captain-header { flex-shrink: 0; }
+  #draft-captain-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .draft-admin-bar { display: flex; justify-content: center; gap: 0.75rem; padding: 0.5rem 1rem; border-top: 1px solid var(--gray-200); background: white; flex-shrink: 0; }
   .draft-admin-btn { background: white; border: 1px solid var(--gray-200); border-radius: 6px; color: var(--gray-800); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.9rem; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
   .draft-admin-btn:disabled { opacity: 0.35; cursor: default; }
 
