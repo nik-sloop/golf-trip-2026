@@ -131,9 +131,9 @@
     }
   }
 
-  /* Desktop: show all tabs */
+  /* Desktop: show all tabs (except draft which is hash-gated) */
   @media (min-width: 768px) {
-    .tab-content { display: block !important; }
+    .tab-content:not(#tab-draft) { display: block !important; }
   }
 
   /* ---- Ryder Cup Points Bar ---- */
@@ -2339,7 +2339,7 @@ function hideVoteTab() {
 
 // Show draft tab only when URL contains #draft-live
 if (location.hash === '#draft-live') {
-  document.getElementById('tab-draft').style.display = '';
+  document.getElementById('tab-draft').style.display = 'block';
   document.getElementById('draft-nav-tab').style.display = '';
 }
 
