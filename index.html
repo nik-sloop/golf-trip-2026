@@ -1884,7 +1884,82 @@
     font-weight: 700;
     margin: 0 0.25rem;
   }
-  /* ---- Live Draft Tab ---- */
+  /* ---- Draft Display Mode (body class applied when laptop/TV) ---- */
+  body.draft-display-active .container,
+  body.draft-display-active #bottom-nav,
+  body.draft-display-active #countdown-banner { display: none !important; }
+  body.draft-display-active #tab-draft {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    overflow-y: auto;
+    background: var(--bg, #0d0d18);
+    z-index: 100;
+  }
+
+  /* ---- Draft mode selector ---- */
+  .dms-wrap { padding: 2.5rem 1.5rem; text-align: center; }
+  .dms-title { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 1.75rem; }
+  .dms-btns { display: flex; flex-direction: column; gap: 0.75rem; max-width: 300px; margin: 0 auto; }
+  .dms-btn {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.9rem 1.25rem; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06);
+    color: #fff; font-size: 0.95rem; font-weight: 700; cursor: pointer; text-align: left;
+  }
+  .dms-btn span { font-size: 0.68rem; font-weight: 400; color: rgba(255,255,255,0.4); display: block; margin-top: 0.1rem; }
+  .dms-btn .dms-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .dms-btn.display { border-color: rgba(255,255,255,0.22); }
+  .dms-btn.red { border-color: rgba(231,76,60,0.45); }
+  .dms-btn.blue { border-color: rgba(52,152,219,0.45); }
+
+  /* ---- Draft display board (laptop/TV) ---- */
+  .draft-clock {
+    padding: 1.25rem 2rem 1rem; text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .draft-clock-label { font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 0.4rem; }
+  .draft-clock-team { font-size: clamp(1.75rem, 4.5vw, 3.2rem); font-weight: 900; letter-spacing: 0.01em; }
+  .draft-clock-team.red { color: var(--red-light); }
+  .draft-clock-team.blue { color: var(--blue-light); }
+  .draft-clock-team.done { color: #f1c40f; }
+  .draft-board {
+    display: grid; grid-template-columns: 1fr 1.1fr 1fr;
+    gap: 1rem; padding: 1rem 1rem 0.5rem;
+  }
+  .ddb-col {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 0.75rem;
+  }
+  .ddb-col.ddb-red { border-color: rgba(231,76,60,0.2); }
+  .ddb-col.ddb-blue { border-color: rgba(52,152,219,0.2); }
+  .ddb-col.ddb-avail { border-color: rgba(241,196,15,0.15); }
+  .ddb-col-header {
+    font-size: 0.62rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+    text-align: center; padding-bottom: 0.45rem; margin-bottom: 0.45rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .ddb-col-header.red { color: var(--red-light); }
+  .ddb-col-header.blue { color: var(--blue-light); }
+  .ddb-col-header.avail { color: rgba(241,196,15,0.75); }
+  .ddb-pick-item {
+    font-size: clamp(0.82rem, 1.8vw, 1.15rem); font-weight: 600;
+    color: rgba(255,255,255,0.85); padding: 0.28rem 0.2rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .ddb-pick-num { font-size: 0.55rem; color: rgba(255,255,255,0.22); min-width: 1.2rem; }
+  .ddb-avail-item { font-size: clamp(0.78rem, 1.6vw, 1rem); color: rgba(255,255,255,0.55); padding: 0.22rem 0.2rem; }
+  .ddb-empty { font-size: 0.72rem; color: rgba(255,255,255,0.2); padding: 0.25rem; }
+
+  /* ---- Captain waiting screen ---- */
+  .captain-waiting {
+    text-align: center; padding: 2rem 1.25rem;
+  }
+  .captain-waiting-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 0.5rem; }
+  .captain-waiting-team { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.3rem; }
+  .captain-waiting-team.red { color: var(--red-light); }
+  .captain-waiting-team.blue { color: var(--blue-light); }
+</style>
   .draft-header {
     background: linear-gradient(180deg, rgba(20,20,30,0.95), rgba(15,15,25,0.9));
     border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -2148,24 +2223,48 @@
 
   <!-- TAB: Draft Live (hidden unless #draft-live) -->
   <div class="tab-content" id="tab-draft" style="display:none;">
-    <div id="draft-on-clock-header"></div>
-    <div id="draft-section-available-label" class="draft-section-label" style="display:none;">Available Players</div>
-    <div id="draft-available-grid" class="draft-available-grid"></div>
-    <div class="draft-admin-bar">
-      <button class="draft-admin-btn" id="draft-undo-btn" disabled>&#8617; Undo</button>
-      <button class="draft-admin-btn" id="draft-reset-btn">&#8635; Reset</button>
-    </div>
-    <div id="draft-section-teams-label" class="draft-section-label" style="display:none;">Teams</div>
-    <div class="draft-teams-row" id="draft-teams-row" style="display:none;">
-      <div class="draft-team-col red">
-        <div class="draft-team-col-header">TEAM RED — NIK</div>
-        <div id="draft-red-picks"></div>
-      </div>
-      <div class="draft-team-col blue">
-        <div class="draft-team-col-header">TEAM BLUE — DAN</div>
-        <div id="draft-blue-picks"></div>
+
+    <!-- Mode selector -->
+    <div id="draft-mode-selector" style="display:none;">
+      <div class="dms-wrap">
+        <div class="dms-title">Select Your Role</div>
+        <div class="dms-btns" id="dms-btns"></div>
       </div>
     </div>
+
+    <!-- Display mode (laptop / TV) -->
+    <div id="draft-display-mode" style="display:none;">
+      <div id="draft-clock" class="draft-clock"></div>
+      <div class="draft-board" id="draft-board">
+        <div class="ddb-col ddb-red">
+          <div class="ddb-col-header red">&#128308; Team Red &mdash; Nik</div>
+          <div id="ddb-red-picks"></div>
+        </div>
+        <div class="ddb-col ddb-avail">
+          <div class="ddb-col-header avail">Available</div>
+          <div id="ddb-available"></div>
+        </div>
+        <div class="ddb-col ddb-blue">
+          <div class="ddb-col-header blue">&#128309; Team Blue &mdash; Dan</div>
+          <div id="ddb-blue-picks"></div>
+        </div>
+      </div>
+      <div class="draft-admin-bar" style="padding-bottom:1rem;">
+        <button class="draft-admin-btn" id="display-undo-btn" disabled>&#8617; Undo</button>
+        <button class="draft-admin-btn" id="display-reset-btn">&#8635; Reset</button>
+        <button class="draft-admin-btn" id="display-mode-btn">&#9881; Mode</button>
+      </div>
+    </div>
+
+    <!-- Captain mode (phone) -->
+    <div id="draft-captain-mode" style="display:none;">
+      <div id="draft-captain-header" class="draft-header"></div>
+      <div id="draft-captain-body"></div>
+      <div class="draft-admin-bar">
+        <button class="draft-admin-btn" id="captain-mode-btn">&#9881; Change Mode</button>
+      </div>
+    </div>
+
   </div>
 
   <!-- TAB: Vote -->
@@ -4730,7 +4829,7 @@ function applyCaptainReveals(redCaptain, blueCaptain) {
 // Pick order: 'red' = Nik, 'blue' = Dan — edit this array to set the draft order
 const DRAFT_ORDER = ['red', 'blue', 'blue', 'red', 'red', 'blue', 'blue', 'red', 'red', 'blue'];
 
-// Walk-up songs — fill in audio file URLs before the draft
+// Walk-up songs — paste audio file URLs here before the draft
 const PLAYER_WALKUP_SONGS = {
   'Dan M':  '',
   'Hadley': '',
@@ -4744,7 +4843,9 @@ const PLAYER_WALKUP_SONGS = {
   'Ryan':   '',
 };
 
-const DRAFT_STATE_KEY = 'draft_picks_2026';
+const DRAFT_MODE_KEY = 'draft_mode_2026';
+let draftChannel = null;
+let draftLastPickCount = 0;
 
 function getDraftablePlayers() {
   return [...draftRound1, ...draftRound2]
@@ -4752,87 +4853,51 @@ function getDraftablePlayers() {
     .filter(n => n !== 'Nik' && n !== 'Dan');
 }
 
-function loadDraftState() {
-  try {
-    const saved = localStorage.getItem(DRAFT_STATE_KEY);
-    return saved ? JSON.parse(saved) : [];
-  } catch { return []; }
+// --- Supabase draft data ---
+
+async function dbLoadDraftPicks() {
+  if (!supabaseConfigured || !supabaseClient) return [];
+  const { data, error } = await supabaseClient
+    .from('draft_picks')
+    .select('pick_number, team, player')
+    .order('pick_number', { ascending: true });
+  if (error) { console.error('Draft load error:', error); return []; }
+  return data || [];
 }
 
-function saveDraftState(picks) {
-  localStorage.setItem(DRAFT_STATE_KEY, JSON.stringify(picks));
+async function dbInsertDraftPick(pickNumber, team, player) {
+  const { error } = await supabaseClient
+    .from('draft_picks')
+    .insert({ pick_number: pickNumber, team, player });
+  if (error) throw error;
 }
 
-function renderDraftTab() {
-  const picks = loadDraftState();
-  const allPlayers = getDraftablePlayers();
-  const drafted = picks.map(p => p.player);
-  const remaining = allPlayers.filter(n => !drafted.includes(n));
-  const currentPickIndex = picks.length;
-  const isDone = currentPickIndex >= DRAFT_ORDER.length;
-
-  const header = document.getElementById('draft-on-clock-header');
-  const availLabel = document.getElementById('draft-section-available-label');
-  const teamsLabel = document.getElementById('draft-section-teams-label');
-  const teamsRow = document.getElementById('draft-teams-row');
-
-  if (isDone) {
-    header.innerHTML = `
-      <div class="draft-header">
-        <div class="draft-on-clock-label">Draft Complete</div>
-        <div class="draft-on-clock-team" style="color:#f1c40f;">All players selected!</div>
-      </div>`;
-  } else {
-    const currentTeam = DRAFT_ORDER[currentPickIndex];
-    const captain = currentTeam === 'red' ? 'Nik' : 'Dan';
-    header.innerHTML = `
-      <div class="draft-header">
-        <div class="draft-on-clock-label">On The Clock &mdash; Pick ${currentPickIndex + 1} of ${DRAFT_ORDER.length}</div>
-        <div class="draft-on-clock-team ${currentTeam}">Team ${currentTeam === 'red' ? 'Red' : 'Blue'} &mdash; ${captain}</div>
-      </div>`;
-  }
-
-  availLabel.style.display = isDone ? 'none' : '';
-  const grid = document.getElementById('draft-available-grid');
-  grid.innerHTML = '';
-  if (!isDone) {
-    remaining.forEach(name => {
-      const pd = players.find(p => p.name === name);
-      const overall = pd?.scouting?.avgAdj != null ? pd.scouting.avgAdj.toFixed(1) : null;
-      const hcp = pd?.handicap ?? null;
-      const card = document.createElement('div');
-      card.className = 'draft-player-card';
-      card.innerHTML = `
-        <div class="dpc-name">${name}</div>
-        ${hcp != null ? `<div class="dpc-hcp">HCP ${hcp}</div>` : ''}
-        ${overall ? `<div class="dpc-overall">${overall}</div>` : ''}`;
-      card.addEventListener('click', () => selectDraftPlayer(name));
-      grid.appendChild(card);
-    });
-  }
-
-  teamsLabel.style.display = picks.length > 0 ? '' : 'none';
-  teamsRow.style.display = picks.length > 0 ? '' : 'none';
-
-  const redPicks = picks.filter(p => p.team === 'red');
-  const bluePicks = picks.filter(p => p.team === 'blue');
-  document.getElementById('draft-red-picks').innerHTML = redPicks.map((p, i) =>
-    `<div class="draft-pick-entry"><span class="dpe-num">${i + 1}.</span><span>${p.player}</span></div>`).join('');
-  document.getElementById('draft-blue-picks').innerHTML = bluePicks.map((p, i) =>
-    `<div class="draft-pick-entry"><span class="dpe-num">${i + 1}.</span><span>${p.player}</span></div>`).join('');
-
-  const undoBtn = document.getElementById('draft-undo-btn');
-  undoBtn.disabled = picks.length === 0;
+async function dbDeleteLastDraftPick(pickNumber) {
+  const { error } = await supabaseClient
+    .from('draft_picks')
+    .delete()
+    .eq('pick_number', pickNumber);
+  if (error) throw error;
 }
 
-function selectDraftPlayer(name) {
-  const picks = loadDraftState();
-  if (picks.length >= DRAFT_ORDER.length) return;
-  const team = DRAFT_ORDER[picks.length];
-  picks.push({ pick: picks.length + 1, team, player: name });
-  saveDraftState(picks);
-  showWalkUpAnimation(name, team, renderDraftTab);
+async function dbResetDraft() {
+  const { error } = await supabaseClient
+    .from('draft_picks')
+    .delete()
+    .gte('pick_number', 0);
+  if (error) throw error;
 }
+
+function subscribeToDraftPicks(callback) {
+  if (!supabaseConfigured || !supabaseClient) return;
+  if (draftChannel) draftChannel.unsubscribe();
+  draftChannel = supabaseClient
+    .channel('draft_picks_rt')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'draft_picks' }, callback)
+    .subscribe();
+}
+
+// --- Walk-up animation (shared across modes) ---
 
 function showWalkUpAnimation(name, team, onDismiss) {
   document.querySelector('.walkup-overlay')?.remove();
@@ -4841,17 +4906,16 @@ function showWalkUpAnimation(name, team, onDismiss) {
   const overall = pd?.scouting?.avgAdj != null ? pd.scouting.avgAdj.toFixed(1) : null;
   const hcp = pd?.handicap ?? null;
   const spotlightColor = team === 'red' ? 'rgba(192,57,43,0.28)' : 'rgba(36,113,163,0.28)';
-  const teamLabel = team === 'red' ? '🔴 Team Red' : '🔵 Team Blue';
+  const teamLabel = team === 'red' ? '\u{1F534} Team Red' : '\u{1F535} Team Blue';
 
   const overlay = document.createElement('div');
   overlay.className = 'walkup-overlay';
   overlay.innerHTML = `
-    <div class="walkup-spotlight" style="background:radial-gradient(ellipse at 50% 40%, ${spotlightColor} 0%, transparent 65%);"></div>
+    <div class="walkup-spotlight" style="background:radial-gradient(ellipse at 50% 40%,${spotlightColor} 0%,transparent 65%);"></div>
     <div class="walkup-drafted-label">Drafted By</div>
     <div class="walkup-team-label ${team}">${teamLabel}</div>
     <div class="walkup-name">${name}</div>
-    ${overall || hcp != null ? `
-    <div class="walkup-stats">
+    ${hcp != null || overall ? `<div class="walkup-stats">
       ${hcp != null ? `<div class="walkup-stat"><div class="walkup-stat-val">${hcp}</div><div class="walkup-stat-label">Handicap</div></div>` : ''}
       ${overall ? `<div class="walkup-stat"><div class="walkup-stat-val">${overall}</div><div class="walkup-stat-label">Overall</div></div>` : ''}
     </div>` : ''}
@@ -4879,22 +4943,203 @@ function showWalkUpAnimation(name, team, onDismiss) {
   }, 600);
 }
 
-function initDraftTab() {
-  renderDraftTab();
+// --- Mode selector ---
 
-  document.getElementById('draft-undo-btn').addEventListener('click', () => {
-    const picks = loadDraftState();
+function showDraftModeSelector() {
+  document.body.classList.remove('draft-display-active');
+  document.getElementById('draft-mode-selector').style.display = '';
+  document.getElementById('draft-display-mode').style.display = 'none';
+  document.getElementById('draft-captain-mode').style.display = 'none';
+
+  const btns = document.getElementById('dms-btns');
+  btns.innerHTML = '';
+  [
+    { mode: 'display', icon: '&#128250;', label: 'Display Mode', sub: 'Laptop / TV' },
+    { mode: 'red',     icon: '&#128308;', label: 'Team Red',     sub: 'Nik — make picks' },
+    { mode: 'blue',    icon: '&#128309;', label: 'Team Blue',    sub: 'Dan — make picks' },
+  ].forEach(({ mode, icon, label, sub }) => {
+    const btn = document.createElement('button');
+    btn.className = `dms-btn ${mode}`;
+    btn.innerHTML = `<span class="dms-icon">${icon}</span><span><strong>${label}</strong><span>${sub}</span></span>`;
+    btn.addEventListener('click', () => {
+      localStorage.setItem(DRAFT_MODE_KEY, mode);
+      initDraftTab();
+    });
+    btns.appendChild(btn);
+  });
+}
+
+// --- Display mode ---
+
+function initDisplayMode() {
+  document.body.classList.add('draft-display-active');
+  document.getElementById('draft-mode-selector').style.display = 'none';
+  document.getElementById('draft-display-mode').style.display = '';
+  document.getElementById('draft-captain-mode').style.display = 'none';
+
+  dbLoadDraftPicks().then(picks => {
+    draftLastPickCount = picks.length;
+    renderDisplayBoard(picks);
+  });
+
+  subscribeToDraftPicks(async () => {
+    const picks = await dbLoadDraftPicks();
+    const isNewPick = picks.length > draftLastPickCount;
+    const newPick = isNewPick ? picks[picks.length - 1] : null;
+    draftLastPickCount = picks.length;
+    renderDisplayBoard(picks);
+    if (newPick) showWalkUpAnimation(newPick.player, newPick.team, null);
+  });
+
+  document.getElementById('display-mode-btn').addEventListener('click', () => {
+    localStorage.removeItem(DRAFT_MODE_KEY);
+    showDraftModeSelector();
+  });
+
+  document.getElementById('display-undo-btn').addEventListener('click', async () => {
+    const picks = await dbLoadDraftPicks();
     if (!picks.length) return;
-    picks.pop();
-    saveDraftState(picks);
-    renderDraftTab();
+    await dbDeleteLastDraftPick(picks[picks.length - 1].pick_number);
+    const updated = await dbLoadDraftPicks();
+    draftLastPickCount = updated.length;
+    renderDisplayBoard(updated);
   });
 
-  document.getElementById('draft-reset-btn').addEventListener('click', () => {
-    if (!confirm('Reset the entire draft? This cannot be undone.')) return;
-    localStorage.removeItem(DRAFT_STATE_KEY);
-    renderDraftTab();
+  document.getElementById('display-reset-btn').addEventListener('click', async () => {
+    if (!confirm('Reset the entire draft?')) return;
+    await dbResetDraft();
+    draftLastPickCount = 0;
+    renderDisplayBoard([]);
   });
+}
+
+function renderDisplayBoard(picks) {
+  const allPlayers = getDraftablePlayers();
+  const drafted = picks.map(p => p.player);
+  const remaining = allPlayers.filter(n => !drafted.includes(n));
+  const idx = picks.length;
+  const isDone = idx >= DRAFT_ORDER.length;
+
+  const clock = document.getElementById('draft-clock');
+  if (isDone) {
+    clock.innerHTML = `<div class="draft-clock-label">Draft Complete</div><div class="draft-clock-team done">All Players Selected!</div>`;
+  } else {
+    const t = DRAFT_ORDER[idx];
+    clock.innerHTML = `<div class="draft-clock-label">On The Clock &mdash; Pick ${idx + 1} of ${DRAFT_ORDER.length}</div>
+      <div class="draft-clock-team ${t}">Team ${t === 'red' ? 'Red' : 'Blue'} &mdash; ${t === 'red' ? 'Nik' : 'Dan'}</div>`;
+  }
+
+  const redPicks = picks.filter(p => p.team === 'red');
+  const bluePicks = picks.filter(p => p.team === 'blue');
+  document.getElementById('ddb-red-picks').innerHTML = redPicks.length
+    ? redPicks.map((p, i) => `<div class="ddb-pick-item"><span class="ddb-pick-num">${i+1}.</span>${p.player}</div>`).join('')
+    : '<div class="ddb-empty">No picks yet</div>';
+  document.getElementById('ddb-blue-picks').innerHTML = bluePicks.length
+    ? bluePicks.map((p, i) => `<div class="ddb-pick-item"><span class="ddb-pick-num">${i+1}.</span>${p.player}</div>`).join('')
+    : '<div class="ddb-empty">No picks yet</div>';
+  document.getElementById('ddb-available').innerHTML = remaining.length
+    ? remaining.map(n => `<div class="ddb-avail-item">${n}</div>`).join('')
+    : '<div class="ddb-empty">All drafted</div>';
+
+  document.getElementById('display-undo-btn').disabled = picks.length === 0;
+}
+
+// --- Captain mode ---
+
+function initCaptainMode(team) {
+  document.body.classList.remove('draft-display-active');
+  document.getElementById('draft-mode-selector').style.display = 'none';
+  document.getElementById('draft-display-mode').style.display = 'none';
+  document.getElementById('draft-captain-mode').style.display = '';
+
+  dbLoadDraftPicks().then(picks => renderCaptainView(picks, team));
+
+  subscribeToDraftPicks(async () => {
+    const picks = await dbLoadDraftPicks();
+    renderCaptainView(picks, team);
+  });
+
+  document.getElementById('captain-mode-btn').addEventListener('click', () => {
+    localStorage.removeItem(DRAFT_MODE_KEY);
+    showDraftModeSelector();
+  });
+}
+
+function renderCaptainView(picks, team) {
+  const idx = picks.length;
+  const isDone = idx >= DRAFT_ORDER.length;
+  const isMyTurn = !isDone && DRAFT_ORDER[idx] === team;
+  const otherTeam = team === 'red' ? 'blue' : 'red';
+
+  const header = document.getElementById('draft-captain-header');
+  const body = document.getElementById('draft-captain-body');
+
+  if (isDone) {
+    header.innerHTML = `<div class="draft-on-clock-label">Draft Complete</div><div class="draft-on-clock-team" style="color:#f1c40f;">All players selected!</div>`;
+    body.innerHTML = captainTeamsHtml(picks);
+    return;
+  }
+
+  if (isMyTurn) {
+    const captain = team === 'red' ? 'Nik' : 'Dan';
+    header.innerHTML = `<div class="draft-on-clock-label">Your Pick — ${idx + 1} of ${DRAFT_ORDER.length}</div>
+      <div class="draft-on-clock-team ${team}">Team ${team === 'red' ? 'Red' : 'Blue'} — ${captain}</div>`;
+
+    const remaining = getDraftablePlayers().filter(n => !picks.map(p => p.player).includes(n));
+    body.innerHTML = '<div class="draft-section-label" style="display:block;">Select a player</div><div class="draft-available-grid" id="captain-grid"></div>' + captainTeamsHtml(picks);
+
+    remaining.forEach(name => {
+      const pd = players.find(p => p.name === name);
+      const overall = pd?.scouting?.avgAdj != null ? pd.scouting.avgAdj.toFixed(1) : null;
+      const hcp = pd?.handicap ?? null;
+      const card = document.createElement('div');
+      card.className = 'draft-player-card';
+      card.innerHTML = `<div class="dpc-name">${name}</div>${hcp != null ? `<div class="dpc-hcp">HCP ${hcp}</div>` : ''}${overall ? `<div class="dpc-overall">${overall}</div>` : ''}`;
+      card.addEventListener('click', () => captainPick(name, team, idx + 1));
+      document.getElementById('captain-grid').appendChild(card);
+    });
+  } else {
+    const otherCaptain = otherTeam === 'red' ? 'Nik' : 'Dan';
+    header.innerHTML = `<div class="draft-on-clock-label">Pick ${idx + 1} of ${DRAFT_ORDER.length}</div>
+      <div class="draft-on-clock-team ${otherTeam}">Team ${otherTeam === 'red' ? 'Red' : 'Blue'} — ${otherCaptain} is picking…</div>`;
+    body.innerHTML = captainTeamsHtml(picks);
+  }
+}
+
+function captainTeamsHtml(picks) {
+  if (!picks.length) return '';
+  const red = picks.filter(p => p.team === 'red');
+  const blue = picks.filter(p => p.team === 'blue');
+  return `<div class="draft-section-label" style="display:block;">Teams</div>
+    <div class="draft-teams-row" style="display:grid;">
+      <div class="draft-team-col red">
+        <div class="draft-team-col-header">TEAM RED — NIK</div>
+        ${red.map((p, i) => `<div class="draft-pick-entry"><span class="dpe-num">${i+1}.</span>${p.player}</div>`).join('') || '<div style="font-size:0.7rem;color:rgba(255,255,255,0.22);padding:0.2rem;">No picks yet</div>'}
+      </div>
+      <div class="draft-team-col blue">
+        <div class="draft-team-col-header">TEAM BLUE — DAN</div>
+        ${blue.map((p, i) => `<div class="draft-pick-entry"><span class="dpe-num">${i+1}.</span>${p.player}</div>`).join('') || '<div style="font-size:0.7rem;color:rgba(255,255,255,0.22);padding:0.2rem;">No picks yet</div>'}
+      </div>
+    </div>`;
+}
+
+async function captainPick(name, team, pickNumber) {
+  try {
+    await dbInsertDraftPick(pickNumber, team, name);
+  } catch (err) {
+    alert('Error submitting pick. Please try again.');
+    console.error(err);
+  }
+}
+
+// --- Init ---
+
+function initDraftTab() {
+  const mode = localStorage.getItem(DRAFT_MODE_KEY);
+  if (!mode) { showDraftModeSelector(); return; }
+  if (mode === 'display') initDisplayMode();
+  else if (mode === 'red' || mode === 'blue') initCaptainMode(mode);
+  else showDraftModeSelector();
 }
 
 initDraftTab();
