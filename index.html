@@ -1972,7 +1972,7 @@
   .ddb-col.ddb-red { border-color: rgba(231,76,60,0.2); }
   .ddb-col.ddb-blue { border-color: rgba(52,152,219,0.2); }
   .ddb-col.ddb-avail { border-color: rgba(241,196,15,0.15); }
-  .ddb-col-header { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; text-align: center; padding-bottom: 0.45rem; margin-bottom: 0.45rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .ddb-col-header { font-size: clamp(0.8rem, 2vw, 1.1rem); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; text-align: center; padding-bottom: 0.55rem; margin-bottom: 0.55rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
   .ddb-col-header.red { color: var(--red-light); }
   .ddb-col-header.blue { color: var(--blue-light); }
   .ddb-col-header.avail { color: rgba(241,196,15,0.75); }
@@ -6030,11 +6030,11 @@ function renderDisplayBoard(picks) {
   const redHeader = document.querySelector('.ddb-col.ddb-red .ddb-col-header');
   const blueHeader = document.querySelector('.ddb-col.ddb-blue .ddb-col-header');
   if (redHeader) {
-    const statsLine = redPicks.length ? `<div style="font-size:0.52rem;opacity:0.7;margin-top:0.15rem;letter-spacing:0;">Rating: ${redStats.avgOverall} · Strokes: +${redStats.totalStrokes}</div>` : '';
+    const statsLine = redPicks.length ? `<div style="font-size:clamp(0.6rem,1.3vw,0.8rem);opacity:0.8;margin-top:0.25rem;letter-spacing:0;">Rating: ${redStats.avgOverall} · Strokes: +${redStats.totalStrokes}</div>` : '';
     redHeader.innerHTML = `\u{1F534} Team Red &mdash; Nik${statsLine}`;
   }
   if (blueHeader) {
-    const statsLine = bluePicks.length ? `<div style="font-size:0.52rem;opacity:0.7;margin-top:0.15rem;letter-spacing:0;">Rating: ${blueStats.avgOverall} · Strokes: +${blueStats.totalStrokes}</div>` : '';
+    const statsLine = bluePicks.length ? `<div style="font-size:clamp(0.6rem,1.3vw,0.8rem);opacity:0.8;margin-top:0.25rem;letter-spacing:0;">Rating: ${blueStats.avgOverall} · Strokes: +${blueStats.totalStrokes}</div>` : '';
     blueHeader.innerHTML = `\u{1F535} Team Blue &mdash; Dan${statsLine}`;
   }
 
