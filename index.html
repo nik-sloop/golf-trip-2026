@@ -1976,9 +1976,9 @@
   .ddb-col-header.red { color: var(--red-light); }
   .ddb-col-header.blue { color: var(--blue-light); }
   .ddb-col-header.avail { color: rgba(241,196,15,0.75); }
-  .ddb-pick-item { font-size: clamp(0.82rem, 1.8vw, 1.15rem); font-weight: 600; color: rgba(255,255,255,0.85); padding: 0.28rem 0.2rem; display: flex; align-items: center; gap: 0.4rem; }
-  .ddb-pick-num { font-size: 0.55rem; color: rgba(255,255,255,0.22); min-width: 1.2rem; }
-  .ddb-avail-item { font-size: clamp(0.78rem, 1.6vw, 1rem); color: rgba(255,255,255,0.55); padding: 0.22rem 0.2rem; }
+  .ddb-pick-item { font-size: clamp(1rem, 2.2vw, 1.4rem); font-weight: 600; color: rgba(255,255,255,0.85); padding: 0.35rem 0.2rem; display: flex; align-items: center; gap: 0.4rem; }
+  .ddb-pick-num { font-size: 0.65rem; color: rgba(255,255,255,0.22); min-width: 1.2rem; }
+  .ddb-avail-item { font-size: clamp(0.95rem, 2vw, 1.25rem); color: rgba(255,255,255,0.55); padding: 0.3rem 0.2rem; }
   .ddb-empty { font-size: 0.72rem; color: rgba(255,255,255,0.2); padding: 0.25rem; }
 
   /* ---- Captain mode (light theme) ---- */
@@ -5984,7 +5984,7 @@ function pickEntryHtml(playerName, idx) {
   const details = [];
   if (overall != null) details.push(`<span style="color:#f1c40f;">${overall}</span>`);
   if (strokes != null) details.push(`<span style="color:#2ecc71;">+${strokes}</span>`);
-  const detailStr = details.length ? `<span style="margin-left:auto;font-size:0.7em;opacity:0.7;display:flex;gap:0.5rem;">${details.join('')}</span>` : '';
+  const detailStr = details.length ? `<span style="margin-left:auto;font-size:0.85em;opacity:0.8;display:flex;gap:0.5rem;">${details.join('')}</span>` : '';
   return `<span class="ddb-pick-num">${idx + 1}.</span><span>${playerName}</span>${detailStr}`;
 }
 
@@ -6048,8 +6048,12 @@ function renderDisplayBoard(picks) {
   if (remaining.length) {
     availEl.innerHTML = remaining.map(n => {
       const pd = players.find(p => p.name === n);
-      const strokes = pd?.strokes != null ? `<span class="ddb-pick-num">+${pd.strokes}</span>` : '';
-      return `<div class="ddb-avail-item" style="display:flex;justify-content:space-between;">${n}${strokes}</div>`;
+      const overall = pd?.scouting ? Math.round(pd.scouting.avgAdj / 50 * 100) : null;
+      const stats = [];
+      if (overall != null) stats.push(`<span style="color:#f1c40f;">${overall}</span>`);
+      if (pd?.strokes != null) stats.push(`<span style="color:#2ecc71;">+${pd.strokes}</span>`);
+      const statsStr = stats.length ? `<span style="font-size:0.85em;opacity:0.8;display:flex;gap:0.5rem;">${stats.join('')}</span>` : '';
+      return `<div class="ddb-avail-item" style="display:flex;justify-content:space-between;align-items:center;">${n}${statsStr}</div>`;
     }).join('');
   } else {
     availEl.innerHTML = '<div class="ddb-empty">All drafted</div>';
