@@ -5420,18 +5420,9 @@ async function startDraftFromButton() {
     if (remaining <= 0) {
       clearInterval(preCountdownInterval);
       preCountdownInterval = null;
-      // Fade out music
-      if (preCountdownAudio) {
-        const fadeOut = setInterval(() => {
-          if (preCountdownAudio.volume > 0.05) {
-            preCountdownAudio.volume = Math.max(0, preCountdownAudio.volume - 0.05);
-          } else {
-            clearInterval(fadeOut);
-            preCountdownAudio.pause();
-            preCountdownAudio = null;
-          }
-        }, 80);
-      }
+      // Keep Final Countdown playing — it will stop when the first pick's
+      // walk-up animation dismisses it via activeWalkupDismiss, or when
+      // the song naturally ends.
       // Start the actual draft
       dbStartDraft(secs);
       return;
@@ -5603,6 +5594,8 @@ let pickCooldownUntil = 0; // timestamp (ms) — pick buttons disabled until thi
 function showWalkUpAnimation(name, team, onDismiss) {
   // Dismiss any currently playing animation + audio
   if (activeWalkupDismiss) activeWalkupDismiss();
+  // Stop pre-draft Final Countdown if still playing
+  if (preCountdownAudio) { preCountdownAudio.pause(); preCountdownAudio = null; }
   document.querySelector('.walkup-overlay')?.remove();
 
   const pd = players.find(p => p.name === name);
@@ -5930,8 +5923,6 @@ async function initCaptainMode(team) {
       const remaining = Math.ceil((new Date(s.timer_deadline).getTime() - Date.now()) / 1000);
       if (remaining > 0) {
         startDraftTimerFromDeadline(s.timer_deadline, s.timer_seconds);
-        // Set 60-second pick cooldown (synced with overlay/song duration)
-        pickCooldownUntil = Date.now() + 60000;
       } else {
         stopDraftTimerInterval();
         draftTimerDeadline = null;
@@ -5942,6 +5933,10 @@ async function initCaptainMode(team) {
     }
     // Re-render captain view so picks stay in sync across devices
     const picks = await dbLoadDraftPicks();
+    // Set 60-second pick cooldown only after an actual pick (not the initial draft start)
+    if (picks.length > 0 && s.timer_deadline) {
+      pickCooldownUntil = Date.now() + 60000;
+    }
     renderCaptainView(picks, team);
   });
 
