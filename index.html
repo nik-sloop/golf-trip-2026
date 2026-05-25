@@ -2210,6 +2210,47 @@
     to { opacity: 1; transform: scale(1); }
   }
 
+  /* End-of-draft matchup overlay */
+  .draft-final-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.97); opacity: 0; transition: opacity 0.5s ease; pointer-events: none;
+  }
+  .draft-final-overlay.active { opacity: 1; pointer-events: all; }
+  .draft-final-title {
+    font-size: clamp(1.2rem, 5vw, 2rem); font-weight: 900; letter-spacing: 0.1em;
+    text-transform: uppercase; color: #f1c40f; margin-bottom: 1.5rem;
+    opacity: 0; animation: walkupPop 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
+    text-shadow: 0 0 30px rgba(241,196,15,0.4);
+  }
+  .draft-final-vs { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+  .draft-final-team {
+    text-align: center; min-width: 140px; padding: 1rem;
+    opacity: 0;
+  }
+  .draft-final-team.red { animation: walkupFadeUp 0.5s ease-out 0.7s both; }
+  .draft-final-team.blue { animation: walkupFadeUp 0.5s ease-out 0.9s both; }
+  .draft-final-team-name { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .draft-final-team.red .draft-final-team-name { color: var(--red-light); }
+  .draft-final-team.blue .draft-final-team-name { color: var(--blue-light); }
+  .draft-final-rating { font-size: 2.5rem; font-weight: 900; color: #f1c40f; }
+  .draft-final-strokes { font-size: 0.8rem; color: #2ecc71; margin-top: 0.25rem; }
+  .draft-final-players { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 0.5rem; line-height: 1.5; }
+  .draft-final-vs-text {
+    font-size: clamp(1.5rem, 6vw, 2.5rem); font-weight: 900; color: rgba(255,255,255,0.15);
+    opacity: 0; animation: walkupPop 0.5s ease-out 0.8s both;
+  }
+  .draft-final-favorite {
+    margin-top: 1.5rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; opacity: 0; animation: walkupFadeUp 0.5s ease-out 1.2s both;
+  }
+  .draft-final-close {
+    margin-top: 2rem; padding: 0.6rem 2rem; background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 8px;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; cursor: pointer;
+    opacity: 0; animation: walkupFadeUp 0.4s ease-out 1.5s both;
+  }
+
   /* ---- Commissioner's Note ---- */
   #tab-commissioner { background: var(--gray-100); }
   .comm-masthead {
@@ -5697,6 +5738,58 @@ function showWalkUpAnimation(name, team, onDismiss) {
   activeWalkupDismiss = dismiss;
 }
 
+let draftFinalShown = false;
+
+function showDraftFinalAnimation(picks) {
+  if (draftFinalShown) return;
+  draftFinalShown = true;
+
+  const redPicks = picks.filter(p => p.team === 'red');
+  const bluePicks = picks.filter(p => p.team === 'blue');
+  const rs = getTeamStats(redPicks);
+  const bs = getTeamStats(bluePicks);
+
+  let favoriteHtml = '';
+  if (rs.avgOverall !== bs.avgOverall) {
+    const fav = rs.avgOverall > bs.avgOverall ? 'red' : 'blue';
+    const favName = fav === 'red' ? 'Team Red' : 'Team Blue';
+    const favColor = fav === 'red' ? 'var(--red-light)' : 'var(--blue-light)';
+    favoriteHtml = `<div class="draft-final-favorite" style="color:${favColor};">\u{2B50} Favorite: ${favName} \u{2B50}</div>`;
+  } else {
+    favoriteHtml = `<div class="draft-final-favorite" style="color:#f1c40f;">DEAD EVEN</div>`;
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'draft-final-overlay';
+  overlay.innerHTML = `
+    <div class="draft-final-title">Draft Complete</div>
+    <div class="draft-final-vs">
+      <div class="draft-final-team red">
+        <div class="draft-final-team-name">\u{1F534} Team Red</div>
+        <div class="draft-final-team-name" style="font-size:0.7rem;opacity:0.6;margin-bottom:0.5rem;">Nik</div>
+        <div class="draft-final-rating">${rs.avgOverall}</div>
+        <div style="font-size:0.55rem;color:rgba(255,255,255,0.35);margin-top:0.1rem;">TEAM RATING</div>
+        <div class="draft-final-strokes">+${rs.totalStrokes} strokes</div>
+        <div class="draft-final-players">${redPicks.map(p => p.player).join('<br>')}</div>
+      </div>
+      <div class="draft-final-vs-text">VS</div>
+      <div class="draft-final-team blue">
+        <div class="draft-final-team-name">\u{1F535} Team Blue</div>
+        <div class="draft-final-team-name" style="font-size:0.7rem;opacity:0.6;margin-bottom:0.5rem;">Dan</div>
+        <div class="draft-final-rating">${bs.avgOverall}</div>
+        <div style="font-size:0.55rem;color:rgba(255,255,255,0.35);margin-top:0.1rem;">TEAM RATING</div>
+        <div class="draft-final-strokes">+${bs.totalStrokes} strokes</div>
+        <div class="draft-final-players">${bluePicks.map(p => p.player).join('<br>')}</div>
+      </div>
+    </div>
+    ${favoriteHtml}
+    <button class="draft-final-close" onclick="this.closest('.draft-final-overlay').classList.remove('active');setTimeout(()=>this.closest('.draft-final-overlay').remove(),400);">CLOSE</button>`;
+
+  const fsTarget = document.fullscreenElement || document.body;
+  fsTarget.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('active'));
+}
+
 // --- Mode selector ---
 
 function showDraftModeSelector() {
@@ -5831,10 +5924,37 @@ async function initDisplayMode() {
     await Promise.all([dbResetDraft(), dbResetDraftState()]);
     draftLastPickCount = 0;
     draftStarted = false;
+    draftFinalShown = false;
     draftTimerDeadline = null;
     stopDraftTimerInterval();
     renderDisplayBoard([]);
   });
+}
+
+function getTeamStats(teamPicks) {
+  let totalStrokes = 0;
+  let totalOverall = 0;
+  let count = 0;
+  teamPicks.forEach(p => {
+    const pd = players.find(pl => pl.name === p.player);
+    if (pd) {
+      if (pd.strokes > 0) totalStrokes += pd.strokes;
+      if (pd.scouting) { totalOverall += pd.scouting.avgAdj; count++; }
+    }
+  });
+  const avgOverall = count > 0 ? Math.round(totalOverall / count / 50 * 100) : 0;
+  return { totalStrokes, avgOverall, count };
+}
+
+function pickEntryHtml(playerName, idx) {
+  const pd = players.find(p => p.name === playerName);
+  const strokes = pd?.strokes > 0 ? pd.strokes : null;
+  const overall = pd?.scouting ? Math.round(pd.scouting.avgAdj / 50 * 100) : null;
+  const details = [];
+  if (overall != null) details.push(`<span style="color:#f1c40f;">${overall}</span>`);
+  if (strokes != null) details.push(`<span style="color:#2ecc71;">+${strokes}</span>`);
+  const detailStr = details.length ? `<span style="margin-left:auto;font-size:0.7em;opacity:0.7;display:flex;gap:0.5rem;">${details.join('')}</span>` : '';
+  return `<span class="ddb-pick-num">${idx + 1}.</span><span>${playerName}</span>${detailStr}`;
 }
 
 function renderDisplayBoard(picks) {
@@ -5863,6 +5983,9 @@ function renderDisplayBoard(picks) {
     if (isDone) {
       stopDraftTimerInterval();
       clockInfo.innerHTML = `<div class="draft-clock-label">Draft Complete</div><div class="draft-clock-team done">All Players Selected!</div>${lastPickHtml}`;
+      // Trigger end-of-draft animation (delay if walk-up is playing)
+      const delay = document.querySelector('.walkup-overlay') ? 65000 : 1500;
+      setTimeout(() => showDraftFinalAnimation(picks), delay);
     } else {
       const t = dOrder[idx];
       clockInfo.innerHTML = `<div class="draft-clock-label">On The Clock &mdash; Pick ${idx + 1} of ${dOrder.length}</div>
@@ -5872,11 +5995,26 @@ function renderDisplayBoard(picks) {
 
   const redPicks = picks.filter(p => p.team === 'red');
   const bluePicks = picks.filter(p => p.team === 'blue');
+  const redStats = getTeamStats(redPicks);
+  const blueStats = getTeamStats(bluePicks);
+
+  // Update column headers with running totals
+  const redHeader = document.querySelector('.ddb-col.ddb-red .ddb-col-header');
+  const blueHeader = document.querySelector('.ddb-col.ddb-blue .ddb-col-header');
+  if (redHeader) {
+    const statsLine = redPicks.length ? `<div style="font-size:0.52rem;opacity:0.7;margin-top:0.15rem;letter-spacing:0;">Rating: ${redStats.avgOverall} · Strokes: +${redStats.totalStrokes}</div>` : '';
+    redHeader.innerHTML = `\u{1F534} Team Red &mdash; Nik${statsLine}`;
+  }
+  if (blueHeader) {
+    const statsLine = bluePicks.length ? `<div style="font-size:0.52rem;opacity:0.7;margin-top:0.15rem;letter-spacing:0;">Rating: ${blueStats.avgOverall} · Strokes: +${blueStats.totalStrokes}</div>` : '';
+    blueHeader.innerHTML = `\u{1F535} Team Blue &mdash; Dan${statsLine}`;
+  }
+
   document.getElementById('ddb-red-picks').innerHTML = redPicks.length
-    ? redPicks.map((p, i) => `<div class="ddb-pick-item"><span class="ddb-pick-num">${i+1}.</span>${p.player}</div>`).join('')
+    ? redPicks.map((p, i) => `<div class="ddb-pick-item">${pickEntryHtml(p.player, i)}</div>`).join('')
     : '<div class="ddb-empty">No picks yet</div>';
   document.getElementById('ddb-blue-picks').innerHTML = bluePicks.length
-    ? bluePicks.map((p, i) => `<div class="ddb-pick-item"><span class="ddb-pick-num">${i+1}.</span>${p.player}</div>`).join('')
+    ? bluePicks.map((p, i) => `<div class="ddb-pick-item">${pickEntryHtml(p.player, i)}</div>`).join('')
     : '<div class="ddb-empty">No picks yet</div>';
   const availEl = document.getElementById('ddb-available');
   if (remaining.length) {
@@ -6033,15 +6171,31 @@ function captainTeamsHtml(picks) {
   if (!picks.length) return '';
   const red = picks.filter(p => p.team === 'red');
   const blue = picks.filter(p => p.team === 'blue');
+  const rs = getTeamStats(red);
+  const bs = getTeamStats(blue);
+  const redStatsLine = red.length ? `<div style="font-size:0.6rem;opacity:0.6;font-weight:400;">Rating: ${rs.avgOverall} · Strokes: +${rs.totalStrokes}</div>` : '';
+  const blueStatsLine = blue.length ? `<div style="font-size:0.6rem;opacity:0.6;font-weight:400;">Rating: ${bs.avgOverall} · Strokes: +${bs.totalStrokes}</div>` : '';
+
+  function captainPickEntry(p, i) {
+    const pd = players.find(pl => pl.name === p.player);
+    const strokes = pd?.strokes > 0 ? pd.strokes : null;
+    const overall = pd?.scouting ? Math.round(pd.scouting.avgAdj / 50 * 100) : null;
+    const details = [];
+    if (overall != null) details.push(`<span style="color:#f1c40f;">${overall}</span>`);
+    if (strokes != null) details.push(`<span style="color:#2ecc71;">+${strokes}</span>`);
+    const detailStr = details.length ? `<span style="margin-left:auto;font-size:0.65rem;opacity:0.7;display:flex;gap:0.4rem;">${details.join('')}</span>` : '';
+    return `<div class="draft-pick-entry" style="display:flex;align-items:center;"><span class="dpe-num">${i+1}.</span><span>${p.player}</span>${detailStr}</div>`;
+  }
+
   return `<div class="draft-section-label" style="display:block;">Teams</div>
     <div class="draft-teams-row" style="display:grid;">
       <div class="draft-team-col red">
-        <div class="draft-team-col-header">TEAM RED — NIK</div>
-        ${red.map((p, i) => `<div class="draft-pick-entry"><span class="dpe-num">${i+1}.</span>${p.player}</div>`).join('') || '<div style="font-size:0.7rem;color:rgba(255,255,255,0.22);padding:0.2rem;">No picks yet</div>'}
+        <div class="draft-team-col-header">TEAM RED — NIK${redStatsLine}</div>
+        ${red.map((p, i) => captainPickEntry(p, i)).join('') || '<div style="font-size:0.7rem;color:rgba(255,255,255,0.22);padding:0.2rem;">No picks yet</div>'}
       </div>
       <div class="draft-team-col blue">
-        <div class="draft-team-col-header">TEAM BLUE — DAN</div>
-        ${blue.map((p, i) => `<div class="draft-pick-entry"><span class="dpe-num">${i+1}.</span>${p.player}</div>`).join('') || '<div style="font-size:0.7rem;color:rgba(255,255,255,0.22);padding:0.2rem;">No picks yet</div>'}
+        <div class="draft-team-col-header">TEAM BLUE — DAN${blueStatsLine}</div>
+        ${blue.map((p, i) => captainPickEntry(p, i)).join('') || '<div style="font-size:0.7rem;color:rgba(255,255,255,0.22);padding:0.2rem;">No picks yet</div>'}
       </div>
     </div>`;
 }
