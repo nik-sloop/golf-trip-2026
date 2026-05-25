@@ -21,7 +21,8 @@ jobs:
         run: |
           mkdir -p _deploy
           cp index.html _deploy/
-          cp *.mp3 _deploy/
+          cp *.mp3 _deploy/ 2>/dev/null || true
+          cp *.m4a _deploy/ 2>/dev/null || true
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
