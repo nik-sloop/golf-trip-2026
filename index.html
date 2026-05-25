@@ -5764,8 +5764,10 @@ function showDraftFinalAnimation(picks) {
 
   const redPicks = picks.filter(p => p.team === 'red');
   const bluePicks = picks.filter(p => p.team === 'blue');
-  const rs = getTeamStats(redPicks);
-  const bs = getTeamStats(bluePicks);
+  const redWithCaptain = [{ player: 'Nik', team: 'red' }, ...redPicks];
+  const blueWithCaptain = [{ player: 'Dan', team: 'blue' }, ...bluePicks];
+  const rs = getTeamStats(redWithCaptain);
+  const bs = getTeamStats(blueWithCaptain);
 
   let favoriteHtml = '';
   if (rs.avgOverall !== bs.avgOverall) {
@@ -5788,7 +5790,7 @@ function showDraftFinalAnimation(picks) {
         <div class="draft-final-rating">${rs.avgOverall}</div>
         <div style="font-size:0.55rem;color:rgba(255,255,255,0.35);margin-top:0.1rem;">TEAM RATING</div>
         <div class="draft-final-strokes">+${rs.totalStrokes} strokes</div>
-        <div class="draft-final-players">${redPicks.map(p => p.player).join('<br>')}</div>
+        <div class="draft-final-players">Nik<br>${redPicks.map(p => p.player).join('<br>')}</div>
       </div>
       <div class="draft-final-vs-text">VS</div>
       <div class="draft-final-team blue">
@@ -5797,7 +5799,7 @@ function showDraftFinalAnimation(picks) {
         <div class="draft-final-rating">${bs.avgOverall}</div>
         <div style="font-size:0.55rem;color:rgba(255,255,255,0.35);margin-top:0.1rem;">TEAM RATING</div>
         <div class="draft-final-strokes">+${bs.totalStrokes} strokes</div>
-        <div class="draft-final-players">${bluePicks.map(p => p.player).join('<br>')}</div>
+        <div class="draft-final-players">Dan<br>${bluePicks.map(p => p.player).join('<br>')}</div>
       </div>
     </div>
     ${favoriteHtml}
@@ -6023,27 +6025,29 @@ function renderDisplayBoard(picks) {
 
   const redPicks = picks.filter(p => p.team === 'red');
   const bluePicks = picks.filter(p => p.team === 'blue');
-  const redStats = getTeamStats(redPicks);
-  const blueStats = getTeamStats(bluePicks);
+  // Include captains in stats
+  const redWithCaptain = [{ player: 'Nik', team: 'red' }, ...redPicks];
+  const blueWithCaptain = [{ player: 'Dan', team: 'blue' }, ...bluePicks];
+  const redStats = getTeamStats(redWithCaptain);
+  const blueStats = getTeamStats(blueWithCaptain);
 
   // Update column headers with running totals
   const redHeader = document.querySelector('.ddb-col.ddb-red .ddb-col-header');
   const blueHeader = document.querySelector('.ddb-col.ddb-blue .ddb-col-header');
   if (redHeader) {
-    const statsLine = redPicks.length ? `<div style="font-size:clamp(0.6rem,1.3vw,0.8rem);opacity:0.8;margin-top:0.25rem;letter-spacing:0;">Rating: ${redStats.avgOverall} · Strokes: +${redStats.totalStrokes}</div>` : '';
+    const statsLine = `<div style="font-size:clamp(0.6rem,1.3vw,0.8rem);opacity:0.8;margin-top:0.25rem;letter-spacing:0;">Rating: ${redStats.avgOverall} · Strokes: +${redStats.totalStrokes}</div>`;
     redHeader.innerHTML = `\u{1F534} Team Red &mdash; Nik${statsLine}`;
   }
   if (blueHeader) {
-    const statsLine = bluePicks.length ? `<div style="font-size:clamp(0.6rem,1.3vw,0.8rem);opacity:0.8;margin-top:0.25rem;letter-spacing:0;">Rating: ${blueStats.avgOverall} · Strokes: +${blueStats.totalStrokes}</div>` : '';
+    const statsLine = `<div style="font-size:clamp(0.6rem,1.3vw,0.8rem);opacity:0.8;margin-top:0.25rem;letter-spacing:0;">Rating: ${blueStats.avgOverall} · Strokes: +${blueStats.totalStrokes}</div>`;
     blueHeader.innerHTML = `\u{1F535} Team Blue &mdash; Dan${statsLine}`;
   }
 
-  document.getElementById('ddb-red-picks').innerHTML = redPicks.length
-    ? redPicks.map((p, i) => `<div class="ddb-pick-item">${pickEntryHtml(p.player, i)}</div>`).join('')
-    : '<div class="ddb-empty">No picks yet</div>';
-  document.getElementById('ddb-blue-picks').innerHTML = bluePicks.length
-    ? bluePicks.map((p, i) => `<div class="ddb-pick-item">${pickEntryHtml(p.player, i)}</div>`).join('')
-    : '<div class="ddb-empty">No picks yet</div>';
+  const captainEntry = (name) => `<div class="ddb-pick-item" style="opacity:0.6;"><span class="ddb-pick-num">C</span><span>${name}</span>${(() => { const pd = players.find(p => p.name === name); const o = pd?.scouting ? Math.round(pd.scouting.avgAdj/50*100) : null; const s = pd?.strokes != null ? pd.strokes : null; const d = []; if(o!=null)d.push('<span style="color:#f1c40f;">'+o+'</span>'); if(s!=null)d.push('<span style="color:#2ecc71;">+'+s+'</span>'); return d.length ? '<span style="margin-left:auto;font-size:0.85em;opacity:0.8;display:flex;gap:0.5rem;">'+d.join('')+'</span>' : ''; })()}</div>`;
+  document.getElementById('ddb-red-picks').innerHTML = captainEntry('Nik') +
+    (redPicks.length ? redPicks.map((p, i) => `<div class="ddb-pick-item">${pickEntryHtml(p.player, i)}</div>`).join('') : '');
+  document.getElementById('ddb-blue-picks').innerHTML = captainEntry('Dan') +
+    (bluePicks.length ? bluePicks.map((p, i) => `<div class="ddb-pick-item">${pickEntryHtml(p.player, i)}</div>`).join('') : '');
   const availEl = document.getElementById('ddb-available');
   if (remaining.length) {
     availEl.innerHTML = remaining.map(n => {
@@ -6200,15 +6204,16 @@ function renderCaptainView(picks, team) {
 }
 
 function captainTeamsHtml(picks) {
-  if (!picks.length) return '';
   const red = picks.filter(p => p.team === 'red');
   const blue = picks.filter(p => p.team === 'blue');
-  const rs = getTeamStats(red);
-  const bs = getTeamStats(blue);
-  const redStatsLine = red.length ? `<div style="font-size:0.6rem;opacity:0.6;font-weight:400;">Rating: ${rs.avgOverall} · Strokes: +${rs.totalStrokes}</div>` : '';
-  const blueStatsLine = blue.length ? `<div style="font-size:0.6rem;opacity:0.6;font-weight:400;">Rating: ${bs.avgOverall} · Strokes: +${bs.totalStrokes}</div>` : '';
+  const redWithCaptain = [{ player: 'Nik', team: 'red' }, ...red];
+  const blueWithCaptain = [{ player: 'Dan', team: 'blue' }, ...blue];
+  const rs = getTeamStats(redWithCaptain);
+  const bs = getTeamStats(blueWithCaptain);
+  const redStatsLine = `<div style="font-size:0.6rem;opacity:0.6;font-weight:400;">Rating: ${rs.avgOverall} · Strokes: +${rs.totalStrokes}</div>`;
+  const blueStatsLine = `<div style="font-size:0.6rem;opacity:0.6;font-weight:400;">Rating: ${bs.avgOverall} · Strokes: +${bs.totalStrokes}</div>`;
 
-  function captainPickEntry(p, i) {
+  function captainPickEntry(p, i, isCaptain) {
     const pd = players.find(pl => pl.name === p.player);
     const strokes = pd?.strokes != null ? pd.strokes : null;
     const overall = pd?.scouting ? Math.round(pd.scouting.avgAdj / 50 * 100) : null;
@@ -6216,18 +6221,22 @@ function captainTeamsHtml(picks) {
     if (overall != null) details.push(`<span style="color:#f1c40f;">${overall}</span>`);
     if (strokes != null) details.push(`<span style="color:#2ecc71;">+${strokes}</span>`);
     const detailStr = details.length ? `<span style="margin-left:auto;font-size:0.65rem;opacity:0.7;display:flex;gap:0.4rem;">${details.join('')}</span>` : '';
-    return `<div class="draft-pick-entry" style="display:flex;align-items:center;"><span class="dpe-num">${i+1}.</span><span>${p.player}</span>${detailStr}</div>`;
+    const label = isCaptain ? 'C' : `${i+1}.`;
+    const opacity = isCaptain ? 'opacity:0.6;' : '';
+    return `<div class="draft-pick-entry" style="display:flex;align-items:center;${opacity}"><span class="dpe-num">${label}</span><span>${p.player}</span>${detailStr}</div>`;
   }
 
   return `<div class="draft-section-label" style="display:block;">Teams</div>
     <div class="draft-teams-row" style="display:grid;">
       <div class="draft-team-col red">
         <div class="draft-team-col-header">TEAM RED — NIK${redStatsLine}</div>
-        ${red.map((p, i) => captainPickEntry(p, i)).join('') || '<div style="font-size:0.7rem;color:rgba(255,255,255,0.22);padding:0.2rem;">No picks yet</div>'}
+        ${captainPickEntry({ player: 'Nik' }, 0, true)}
+        ${red.map((p, i) => captainPickEntry(p, i, false)).join('')}
       </div>
       <div class="draft-team-col blue">
         <div class="draft-team-col-header">TEAM BLUE — DAN${blueStatsLine}</div>
-        ${blue.map((p, i) => captainPickEntry(p, i)).join('') || '<div style="font-size:0.7rem;color:rgba(255,255,255,0.22);padding:0.2rem;">No picks yet</div>'}
+        ${captainPickEntry({ player: 'Dan' }, 0, true)}
+        ${blue.map((p, i) => captainPickEntry(p, i, false)).join('')}
       </div>
     </div>`;
 }
