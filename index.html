@@ -5268,6 +5268,23 @@ let draftChannel = null;
 let draftStateChannel = null;
 let draftLastPickCount = 0;
 
+// Audio unlock — browsers block programmatic audio until a user gesture occurs.
+// We pre-load the chime and play a silent snippet on first click to unlock it.
+let draftAudioCtx = null;
+function unlockDraftAudio() {
+  if (draftAudioCtx) return;
+  try {
+    draftAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    draftAudioCtx.resume();
+    // Play a tiny silent buffer to fully unlock HTMLAudioElement playback
+    const buf = draftAudioCtx.createBuffer(1, 1, 22050);
+    const src = draftAudioCtx.createBufferSource();
+    src.buffer = buf;
+    src.connect(draftAudioCtx.destination);
+    src.start();
+  } catch(e) {}
+}
+
 // Timer state — deadline-based, synced via draft_state table
 let draftStarted = false;
 let draftTimerDeadline = null;  // Date object (UTC)
@@ -5486,7 +5503,6 @@ function subscribeToDraftPicks(callback) {
 // --- Walk-up animation (shared across modes) ---
 
 function showWalkUpAnimation(name, team, onDismiss) {
-  console.log('[DRAFT] showWalkUpAnimation called:', name, team);
   document.querySelector('.walkup-overlay')?.remove();
 
   const pd = players.find(p => p.name === name);
@@ -5584,6 +5600,9 @@ function showDraftModeSelector() {
 async function initDisplayMode() {
   stopDraftTimerInterval();
   document.body.classList.add('draft-display-active');
+  // Unlock audio on any click/tap so subscription-triggered sounds can play
+  document.addEventListener('click', unlockDraftAudio, { once: true });
+  document.addEventListener('touchstart', unlockDraftAudio, { once: true });
   document.getElementById('draft-mode-selector').style.display = 'none';
   document.getElementById('draft-display-mode').style.display = '';
   document.getElementById('draft-captain-mode').style.display = 'none';
@@ -5604,15 +5623,12 @@ async function initDisplayMode() {
 
   // Subscribe to pick changes — rendering + walk-up
   subscribeToDraftPicks(async () => {
-    console.log('[DRAFT] draft_picks event received');
     const picks = await dbLoadDraftPicks();
     const isNewPick = picks.length > draftLastPickCount;
     const newPick = isNewPick ? picks[picks.length - 1] : null;
-    console.log('[DRAFT-PICKS] picks:', picks.length, 'lastCount:', draftLastPickCount, 'isNew:', isNewPick);
     draftLastPickCount = picks.length;
     renderDisplayBoard(picks);
     if (newPick) {
-      console.log('[DRAFT-PICKS] triggering animation for', newPick.player);
       showWalkUpAnimation(newPick.player, newPick.team, null);
     }
   });
@@ -5620,7 +5636,6 @@ async function initDisplayMode() {
   // Subscribe to draft_state changes — timer sync + walk-up fallback
   subscribeToDraftState(async payload => {
     const s = payload.new;
-    console.log('[DRAFT] draft_state event received', s);
     draftStarted = s.started;
     if (s.timer_deadline) {
       const remaining = Math.ceil((new Date(s.timer_deadline).getTime() - Date.now()) / 1000);
@@ -5638,11 +5653,9 @@ async function initDisplayMode() {
     const picks = await dbLoadDraftPicks();
     const isNewPick = picks.length > draftLastPickCount;
     const newPick = isNewPick ? picks[picks.length - 1] : null;
-    console.log('[DRAFT] picks:', picks.length, 'lastCount:', draftLastPickCount, 'isNew:', isNewPick, newPick?.player);
     draftLastPickCount = picks.length;
     renderDisplayBoard(picks);
     if (newPick) {
-      console.log('[DRAFT] triggering animation for', newPick.player);
       showWalkUpAnimation(newPick.player, newPick.team, null);
     }
   });
