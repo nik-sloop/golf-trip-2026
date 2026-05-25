@@ -1912,22 +1912,11 @@
     font-weight: 700;
     margin: 0 0.25rem;
   }
-  /* ---- Draft tab: full-screen overlay, light theme to match app ---- */
-  #tab-draft.active {
-    display: block !important;
-    position: fixed;
-    inset: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    background: var(--gray-100);
-    color: var(--gray-800);
-    z-index: 50;
-  }
-
-  /* ---- Draft Display Mode (TV/laptop) — keeps dark theme intentionally ---- */
-  body.draft-display-active .container,
+  /* ---- Draft Display Mode (TV/laptop) — full-screen dark overlay ---- */
+  body.draft-display-active header,
+  body.draft-display-active #countdown-banner,
   body.draft-display-active #bottom-nav,
-  body.draft-display-active #countdown-banner { display: none !important; }
+  body.draft-display-active .tab-content:not(#tab-draft) { display: none !important; }
   body.draft-display-active #tab-draft {
     display: block !important;
     position: fixed;
@@ -2169,6 +2158,47 @@
   </div>
 
   <!-- TAB: Draft Live (hidden unless #draft-live) -->
+  <div class="tab-content" id="tab-draft" style="display:none;">
+    <!-- Mode selector -->
+    <div id="draft-mode-selector" style="display:none;">
+      <div class="dms-wrap">
+        <div class="dms-title">Select Your Role</div>
+        <div class="dms-btns" id="dms-btns"></div>
+      </div>
+    </div>
+    <!-- Display mode (laptop / TV) -->
+    <div id="draft-display-mode" style="display:none;">
+      <div id="draft-clock" class="draft-clock"></div>
+      <div class="draft-board" id="draft-board">
+        <div class="ddb-col ddb-red">
+          <div class="ddb-col-header red">&#128308; Team Red &mdash; Nik</div>
+          <div id="ddb-red-picks"></div>
+        </div>
+        <div class="ddb-col ddb-avail">
+          <div class="ddb-col-header avail">Available</div>
+          <div id="ddb-available"></div>
+        </div>
+        <div class="ddb-col ddb-blue">
+          <div class="ddb-col-header blue">&#128309; Team Blue &mdash; Dan</div>
+          <div id="ddb-blue-picks"></div>
+        </div>
+      </div>
+      <div class="draft-admin-bar" style="padding-bottom:1rem;">
+        <button class="draft-admin-btn" id="display-undo-btn" disabled>&#8617; Undo</button>
+        <button class="draft-admin-btn" id="display-reset-btn">&#8635; Reset</button>
+        <button class="draft-admin-btn" id="display-mode-btn">&#9881; Mode</button>
+      </div>
+    </div>
+    <!-- Captain mode (phone) -->
+    <div id="draft-captain-mode" style="display:none;">
+      <div class="draft-admin-bar">
+        <button class="draft-admin-btn" id="captain-mode-btn">&#9881; Change Mode</button>
+      </div>
+      <div id="draft-captain-header" class="draft-header"></div>
+      <div id="draft-captain-body"></div>
+    </div>
+  </div>
+
   <!-- TAB: Vote -->
   <div class="tab-content" id="tab-vote">
     <h2 class="section-title">Captain Vote</h2>
@@ -2192,48 +2222,6 @@
     </div>
   </div>
 
-</div>
-
-<!-- Draft Tab (outside .container so display mode can hide container without hiding this) -->
-<div class="tab-content" id="tab-draft" style="display:none;">
-  <!-- Mode selector -->
-  <div id="draft-mode-selector" style="display:none;">
-    <div class="dms-wrap">
-      <div class="dms-title">Select Your Role</div>
-      <div class="dms-btns" id="dms-btns"></div>
-    </div>
-  </div>
-  <!-- Display mode (laptop / TV) -->
-  <div id="draft-display-mode" style="display:none;">
-    <div id="draft-clock" class="draft-clock"></div>
-    <div class="draft-board" id="draft-board">
-      <div class="ddb-col ddb-red">
-        <div class="ddb-col-header red">&#128308; Team Red &mdash; Nik</div>
-        <div id="ddb-red-picks"></div>
-      </div>
-      <div class="ddb-col ddb-avail">
-        <div class="ddb-col-header avail">Available</div>
-        <div id="ddb-available"></div>
-      </div>
-      <div class="ddb-col ddb-blue">
-        <div class="ddb-col-header blue">&#128309; Team Blue &mdash; Dan</div>
-        <div id="ddb-blue-picks"></div>
-      </div>
-    </div>
-    <div class="draft-admin-bar" style="padding-bottom:1rem;">
-      <button class="draft-admin-btn" id="display-undo-btn" disabled>&#8617; Undo</button>
-      <button class="draft-admin-btn" id="display-reset-btn">&#8635; Reset</button>
-      <button class="draft-admin-btn" id="display-mode-btn">&#9881; Mode</button>
-    </div>
-  </div>
-  <!-- Captain mode (phone) -->
-  <div id="draft-captain-mode" style="display:none;">
-    <div class="draft-admin-bar">
-      <button class="draft-admin-btn" id="captain-mode-btn">&#9881; Change Mode</button>
-    </div>
-    <div id="draft-captain-header" class="draft-header"></div>
-    <div id="draft-captain-body"></div>
-  </div>
 </div>
 
 <!-- Bottom Navigation (mobile only) -->
