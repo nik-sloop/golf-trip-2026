@@ -5744,6 +5744,11 @@ function showDraftFinalAnimation(picks) {
   if (draftFinalShown) return;
   draftFinalShown = true;
 
+  // Play a random hype song
+  const finalSong = new Audio(getNextHypeSong());
+  finalSong.volume = 0.85;
+  finalSong.play().catch(() => {});
+
   const redPicks = picks.filter(p => p.team === 'red');
   const bluePicks = picks.filter(p => p.team === 'blue');
   const rs = getTeamStats(redPicks);
@@ -5783,11 +5788,17 @@ function showDraftFinalAnimation(picks) {
       </div>
     </div>
     ${favoriteHtml}
-    <button class="draft-final-close" onclick="this.closest('.draft-final-overlay').classList.remove('active');setTimeout(()=>this.closest('.draft-final-overlay').remove(),400);">CLOSE</button>`;
+    <button class="draft-final-close" id="draft-final-close-btn">CLOSE</button>`;
 
   const fsTarget = document.fullscreenElement || document.body;
   fsTarget.appendChild(overlay);
   requestAnimationFrame(() => overlay.classList.add('active'));
+
+  document.getElementById('draft-final-close-btn').addEventListener('click', () => {
+    finalSong.pause(); finalSong.currentTime = 0;
+    overlay.classList.remove('active');
+    setTimeout(() => overlay.remove(), 400);
+  });
 }
 
 // --- Mode selector ---
