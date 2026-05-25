@@ -5790,7 +5790,7 @@ function showDraftFinalAnimation(picks) {
         <div class="draft-final-rating">${rs.avgOverall}</div>
         <div style="font-size:0.55rem;color:rgba(255,255,255,0.35);margin-top:0.1rem;">TEAM RATING</div>
         <div class="draft-final-strokes">+${rs.totalStrokes} strokes</div>
-        <div class="draft-final-players">Nik<br>${redPicks.map(p => p.player).join('<br>')}</div>
+        <div class="draft-final-players"><span style="color:#f1c40f;">C — Nik</span><br>${redPicks.map(p => p.player).join('<br>')}</div>
       </div>
       <div class="draft-final-vs-text">VS</div>
       <div class="draft-final-team blue">
@@ -5799,7 +5799,7 @@ function showDraftFinalAnimation(picks) {
         <div class="draft-final-rating">${bs.avgOverall}</div>
         <div style="font-size:0.55rem;color:rgba(255,255,255,0.35);margin-top:0.1rem;">TEAM RATING</div>
         <div class="draft-final-strokes">+${bs.totalStrokes} strokes</div>
-        <div class="draft-final-players">Dan<br>${bluePicks.map(p => p.player).join('<br>')}</div>
+        <div class="draft-final-players"><span style="color:#f1c40f;">C — Dan</span><br>${bluePicks.map(p => p.player).join('<br>')}</div>
       </div>
     </div>
     ${favoriteHtml}
