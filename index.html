@@ -5144,7 +5144,7 @@ async function captainPick(name, team, pickNumber) {
   try {
     await dbInsertDraftPick(pickNumber, team, name);
   } catch (err) {
-    alert('Error submitting pick. Please try again.');
+    alert('Pick failed: ' + (err?.message || err?.details || JSON.stringify(err)));
     console.error(err);
   }
 }
