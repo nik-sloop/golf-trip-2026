@@ -5658,6 +5658,7 @@ async function initCaptainMode(team) {
   // Load picks and draft state in parallel
   const [picks, state] = await Promise.all([dbLoadDraftPicks(), dbLoadDraftState()]);
   draftStarted = state.started;
+  if (state.timer_seconds) draftTimerTotalSecs = state.timer_seconds;
   renderCaptainView(picks, team);
 
   // Only start timer if draft has been started and deadline is in the future
@@ -5777,7 +5778,7 @@ async function captainPick(name, team, pickNumber) {
     await dbInsertDraftPick(pickNumber, team, name);
     const picks = await dbLoadDraftPicks();
     renderCaptainView(picks, team);
-    const secs = draftSettings.timerSeconds;
+    const secs = draftTimerTotalSecs || draftSettings.timerSeconds;
     if (secs > 0 && picks.length < getDraftOrder().length) {
       await dbResetTimerDeadline(secs);
     } else {
