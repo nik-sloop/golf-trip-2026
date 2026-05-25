@@ -2797,20 +2797,20 @@ const players = [
     { gross: 103, net: 79, par: 70 },
     { gross: 103, net: 80, par: 72 }
   ], scouting: { driving: { range: "4-8", avg: 6 }, irons: { range: "5-7", avg: 6 }, chipping: { range: "5-7", avg: 6 }, putting: { range: "5-6", avg: 5.5 }, mental: { range: "7-8", avg: 7.5 }, total: "26-36", avg: 31, avgAdj: 31 }},
-  { name: "Sam", handicap: 25.8, strokes: 15, scores: [
+  { name: "Sam", handicap: 25.8, strokes: 18, scores: [
     { gross: 49, net: 37, par: 34 },
     { gross: 50, net: 38, par: 35 },
     { gross: 116, net: 91, par: 71 }
   ], scouting: { driving: { range: "2-7", avg: 5 }, irons: { range: "4-7", avg: 6 }, chipping: { range: "5-7", avg: 6 }, putting: { range: "6-7", avg: 6.5 }, mental: { range: "5-8", avg: 7 }, total: "22-36", avg: 29, avgAdj: 30.5 }},
-  { name: "Ryan", handicap: 26.8, strokes: 18, scores: [
+  { name: "Ryan", handicap: 26.8, strokes: 15, scores: [
     { gross: 99, net: 72, par: 72 },
     { gross: 113, net: 84, par: 72 },
     { gross: 102, net: 79, par: 67 },
     { gross: 104, net: 72, par: 71 }
   ], scouting: { driving: { range: "1-7", avg: 4 }, irons: { range: "5-7", avg: 6 }, chipping: { range: "4-7", avg: 5.5 }, putting: { range: "5-6", avg: 5.5 }, mental: { range: "6-8", avg: 7 }, total: "21-35", avg: 28, avgAdj: 28 }},
-  { name: "Dylan", handicap: 26.8, strokes: 18, scores: [],
+  { name: "Dylan", handicap: 26.8, strokes: 12, scores: [],
     scouting: { driving: { range: "2-9", avg: 5 }, irons: { range: "5-8", avg: 7 }, chipping: { range: "5-7", avg: 6 }, putting: { range: "5-7", avg: 7 }, mental: { range: "5-8", avg: 7 }, total: "22-39", avg: 30.5, avgAdj: 32 }},
-  { name: "Ant", handicap: 26.9, strokes: 18, scores: [
+  { name: "Ant", handicap: 26.9, strokes: 15, scores: [
     { gross: 48, net: 35, par: 35 }
   ], scouting: { driving: { range: "1-6", avg: 4 }, irons: { range: "4-8", avg: 6 }, chipping: { range: "5-8", avg: 6.5 }, putting: { range: "6-8", avg: 7 }, mental: { range: "5-8", avg: 7 }, total: "21-38", avg: 29.5, avgAdj: 30.5 }},
   { name: "Garret", handicap: 27.3, strokes: 18, scores: [],
@@ -5644,7 +5644,7 @@ function showWalkUpAnimation(name, team, onDismiss) {
 
   const pd = players.find(p => p.name === name);
   const sc = pd?.scouting;
-  const strokes = pd?.strokes > 0 ? pd.strokes : null;
+  const strokes = pd?.strokes != null ? pd.strokes : null;
   const spotlightColor = team === 'red' ? 'rgba(192,57,43,0.28)' : 'rgba(36,113,163,0.28)';
   const teamLabel = team === 'red' ? '\u{1F534} Team Red' : '\u{1F535} Team Blue';
   const teamName = team === 'red' ? 'Team Red' : 'Team Blue';
@@ -5717,13 +5717,10 @@ function showWalkUpAnimation(name, team, onDismiss) {
     overlay.querySelector('.walkup-reveal').classList.add('visible');
   }, REVEAL_DELAY);
 
-  // Auto-dismiss overlay after 60s — music keeps playing
+  // Auto-dismiss overlay after 60s — stops music and fires onDismiss
   const OVERLAY_DURATION = 60000;
   setTimeout(() => {
-    if (!overlay._dismissed) {
-      overlay.classList.remove('active');
-      setTimeout(() => overlay.remove(), 380);
-    }
+    if (!overlay._dismissed) dismiss();
   }, OVERLAY_DURATION);
 
   function dismiss() {
@@ -5861,6 +5858,11 @@ async function initDisplayMode() {
   draftStarted = state.started;
   renderDisplayBoard(picks);
 
+  // If draft already complete on load, show final animation immediately
+  if (picks.length >= getDraftOrder().length) {
+    setTimeout(() => showDraftFinalAnimation(picks), 1500);
+  }
+
   // If draft is started and timer is still running, sync from deadline
   if (state.started && state.timer_deadline) {
     const remaining = Math.ceil((new Date(state.timer_deadline).getTime() - Date.now()) / 1000);
@@ -5877,7 +5879,8 @@ async function initDisplayMode() {
     draftLastPickCount = picks.length;
     renderDisplayBoard(picks);
     if (newPick) {
-      showWalkUpAnimation(newPick.player, newPick.team, null);
+      const isDone = picks.length >= getDraftOrder().length;
+      showWalkUpAnimation(newPick.player, newPick.team, isDone ? () => showDraftFinalAnimation(picks) : null);
     }
   });
 
@@ -5904,7 +5907,8 @@ async function initDisplayMode() {
     draftLastPickCount = picks.length;
     renderDisplayBoard(picks);
     if (newPick) {
-      showWalkUpAnimation(newPick.player, newPick.team, null);
+      const isDone = picks.length >= getDraftOrder().length;
+      showWalkUpAnimation(newPick.player, newPick.team, isDone ? () => showDraftFinalAnimation(picks) : null);
     }
   });
 
@@ -5975,7 +5979,7 @@ function getTeamStats(teamPicks) {
 
 function pickEntryHtml(playerName, idx) {
   const pd = players.find(p => p.name === playerName);
-  const strokes = pd?.strokes > 0 ? pd.strokes : null;
+  const strokes = pd?.strokes != null ? pd.strokes : null;
   const overall = pd?.scouting ? Math.round(pd.scouting.avgAdj / 50 * 100) : null;
   const details = [];
   if (overall != null) details.push(`<span style="color:#f1c40f;">${overall}</span>`);
@@ -6010,9 +6014,6 @@ function renderDisplayBoard(picks) {
     if (isDone) {
       stopDraftTimerInterval();
       clockInfo.innerHTML = `<div class="draft-clock-label">Draft Complete</div><div class="draft-clock-team done">All Players Selected!</div>${lastPickHtml}`;
-      // Trigger end-of-draft animation (delay if walk-up is playing)
-      const delay = document.querySelector('.walkup-overlay') ? 65000 : 1500;
-      setTimeout(() => showDraftFinalAnimation(picks), delay);
     } else {
       const t = dOrder[idx];
       clockInfo.innerHTML = `<div class="draft-clock-label">On The Clock &mdash; Pick ${idx + 1} of ${dOrder.length}</div>
@@ -6047,7 +6048,7 @@ function renderDisplayBoard(picks) {
   if (remaining.length) {
     availEl.innerHTML = remaining.map(n => {
       const pd = players.find(p => p.name === n);
-      const strokes = pd?.strokes > 0 ? `<span class="ddb-pick-num">${pd.strokes} str</span>` : '';
+      const strokes = pd?.strokes != null ? `<span class="ddb-pick-num">+${pd.strokes}</span>` : '';
       return `<div class="ddb-avail-item" style="display:flex;justify-content:space-between;">${n}${strokes}</div>`;
     }).join('');
   } else {
@@ -6205,7 +6206,7 @@ function captainTeamsHtml(picks) {
 
   function captainPickEntry(p, i) {
     const pd = players.find(pl => pl.name === p.player);
-    const strokes = pd?.strokes > 0 ? pd.strokes : null;
+    const strokes = pd?.strokes != null ? pd.strokes : null;
     const overall = pd?.scouting ? Math.round(pd.scouting.avgAdj / 50 * 100) : null;
     const details = [];
     if (overall != null) details.push(`<span style="color:#f1c40f;">${overall}</span>`);
