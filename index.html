@@ -5145,6 +5145,8 @@ function captainTeamsHtml(picks) {
 async function captainPick(name, team, pickNumber) {
   try {
     await dbInsertDraftPick(pickNumber, team, name);
+    const picks = await dbLoadDraftPicks();
+    renderCaptainView(picks, team);
   } catch (err) {
     alert('Pick failed: ' + (err?.message || err?.details || JSON.stringify(err)));
     console.error(err);
