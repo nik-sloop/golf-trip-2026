@@ -5738,6 +5738,22 @@ function showWalkUpAnimation(name, team, onDismiss) {
   activeWalkupDismiss = dismiss;
 }
 
+// Global spacebar skip — dismisses any active overlay/cooldown for faster testing
+document.addEventListener('keydown', (e) => {
+  if (e.code !== 'Space') return;
+  // Don't intercept if typing in an input
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  e.preventDefault();
+
+  // Skip walk-up animation
+  if (activeWalkupDismiss) { activeWalkupDismiss(); }
+  // Skip pick cooldown
+  if (pickCooldownUntil > Date.now()) { pickCooldownUntil = 0; }
+  // Skip end-of-draft overlay
+  const finalClose = document.getElementById('draft-final-close-btn');
+  if (finalClose) { finalClose.click(); }
+});
+
 let draftFinalShown = false;
 
 function showDraftFinalAnimation(picks) {
