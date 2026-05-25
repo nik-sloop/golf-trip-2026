@@ -1998,6 +1998,87 @@
   .draft-admin-btn { background: white; border: 1px solid var(--gray-200); border-radius: 6px; color: var(--gray-800); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.9rem; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
   .draft-admin-btn:disabled { opacity: 0.35; cursor: default; }
 
+  /* ---- Draft Settings Panel ---- */
+  #draft-settings-panel {
+    position: fixed; inset: 0; z-index: 500;
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .dsp-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
+  .dsp-sheet {
+    position: relative; background: white;
+    border-radius: 20px 20px 0 0;
+    max-height: 88vh; overflow-y: auto;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .dsp-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid var(--gray-200);
+    position: sticky; top: 0; background: white; z-index: 1;
+  }
+  .dsp-title { font-size: 1rem; font-weight: 800; color: var(--gray-800); }
+  .dsp-close-btn {
+    background: var(--gray-200); border: none; border-radius: 50%;
+    width: 1.75rem; height: 1.75rem; font-size: 0.8rem;
+    cursor: pointer; color: var(--gray-800); line-height: 1.75rem; text-align: center;
+  }
+  .dsp-body { padding: 1rem 1.25rem; }
+  .dsp-field { margin-bottom: 1.5rem; }
+  .dsp-label {
+    display: block; font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--gray-500); margin-bottom: 0.6rem;
+  }
+  .dsp-timer-row { display: flex; align-items: center; gap: 0.75rem; }
+  .dsp-timer-input {
+    width: 6rem; padding: 0.45rem 0.75rem;
+    border: 1.5px solid var(--gray-200); border-radius: 8px;
+    font-size: 1.1rem; font-weight: 700; color: var(--gray-800); font-family: inherit;
+  }
+  .dsp-timer-input:focus { outline: none; border-color: var(--green-mid); }
+  .dsp-timer-hint { font-size: 0.75rem; color: var(--gray-500); }
+  .dsp-order-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-top: 0.5rem; }
+  .dsp-order-pick { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+  .dsp-order-num { font-size: 0.6rem; color: var(--gray-500); font-weight: 600; }
+  .dsp-order-btn {
+    width: 100%; aspect-ratio: 1/1; border-radius: 8px; border: none;
+    font-size: 0.8rem; font-weight: 800; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    touch-action: manipulation;
+  }
+  .dsp-order-btn.red { background: var(--red); color: white; }
+  .dsp-order-btn.blue { background: var(--blue); color: white; }
+  .dsp-order-hint { font-size: 0.72rem; color: var(--gray-500); margin-top: 0.6rem; text-align: center; }
+  .dsp-footer { padding: 0.75rem 1.25rem 1.5rem; }
+  .dsp-save-btn {
+    width: 100%; padding: 0.8rem; background: var(--green-dark);
+    color: white; border: none; border-radius: 10px;
+    font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  /* Draft start button (display mode) */
+  .draft-start-area { text-align: center; padding: 0.75rem 1rem 0; }
+  .draft-start-btn {
+    padding: 0.65rem 2.5rem; background: var(--green-mid); color: white;
+    border: none; border-radius: 10px; font-size: 1rem; font-weight: 700;
+    cursor: pointer; font-family: inherit; letter-spacing: 0.02em;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.35); touch-action: manipulation;
+  }
+  /* Countdown timer in display mode */
+  .draft-timer-wrap { margin-top: 0.5rem; }
+  .draft-timer-count {
+    font-size: clamp(2rem, 7vw, 4rem); font-weight: 900;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.02em; color: white;
+  }
+  .draft-timer-count.low { color: #e74c3c; animation: timer-pulse 0.5s ease infinite alternate; }
+  @keyframes timer-pulse { from { opacity: 1; } to { opacity: 0.35; } }
+  .draft-timer-bar-wrap {
+    width: min(260px, 65%); margin: 0.3rem auto 0;
+    height: 3px; background: rgba(255,255,255,0.12); border-radius: 2px; overflow: hidden;
+  }
+  .draft-timer-bar { height: 100%; background: rgba(255,255,255,0.55); border-radius: 2px; transition: width 0.9s linear; }
+  .draft-timer-bar.low { background: #e74c3c; }
+
   /* Walk-up animation overlay */
   .walkup-overlay {
     position: fixed;
@@ -2164,10 +2245,16 @@
       <div class="dms-wrap">
         <div class="dms-title">Select Your Role</div>
         <div class="dms-btns" id="dms-btns"></div>
+        <div style="text-align:center;margin-top:1.25rem;">
+          <button class="draft-admin-btn" onclick="openDraftSettings()">&#9881; Settings</button>
+        </div>
       </div>
     </div>
     <!-- Display mode (laptop / TV) -->
     <div id="draft-display-mode" style="display:none;">
+      <div id="draft-start-area" class="draft-start-area" style="display:none;">
+        <button class="draft-start-btn" onclick="startDraftFromButton()">&#9654; Start Draft</button>
+      </div>
       <div id="draft-clock" class="draft-clock"></div>
       <div class="draft-board" id="draft-board">
         <div class="ddb-col ddb-red">
@@ -2186,16 +2273,44 @@
       <div class="draft-admin-bar" style="padding-bottom:1rem;">
         <button class="draft-admin-btn" id="display-undo-btn" disabled>&#8617; Undo</button>
         <button class="draft-admin-btn" id="display-reset-btn">&#8635; Reset</button>
-        <button class="draft-admin-btn" id="display-mode-btn">&#9881; Mode</button>
+        <button class="draft-admin-btn" onclick="openDraftSettings()">&#9881; Settings</button>
+        <button class="draft-admin-btn" id="display-mode-btn">&#8594; Mode</button>
       </div>
     </div>
     <!-- Captain mode (phone) -->
     <div id="draft-captain-mode" style="display:none;">
       <div class="draft-admin-bar">
-        <button class="draft-admin-btn" id="captain-mode-btn">&#9881; Change Mode</button>
+        <button class="draft-admin-btn" id="captain-mode-btn">&#8594; Change Mode</button>
+        <button class="draft-admin-btn" onclick="openDraftSettings()">&#9881; Settings</button>
       </div>
       <div id="draft-captain-header" class="draft-header"></div>
       <div id="draft-captain-body"></div>
+    </div>
+    <!-- Draft Settings Panel -->
+    <div id="draft-settings-panel" style="display:none;">
+      <div class="dsp-overlay" onclick="closeDraftSettings()"></div>
+      <div class="dsp-sheet">
+        <div class="dsp-header">
+          <span class="dsp-title">Draft Settings</span>
+          <button class="dsp-close-btn" onclick="closeDraftSettings()">&#10005;</button>
+        </div>
+        <div class="dsp-body">
+          <div class="dsp-field">
+            <label class="dsp-label">Seconds per pick</label>
+            <div class="dsp-timer-row">
+              <input class="dsp-timer-input" type="number" id="dsp-timer-input" min="0" max="300" step="5">
+              <span class="dsp-timer-hint">0 = no timer</span>
+            </div>
+          </div>
+          <div class="dsp-field">
+            <label class="dsp-label">Draft Order</label>
+            <div id="dsp-order-editor"></div>
+          </div>
+        </div>
+        <div class="dsp-footer">
+          <button class="dsp-save-btn" onclick="saveDraftSettings()">Save Settings</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -4828,8 +4943,26 @@ function applyCaptainReveals(redCaptain, blueCaptain) {
 
 // ---- Live Draft ----
 
-// Pick order: 'red' = Nik, 'blue' = Dan — edit this array to set the draft order
-const DRAFT_ORDER = ['red', 'blue', 'blue', 'red', 'red', 'blue', 'blue', 'red', 'red', 'blue'];
+const DRAFT_ORDER_DEFAULT = ['red','blue','blue','red','red','blue','blue','red','red','blue'];
+const DRAFT_SETTINGS_KEY = 'draft_settings_2026';
+
+function loadDraftSettings() {
+  try {
+    const raw = localStorage.getItem(DRAFT_SETTINGS_KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      return {
+        timerSeconds: typeof s.timerSeconds === 'number' ? Math.max(0, s.timerSeconds) : 60,
+        draftOrder: Array.isArray(s.draftOrder) && s.draftOrder.length === DRAFT_ORDER_DEFAULT.length
+          ? s.draftOrder : [...DRAFT_ORDER_DEFAULT]
+      };
+    }
+  } catch(e) {}
+  return { timerSeconds: 60, draftOrder: [...DRAFT_ORDER_DEFAULT] };
+}
+
+let draftSettings = loadDraftSettings();
+function getDraftOrder() { return draftSettings.draftOrder; }
 
 // Walk-up songs — paste audio file URLs here before the draft
 const PLAYER_WALKUP_SONGS = {
@@ -4848,6 +4981,100 @@ const PLAYER_WALKUP_SONGS = {
 const DRAFT_MODE_KEY = 'draft_mode_2026';
 let draftChannel = null;
 let draftLastPickCount = 0;
+
+// Timer state (display mode only — local, not synced)
+let draftTimerActive = false;
+let draftTimerSecs = 0;
+let draftTimerTotalSecs = 0;
+let draftTimerInterval = null;
+
+function startDraftTimer(totalSecs) {
+  stopDraftTimer();
+  if (totalSecs <= 0) return;
+  draftTimerActive = true;
+  draftTimerTotalSecs = totalSecs;
+  draftTimerSecs = totalSecs;
+  updateTimerDisplay();
+  draftTimerInterval = setInterval(() => {
+    draftTimerSecs = Math.max(0, draftTimerSecs - 1);
+    updateTimerDisplay();
+    if (draftTimerSecs === 0) stopDraftTimer();
+  }, 1000);
+}
+
+function stopDraftTimer() {
+  if (draftTimerInterval) { clearInterval(draftTimerInterval); draftTimerInterval = null; }
+  draftTimerActive = false;
+}
+
+function updateTimerDisplay() {
+  const el = document.getElementById('draft-timer-display');
+  if (!el) return;
+  const isLow = draftTimerSecs > 0 && draftTimerSecs <= 10;
+  const pct = draftTimerTotalSecs > 0 ? (draftTimerSecs / draftTimerTotalSecs) * 100 : 0;
+  el.innerHTML = `<div class="draft-timer-wrap">
+    <div class="draft-timer-count${isLow ? ' low' : ''}">${draftTimerSecs}</div>
+    <div class="draft-timer-bar-wrap"><div class="draft-timer-bar${isLow ? ' low' : ''}" style="width:${pct}%;"></div></div>
+  </div>`;
+}
+
+function startDraftFromButton() {
+  const secs = draftSettings.timerSeconds;
+  if (secs <= 0) return;
+  const startArea = document.getElementById('draft-start-area');
+  if (startArea) startArea.style.display = 'none';
+  startDraftTimer(secs);
+}
+
+function openDraftSettings() {
+  draftSettings = loadDraftSettings();
+  document.getElementById('dsp-timer-input').value = draftSettings.timerSeconds;
+
+  const editor = document.getElementById('dsp-order-editor');
+  const grid = document.createElement('div');
+  grid.className = 'dsp-order-grid';
+  draftSettings.draftOrder.forEach((team, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'dsp-order-pick';
+    const btn = document.createElement('button');
+    btn.className = `dsp-order-btn ${team}`;
+    btn.dataset.index = i;
+    btn.textContent = team === 'red' ? 'R' : 'B';
+    btn.addEventListener('click', function() {
+      const next = this.classList.contains('red') ? 'blue' : 'red';
+      this.className = `dsp-order-btn ${next}`;
+      this.textContent = next === 'red' ? 'R' : 'B';
+    });
+    const num = document.createElement('span');
+    num.className = 'dsp-order-num';
+    num.textContent = `Pick ${i + 1}`;
+    cell.appendChild(num);
+    cell.appendChild(btn);
+    grid.appendChild(cell);
+  });
+
+  editor.innerHTML = '';
+  editor.appendChild(grid);
+  const hint = document.createElement('div');
+  hint.className = 'dsp-order-hint';
+  hint.textContent = 'Tap a pick to toggle Red ↔ Blue';
+  editor.appendChild(hint);
+
+  document.getElementById('draft-settings-panel').style.display = 'flex';
+}
+
+function closeDraftSettings() {
+  document.getElementById('draft-settings-panel').style.display = 'none';
+}
+
+function saveDraftSettings() {
+  const timerSeconds = Math.max(0, parseInt(document.getElementById('dsp-timer-input').value, 10) || 0);
+  const orderBtns = document.querySelectorAll('#dsp-order-editor .dsp-order-btn');
+  const draftOrder = Array.from(orderBtns).map(b => b.classList.contains('red') ? 'red' : 'blue');
+  draftSettings = { timerSeconds, draftOrder };
+  localStorage.setItem(DRAFT_SETTINGS_KEY, JSON.stringify(draftSettings));
+  closeDraftSettings();
+}
 
 function getDraftablePlayers() {
   return [...draftRound1, ...draftRound2]
@@ -4974,6 +5201,7 @@ function showDraftModeSelector() {
 // --- Display mode ---
 
 function initDisplayMode() {
+  stopDraftTimer();
   document.body.classList.add('draft-display-active');
   document.getElementById('draft-mode-selector').style.display = 'none';
   document.getElementById('draft-display-mode').style.display = '';
@@ -4990,7 +5218,15 @@ function initDisplayMode() {
     const newPick = isNewPick ? picks[picks.length - 1] : null;
     draftLastPickCount = picks.length;
     renderDisplayBoard(picks);
-    if (newPick) showWalkUpAnimation(newPick.player, newPick.team, null);
+    if (newPick) {
+      showWalkUpAnimation(newPick.player, newPick.team, null);
+      const secs = draftSettings.timerSeconds;
+      if (secs > 0 && picks.length < getDraftOrder().length) {
+        startDraftTimer(secs);
+      } else {
+        stopDraftTimer();
+      }
+    }
   });
 
   document.getElementById('display-mode-btn').addEventListener('click', () => {
@@ -5016,19 +5252,30 @@ function initDisplayMode() {
 }
 
 function renderDisplayBoard(picks) {
+  const dOrder = getDraftOrder();
   const allPlayers = getDraftablePlayers();
   const drafted = picks.map(p => p.player);
   const remaining = allPlayers.filter(n => !drafted.includes(n));
   const idx = picks.length;
-  const isDone = idx >= DRAFT_ORDER.length;
+  const isDone = idx >= dOrder.length;
+
+  // Start Draft button — visible only when timer is on, no picks yet, timer not running
+  const startArea = document.getElementById('draft-start-area');
+  if (startArea) {
+    startArea.style.display =
+      (!isDone && idx === 0 && !draftTimerActive && draftSettings.timerSeconds > 0) ? '' : 'none';
+  }
 
   const clock = document.getElementById('draft-clock');
   if (isDone) {
+    stopDraftTimer();
     clock.innerHTML = `<div class="draft-clock-label">Draft Complete</div><div class="draft-clock-team done">All Players Selected!</div>`;
   } else {
-    const t = DRAFT_ORDER[idx];
-    clock.innerHTML = `<div class="draft-clock-label">On The Clock &mdash; Pick ${idx + 1} of ${DRAFT_ORDER.length}</div>
-      <div class="draft-clock-team ${t}">Team ${t === 'red' ? 'Red' : 'Blue'} &mdash; ${t === 'red' ? 'Nik' : 'Dan'}</div>`;
+    const t = dOrder[idx];
+    clock.innerHTML = `<div class="draft-clock-label">On The Clock &mdash; Pick ${idx + 1} of ${dOrder.length}</div>
+      <div class="draft-clock-team ${t}">Team ${t === 'red' ? 'Red' : 'Blue'} &mdash; ${t === 'red' ? 'Nik' : 'Dan'}</div>
+      <div id="draft-timer-display"></div>`;
+    if (draftTimerActive) updateTimerDisplay();
   }
 
   const redPicks = picks.filter(p => p.team === 'red');
@@ -5046,7 +5293,6 @@ function renderDisplayBoard(picks) {
       const strokes = pd?.strokes > 0 ? `<span class="ddb-pick-num">${pd.strokes} str</span>` : '';
       return `<div class="ddb-avail-item" style="display:flex;justify-content:space-between;">${n}${strokes}</div>`;
     }).join('');
-    attachRosterListeners(availEl);
   } else {
     availEl.innerHTML = '<div class="ddb-empty">All drafted</div>';
   }
@@ -5076,9 +5322,10 @@ function initCaptainMode(team) {
 }
 
 function renderCaptainView(picks, team) {
+  const dOrder = getDraftOrder();
   const idx = picks.length;
-  const isDone = idx >= DRAFT_ORDER.length;
-  const isMyTurn = !isDone && DRAFT_ORDER[idx] === team;
+  const isDone = idx >= dOrder.length;
+  const isMyTurn = !isDone && dOrder[idx] === team;
   const otherTeam = team === 'red' ? 'blue' : 'red';
 
   const header = document.getElementById('draft-captain-header');
@@ -5094,11 +5341,11 @@ function renderCaptainView(picks, team) {
 
   if (isMyTurn) {
     const captain = team === 'red' ? 'Nik' : 'Dan';
-    header.innerHTML = `<div class="draft-on-clock-label">Your Pick — ${idx + 1} of ${DRAFT_ORDER.length}</div>
+    header.innerHTML = `<div class="draft-on-clock-label">Your Pick — ${idx + 1} of ${dOrder.length}</div>
       <div class="draft-on-clock-team ${team}">Team ${team === 'red' ? 'Red' : 'Blue'} — ${captain}</div>`;
   } else {
     const otherCaptain = otherTeam === 'red' ? 'Nik' : 'Dan';
-    header.innerHTML = `<div class="draft-on-clock-label">Pick ${idx + 1} of ${DRAFT_ORDER.length}</div>
+    header.innerHTML = `<div class="draft-on-clock-label">Pick ${idx + 1} of ${dOrder.length}</div>
       <div class="draft-on-clock-team ${otherTeam}">Team ${otherTeam === 'red' ? 'Red' : 'Blue'} — ${otherCaptain} is picking…</div>`;
   }
 
