@@ -5115,6 +5115,8 @@ function renderCaptainView(picks, team) {
     }
     row.addEventListener('click', e => {
       if (e.target.classList.contains('draft-pick-btn')) {
+        e.target.disabled = true;
+        e.target.textContent = 'Picking…';
         captainPick(name, team, idx + 1);
       } else {
         row.classList.toggle('expanded');
