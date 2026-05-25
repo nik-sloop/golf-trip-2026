@@ -5622,7 +5622,8 @@ function showWalkUpAnimation(name, team, onDismiss) {
       statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.chipping.avg}</div><div class="walkup-stat-label">Chipping</div></div>`);
       statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.putting.avg}</div><div class="walkup-stat-label">Putting</div></div>`);
       statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.mental.avg}</div><div class="walkup-stat-label">Mental</div></div>`);
-      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val" style="color:#f1c40f;">${sc.avgAdj.toFixed(1)}</div><div class="walkup-stat-label">Overall</div></div>`);
+      const overallPct = Math.round(sc.avgAdj / 50 * 100);
+      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val" style="color:#f1c40f;">${overallPct}</div><div class="walkup-stat-label">Overall</div></div>`);
     }
     if (strokes != null) {
       statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val" style="color:#2ecc71;">+${strokes}</div><div class="walkup-stat-label">Strokes</div></div>`);
@@ -5660,7 +5661,7 @@ function showWalkUpAnimation(name, team, onDismiss) {
   let hypeAudio = null;
 
   const HYPE_START = 1500;   // hype song starts 1.5s after chime
-  const REVEAL_DELAY = 6500; // reveal player 6.5s in (5s of hype buildup)
+  const REVEAL_DELAY = name === 'Jon' ? 60000 : 30000; // 30s buildup (60s for Jon)
 
   // Start hype song while "Pick Is In" is still showing
   setTimeout(() => {
