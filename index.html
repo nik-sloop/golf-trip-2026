@@ -2095,13 +2095,62 @@
   }
   .walkup-overlay.active { opacity: 1; pointer-events: all; }
   .walkup-spotlight { position: absolute; inset: 0; pointer-events: none; }
+  /* "The Pick Is In" intro phase */
+  .walkup-intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    transition: opacity 0.4s ease;
+  }
+  .walkup-intro.fade-out { opacity: 0; }
+  .walkup-intro-text {
+    font-size: clamp(1.8rem, 8vw, 3.5rem);
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #f1c40f;
+    text-align: center;
+    opacity: 0;
+    animation: walkupPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+    text-shadow: 0 0 40px rgba(241,196,15,0.4);
+  }
+  .walkup-intro-team {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 1rem;
+    opacity: 0;
+    animation: walkupFadeUp 0.5s ease-out 0.6s both;
+  }
+  .walkup-intro-team.red { color: var(--red-light); }
+  .walkup-intro-team.blue { color: var(--blue-light); }
+
+  /* Player reveal phase */
+  .walkup-reveal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .walkup-reveal.visible { opacity: 1; pointer-events: all; }
+
   .walkup-drafted-label {
     font-size: 0.62rem;
     letter-spacing: 0.28em;
     color: rgba(255,255,255,0.3);
     text-transform: uppercase;
     opacity: 0;
-    animation: walkupFadeUp 0.5s ease-out 0.4s both;
+    animation: walkupFadeUp 0.5s ease-out 0.15s both;
   }
   .walkup-team-label {
     font-size: 0.78rem;
@@ -2111,7 +2160,7 @@
     margin-top: 0.35rem;
     margin-bottom: 0.6rem;
     opacity: 0;
-    animation: walkupFadeUp 0.5s ease-out 0.55s both;
+    animation: walkupFadeUp 0.5s ease-out 0.3s both;
   }
   .walkup-team-label.red { color: var(--red-light); }
   .walkup-team-label.blue { color: var(--blue-light); }
@@ -2124,32 +2173,18 @@
     padding: 0 1.5rem;
     line-height: 1.05;
     opacity: 0;
-    animation: walkupPop 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.75s both;
+    animation: walkupPop 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
   }
   .walkup-stats {
     display: flex;
     gap: 2rem;
     margin-top: 1.25rem;
     opacity: 0;
-    animation: walkupFadeUp 0.5s ease-out 1.3s both;
+    animation: walkupFadeUp 0.5s ease-out 1.0s both;
   }
   .walkup-stat { text-align: center; }
   .walkup-stat-val { font-size: 1.5rem; font-weight: 800; color: #f1c40f; }
   .walkup-stat-label { font-size: 0.58rem; color: rgba(255,255,255,0.35); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.1rem; }
-  .walkup-continue-btn {
-    margin-top: 2.5rem;
-    background: rgba(255,255,255,0.09);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 8px;
-    color: rgba(255,255,255,0.65);
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    padding: 0.7rem 2.25rem;
-    cursor: pointer;
-    opacity: 0;
-    animation: walkupFadeUp 0.5s ease-out 1.9s both;
-  }
   @keyframes walkupFadeUp {
     from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: translateY(0); }
@@ -5458,40 +5493,63 @@ function showWalkUpAnimation(name, team, onDismiss) {
   const hcp = pd?.handicap ?? null;
   const spotlightColor = team === 'red' ? 'rgba(192,57,43,0.28)' : 'rgba(36,113,163,0.28)';
   const teamLabel = team === 'red' ? '\u{1F534} Team Red' : '\u{1F535} Team Blue';
+  const teamName = team === 'red' ? 'Team Red' : 'Team Blue';
 
   const overlay = document.createElement('div');
   overlay.className = 'walkup-overlay';
   overlay.innerHTML = `
     <div class="walkup-spotlight" style="background:radial-gradient(ellipse at 50% 40%,${spotlightColor} 0%,transparent 65%);"></div>
-    <div class="walkup-drafted-label">Drafted By</div>
-    <div class="walkup-team-label ${team}">${teamLabel}</div>
-    <div class="walkup-name">${name}</div>
-    ${hcp != null || overall ? `<div class="walkup-stats">
-      ${hcp != null ? `<div class="walkup-stat"><div class="walkup-stat-val">${hcp}</div><div class="walkup-stat-label">Handicap</div></div>` : ''}
-      ${overall ? `<div class="walkup-stat"><div class="walkup-stat-val">${overall}</div><div class="walkup-stat-label">Overall</div></div>` : ''}
-    </div>` : ''}
-    <button class="walkup-continue-btn" id="walkup-continue-btn">CONTINUE</button>`;
+    <div class="walkup-intro">
+      <div class="walkup-intro-text">The Pick Is In</div>
+      <div class="walkup-intro-team ${team}">${teamName}</div>
+    </div>
+    <div class="walkup-reveal">
+      <div class="walkup-drafted-label">Drafted By</div>
+      <div class="walkup-team-label ${team}">${teamLabel}</div>
+      <div class="walkup-name">${name}</div>
+      ${hcp != null || overall ? `<div class="walkup-stats">
+        ${hcp != null ? `<div class="walkup-stat"><div class="walkup-stat-val">${hcp}</div><div class="walkup-stat-label">Handicap</div></div>` : ''}
+        ${overall ? `<div class="walkup-stat"><div class="walkup-stat-val">${overall}</div><div class="walkup-stat-label">Overall</div></div>` : ''}
+      </div>` : ''}
+    </div>`;
 
   document.body.appendChild(overlay);
   requestAnimationFrame(() => overlay.classList.add('active'));
 
-  const songUrl = PLAYER_WALKUP_SONGS[name];
+  // Play draft chime during "The Pick Is In" phase
+  const chime = new Audio('nfl-draft-chime.mp3');
+  chime.volume = 0.9;
+  chime.play().catch(() => {});
+
+  // After intro, transition to player reveal + walkup song
+  const INTRO_DURATION = 2800;
+  const REVEAL_DURATION = 5000;
   let audio = null;
-  if (songUrl) {
-    audio = new Audio(songUrl);
-    audio.volume = 0.85;
-    audio.play().catch(() => {});
-  }
+
+  setTimeout(() => {
+    overlay.querySelector('.walkup-intro').classList.add('fade-out');
+    const reveal = overlay.querySelector('.walkup-reveal');
+    reveal.classList.add('visible');
+
+    const songUrl = PLAYER_WALKUP_SONGS[name];
+    if (songUrl) {
+      audio = new Audio(songUrl);
+      audio.volume = 0.85;
+      audio.play().catch(() => {});
+    }
+
+    // Auto-dismiss after reveal plays
+    setTimeout(dismiss, REVEAL_DURATION);
+  }, INTRO_DURATION);
 
   function dismiss() {
+    if (overlay._dismissed) return;
+    overlay._dismissed = true;
     if (audio) { audio.pause(); audio.currentTime = 0; }
+    chime.pause(); chime.currentTime = 0;
     overlay.classList.remove('active');
     setTimeout(() => { overlay.remove(); if (onDismiss) onDismiss(); }, 380);
   }
-
-  setTimeout(() => {
-    document.getElementById('walkup-continue-btn')?.addEventListener('click', dismiss);
-  }, 600);
 }
 
 // --- Mode selector ---
