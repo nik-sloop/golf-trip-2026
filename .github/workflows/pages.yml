@@ -21,6 +21,7 @@ jobs:
         run: |
           mkdir -p _deploy
           cp index.html _deploy/
+          cp nfl-draft-chime.mp3 _deploy/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
