@@ -5656,8 +5656,10 @@ function showWalkUpAnimation(name, team, onDismiss) {
   // Start hype song while "Pick Is In" is still showing
   setTimeout(() => {
     if (hypeSrc) {
+      const SONG_START_OFFSETS = { 'hype-higher.m4a': 15 };
       hypeAudio = new Audio(hypeSrc);
       hypeAudio.volume = 0.85;
+      if (SONG_START_OFFSETS[hypeSrc]) hypeAudio.currentTime = SONG_START_OFFSETS[hypeSrc];
       hypeAudio.play().catch(() => {});
     }
   }, HYPE_START);
