@@ -5297,9 +5297,6 @@ const HYPE_SONGS = [
   'hype-mercy.m4a',
   'hype-in-paris.m4a',
   'hype-thunderstruck.m4a',
-  'hype-enter-sandman.m4a',
-  'hype-higher.m4a',
-  'hype-split-only-u.m4a',
 ];
 let hypeShuffled = [];
 function getNextHypeSong() {
@@ -5654,7 +5651,7 @@ function showWalkUpAnimation(name, team, onDismiss) {
   let hypeAudio = null;
 
   const HYPE_START = 1500;   // hype song starts 1.5s after chime
-  const REVEAL_DELAY = name === 'Jon' ? 60000 : 30000; // 30s buildup (60s for Jon)
+  const REVEAL_DELAY = 30000; // 30s of hype buildup before reveal
 
   // Start hype song while "Pick Is In" is still showing
   setTimeout(() => {
