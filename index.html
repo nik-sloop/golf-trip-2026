@@ -5012,8 +5012,11 @@ function updateTimerDisplay() {
   if (!el) return;
   const isLow = draftTimerSecs > 0 && draftTimerSecs <= 10;
   const pct = draftTimerTotalSecs > 0 ? (draftTimerSecs / draftTimerTotalSecs) * 100 : 0;
+  const m = Math.floor(draftTimerSecs / 60);
+  const s = (draftTimerSecs % 60).toString().padStart(2, '0');
+  const label = `${m}:${s}`;
   el.innerHTML = `<div class="draft-timer-wrap">
-    <div class="draft-timer-count${isLow ? ' low' : ''}">${draftTimerSecs}</div>
+    <div class="draft-timer-count${isLow ? ' low' : ''}">${label}</div>
     <div class="draft-timer-bar-wrap"><div class="draft-timer-bar${isLow ? ' low' : ''}" style="width:${pct}%;"></div></div>
   </div>`;
 }
@@ -5313,6 +5316,12 @@ function initCaptainMode(team) {
   subscribeToDraftPicks(async () => {
     const picks = await dbLoadDraftPicks();
     renderCaptainView(picks, team);
+    const secs = draftSettings.timerSeconds;
+    if (secs > 0 && picks.length < getDraftOrder().length) {
+      startDraftTimer(secs);
+    } else {
+      stopDraftTimer();
+    }
   });
 
   document.getElementById('captain-mode-btn').addEventListener('click', () => {
@@ -5342,12 +5351,15 @@ function renderCaptainView(picks, team) {
   if (isMyTurn) {
     const captain = team === 'red' ? 'Nik' : 'Dan';
     header.innerHTML = `<div class="draft-on-clock-label">Your Pick — ${idx + 1} of ${dOrder.length}</div>
-      <div class="draft-on-clock-team ${team}">Team ${team === 'red' ? 'Red' : 'Blue'} — ${captain}</div>`;
+      <div class="draft-on-clock-team ${team}">Team ${team === 'red' ? 'Red' : 'Blue'} — ${captain}</div>
+      <div id="draft-timer-display"></div>`;
   } else {
     const otherCaptain = otherTeam === 'red' ? 'Nik' : 'Dan';
     header.innerHTML = `<div class="draft-on-clock-label">Pick ${idx + 1} of ${dOrder.length}</div>
-      <div class="draft-on-clock-team ${otherTeam}">Team ${otherTeam === 'red' ? 'Red' : 'Blue'} — ${otherCaptain} is picking…</div>`;
+      <div class="draft-on-clock-team ${otherTeam}">Team ${otherTeam === 'red' ? 'Red' : 'Blue'} — ${otherCaptain} is picking…</div>
+      <div id="draft-timer-display"></div>`;
   }
+  if (draftTimerActive) updateTimerDisplay();
 
   body.innerHTML = '<div class="draft-section-label" style="display:block;">Available Players</div><div id="captain-roster"></div>' + captainTeamsHtml(picks);
 
@@ -5394,6 +5406,12 @@ async function captainPick(name, team, pickNumber) {
     await dbInsertDraftPick(pickNumber, team, name);
     const picks = await dbLoadDraftPicks();
     renderCaptainView(picks, team);
+    const secs = draftSettings.timerSeconds;
+    if (secs > 0 && picks.length < getDraftOrder().length) {
+      startDraftTimer(secs);
+    } else {
+      stopDraftTimer();
+    }
   } catch (err) {
     alert('Pick failed: ' + (err?.message || err?.details || JSON.stringify(err)));
     console.error(err);
