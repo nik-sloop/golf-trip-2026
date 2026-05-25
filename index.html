@@ -6043,7 +6043,7 @@ function renderDisplayBoard(picks) {
     blueHeader.innerHTML = `\u{1F535} Team Blue &mdash; Dan${statsLine}`;
   }
 
-  const captainEntry = (name) => `<div class="ddb-pick-item" style="opacity:0.6;"><span class="ddb-pick-num">C</span><span>${name}</span>${(() => { const pd = players.find(p => p.name === name); const o = pd?.scouting ? Math.round(pd.scouting.avgAdj/50*100) : null; const s = pd?.strokes != null ? pd.strokes : null; const d = []; if(o!=null)d.push('<span style="color:#f1c40f;">'+o+'</span>'); if(s!=null)d.push('<span style="color:#2ecc71;">+'+s+'</span>'); return d.length ? '<span style="margin-left:auto;font-size:0.85em;opacity:0.8;display:flex;gap:0.5rem;">'+d.join('')+'</span>' : ''; })()}</div>`;
+  const captainEntry = (name) => `<div class="ddb-pick-item" style="color:#f1c40f;"><span class="ddb-pick-num" style="color:#f1c40f;opacity:0.6;">C</span><span>${name}</span>${(() => { const pd = players.find(p => p.name === name); const o = pd?.scouting ? Math.round(pd.scouting.avgAdj/50*100) : null; const s = pd?.strokes != null ? pd.strokes : null; const d = []; if(o!=null)d.push('<span style="color:#f1c40f;">'+o+'</span>'); if(s!=null)d.push('<span style="color:#2ecc71;">+'+s+'</span>'); return d.length ? '<span style="margin-left:auto;font-size:0.85em;opacity:0.8;display:flex;gap:0.5rem;">'+d.join('')+'</span>' : ''; })()}</div>`;
   document.getElementById('ddb-red-picks').innerHTML = captainEntry('Nik') +
     (redPicks.length ? redPicks.map((p, i) => `<div class="ddb-pick-item">${pickEntryHtml(p.player, i)}</div>`).join('') : '');
   document.getElementById('ddb-blue-picks').innerHTML = captainEntry('Dan') +
@@ -6222,8 +6222,8 @@ function captainTeamsHtml(picks) {
     if (strokes != null) details.push(`<span style="color:#2ecc71;">+${strokes}</span>`);
     const detailStr = details.length ? `<span style="margin-left:auto;font-size:0.65rem;opacity:0.7;display:flex;gap:0.4rem;">${details.join('')}</span>` : '';
     const label = isCaptain ? 'C' : `${i+1}.`;
-    const opacity = isCaptain ? 'opacity:0.6;' : '';
-    return `<div class="draft-pick-entry" style="display:flex;align-items:center;${opacity}"><span class="dpe-num">${label}</span><span>${p.player}</span>${detailStr}</div>`;
+    const captainStyle = isCaptain ? 'color:#f1c40f;' : '';
+    return `<div class="draft-pick-entry" style="display:flex;align-items:center;${captainStyle}"><span class="dpe-num" ${isCaptain ? 'style="color:#f1c40f;opacity:0.6;"' : ''}>${label}</span><span>${p.player}</span>${detailStr}</div>`;
   }
 
   return `<div class="draft-section-label" style="display:block;">Teams</div>
