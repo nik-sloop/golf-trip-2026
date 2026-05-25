@@ -2255,7 +2255,10 @@
       <div id="draft-start-area" class="draft-start-area" style="display:none;">
         <button class="draft-start-btn" onclick="startDraftFromButton()">&#9654; Start Draft</button>
       </div>
-      <div id="draft-clock" class="draft-clock"></div>
+      <div id="draft-clock" class="draft-clock">
+        <div id="draft-clock-info"></div>
+        <div id="draft-timer-display"></div>
+      </div>
       <div class="draft-board" id="draft-board">
         <div class="ddb-col ddb-red">
           <div class="ddb-col-header red">&#128308; Team Red &mdash; Nik</div>
@@ -4988,16 +4991,21 @@ let draftTimerSecs = 0;
 let draftTimerTotalSecs = 0;
 let draftTimerInterval = null;
 
+function updateAllTimerDisplays() {
+  updateTimerDisplay();
+  updateCaptainTimerDisplay();
+}
+
 function startDraftTimer(totalSecs) {
   stopDraftTimer();
   if (totalSecs <= 0) return;
   draftTimerActive = true;
   draftTimerTotalSecs = totalSecs;
   draftTimerSecs = totalSecs;
-  updateTimerDisplay();
+  updateAllTimerDisplays();
   draftTimerInterval = setInterval(() => {
     draftTimerSecs = Math.max(0, draftTimerSecs - 1);
-    updateTimerDisplay();
+    updateAllTimerDisplays();
     if (draftTimerSecs === 0) stopDraftTimer();
   }, 1000);
 }
@@ -5007,18 +5015,23 @@ function stopDraftTimer() {
   draftTimerActive = false;
 }
 
-function updateTimerDisplay() {
-  const el = document.getElementById('draft-timer-display');
-  if (!el) return;
+function timerHtml() {
   const isLow = draftTimerSecs > 0 && draftTimerSecs <= 10;
   const pct = draftTimerTotalSecs > 0 ? (draftTimerSecs / draftTimerTotalSecs) * 100 : 0;
   const m = Math.floor(draftTimerSecs / 60);
   const s = (draftTimerSecs % 60).toString().padStart(2, '0');
-  const label = `${m}:${s}`;
-  el.innerHTML = `<div class="draft-timer-wrap">
-    <div class="draft-timer-count${isLow ? ' low' : ''}">${label}</div>
+  return `<div class="draft-timer-wrap">
+    <div class="draft-timer-count${isLow ? ' low' : ''}">${m}:${s}</div>
     <div class="draft-timer-bar-wrap"><div class="draft-timer-bar${isLow ? ' low' : ''}" style="width:${pct}%;"></div></div>
   </div>`;
+}
+function updateTimerDisplay() {
+  const el = document.getElementById('draft-timer-display');
+  if (el) el.innerHTML = timerHtml();
+}
+function updateCaptainTimerDisplay() {
+  const el = document.getElementById('captain-timer-display');
+  if (el) el.innerHTML = timerHtml();
 }
 
 function startDraftFromButton() {
@@ -5269,16 +5282,14 @@ function renderDisplayBoard(picks) {
       (!isDone && idx === 0 && !draftTimerActive && draftSettings.timerSeconds > 0) ? '' : 'none';
   }
 
-  const clock = document.getElementById('draft-clock');
+  const clockInfo = document.getElementById('draft-clock-info');
   if (isDone) {
     stopDraftTimer();
-    clock.innerHTML = `<div class="draft-clock-label">Draft Complete</div><div class="draft-clock-team done">All Players Selected!</div>`;
+    clockInfo.innerHTML = `<div class="draft-clock-label">Draft Complete</div><div class="draft-clock-team done">All Players Selected!</div>`;
   } else {
     const t = dOrder[idx];
-    clock.innerHTML = `<div class="draft-clock-label">On The Clock &mdash; Pick ${idx + 1} of ${dOrder.length}</div>
-      <div class="draft-clock-team ${t}">Team ${t === 'red' ? 'Red' : 'Blue'} &mdash; ${t === 'red' ? 'Nik' : 'Dan'}</div>
-      <div id="draft-timer-display"></div>`;
-    if (draftTimerActive) updateTimerDisplay();
+    clockInfo.innerHTML = `<div class="draft-clock-label">On The Clock &mdash; Pick ${idx + 1} of ${dOrder.length}</div>
+      <div class="draft-clock-team ${t}">Team ${t === 'red' ? 'Red' : 'Blue'} &mdash; ${t === 'red' ? 'Nik' : 'Dan'}</div>`;
   }
 
   const redPicks = picks.filter(p => p.team === 'red');
@@ -5311,7 +5322,11 @@ function initCaptainMode(team) {
   document.getElementById('draft-display-mode').style.display = 'none';
   document.getElementById('draft-captain-mode').style.display = '';
 
-  dbLoadDraftPicks().then(picks => renderCaptainView(picks, team));
+  dbLoadDraftPicks().then(picks => {
+    renderCaptainView(picks, team);
+    const secs = draftSettings.timerSeconds;
+    if (secs > 0 && picks.length < getDraftOrder().length) startDraftTimer(secs);
+  });
 
   subscribeToDraftPicks(async () => {
     const picks = await dbLoadDraftPicks();
@@ -5352,14 +5367,14 @@ function renderCaptainView(picks, team) {
     const captain = team === 'red' ? 'Nik' : 'Dan';
     header.innerHTML = `<div class="draft-on-clock-label">Your Pick — ${idx + 1} of ${dOrder.length}</div>
       <div class="draft-on-clock-team ${team}">Team ${team === 'red' ? 'Red' : 'Blue'} — ${captain}</div>
-      <div id="draft-timer-display"></div>`;
+      <div id="captain-timer-display"></div>`;
   } else {
     const otherCaptain = otherTeam === 'red' ? 'Nik' : 'Dan';
     header.innerHTML = `<div class="draft-on-clock-label">Pick ${idx + 1} of ${dOrder.length}</div>
       <div class="draft-on-clock-team ${otherTeam}">Team ${otherTeam === 'red' ? 'Red' : 'Blue'} — ${otherCaptain} is picking…</div>
-      <div id="draft-timer-display"></div>`;
+      <div id="captain-timer-display"></div>`;
   }
-  if (draftTimerActive) updateTimerDisplay();
+  if (draftTimerActive) updateCaptainTimerDisplay();
 
   body.innerHTML = '<div class="draft-section-label" style="display:block;">Available Players</div><div id="captain-roster"></div>' + captainTeamsHtml(picks);
 
