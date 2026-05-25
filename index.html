@@ -5263,6 +5263,21 @@ const PLAYER_WALKUP_SONGS = {
   'Ryan':   '',
 };
 
+// Rotating hype songs — plays during "The Pick Is In" buildup and continues through reveal
+const HYPE_SONGS = [
+  'hype-1.mp3',
+  'hype-2.mp3',
+  'hype-3.mp3',
+  'hype-4.mp3',
+  'hype-5.mp3',
+  'hype-6.mp3',
+  'hype-7.mp3',
+  'hype-8.mp3',
+  'hype-9.mp3',
+  'hype-10.mp3',
+];
+let nextHypeSongIndex = 0;
+
 const DRAFT_MODE_KEY = 'draft_mode_2026';
 let draftChannel = null;
 let draftStateChannel = null;
@@ -5533,36 +5548,46 @@ function showWalkUpAnimation(name, team, onDismiss) {
   document.body.appendChild(overlay);
   requestAnimationFrame(() => overlay.classList.add('active'));
 
-  // Play draft chime during "The Pick Is In" phase
+  // Play draft chime immediately with "The Pick Is In"
   const chime = new Audio('nfl-draft-chime.mp3');
   chime.volume = 0.9;
   chime.play().catch(() => {});
 
-  // After intro, transition to player reveal + walkup song
-  const INTRO_DURATION = 2800;
-  const REVEAL_DURATION = 5000;
-  let audio = null;
+  // Pick a hype song (rotate through the list)
+  const hypeSrc = HYPE_SONGS[nextHypeSongIndex % HYPE_SONGS.length];
+  nextHypeSongIndex++;
+  let hypeAudio = null;
 
+  // Player-specific walkup song overrides hype if set
+  const playerSongUrl = PLAYER_WALKUP_SONGS[name];
+
+  const HYPE_START = 1500;     // hype song starts 1.5s after chime
+  const REVEAL_DELAY = 6500;   // reveal player 6.5s in (5s of hype music)
+  const REVEAL_DURATION = 5000; // show player for 5s after reveal
+
+  // Start hype song while "Pick Is In" is still showing
+  setTimeout(() => {
+    const src = playerSongUrl || hypeSrc;
+    if (src) {
+      hypeAudio = new Audio(src);
+      hypeAudio.volume = 0.85;
+      hypeAudio.play().catch(() => {});
+    }
+  }, HYPE_START);
+
+  // Reveal player — hype song keeps playing
   setTimeout(() => {
     overlay.querySelector('.walkup-intro').classList.add('fade-out');
-    const reveal = overlay.querySelector('.walkup-reveal');
-    reveal.classList.add('visible');
-
-    const songUrl = PLAYER_WALKUP_SONGS[name];
-    if (songUrl) {
-      audio = new Audio(songUrl);
-      audio.volume = 0.85;
-      audio.play().catch(() => {});
-    }
+    overlay.querySelector('.walkup-reveal').classList.add('visible');
 
     // Auto-dismiss after reveal plays
     setTimeout(dismiss, REVEAL_DURATION);
-  }, INTRO_DURATION);
+  }, REVEAL_DELAY);
 
   function dismiss() {
     if (overlay._dismissed) return;
     overlay._dismissed = true;
-    if (audio) { audio.pause(); audio.currentTime = 0; }
+    if (hypeAudio) { hypeAudio.pause(); hypeAudio.currentTime = 0; }
     chime.pause(); chime.currentTime = 0;
     overlay.classList.remove('active');
     setTimeout(() => { overlay.remove(); if (onDismiss) onDismiss(); }, 380);
