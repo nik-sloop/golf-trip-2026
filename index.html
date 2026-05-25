@@ -5263,20 +5263,36 @@ const PLAYER_WALKUP_SONGS = {
   'Ryan':   '',
 };
 
-// Rotating hype songs — plays during "The Pick Is In" buildup and continues through reveal
+// Hype songs — shuffled, no repeats until all have played
 const HYPE_SONGS = [
-  'hype-1.mp3',
-  'hype-2.mp3',
-  'hype-3.mp3',
-  'hype-4.mp3',
-  'hype-5.mp3',
-  'hype-6.mp3',
-  'hype-7.mp3',
-  'hype-8.mp3',
-  'hype-9.mp3',
-  'hype-10.mp3',
+  'hype-eye-of-the-tiger.m4a',
+  'hype-till-i-collapse.m4a',
+  'hype-lose-yourself.m4a',
+  'hype-we-will-rock-you.m4a',
+  'hype-power.m4a',
+  'hype-stronger.m4a',
+  'hype-remember-the-name.m4a',
+  'hype-all-i-do-is-win.m4a',
+  'hype-through-the-fire.m4a',
+  'hype-radioactive.m4a',
+  'hype-blue.m4a',
+  'hype-drop-the-world.m4a',
+  'hype-real-slim-shady.m4a',
+  'hype-we-didnt-start-the-fire.m4a',
+  'hype-mercy.m4a',
+  'hype-in-paris.m4a',
 ];
-let nextHypeSongIndex = 0;
+let hypeShuffled = [];
+function getNextHypeSong() {
+  if (hypeShuffled.length === 0) {
+    hypeShuffled = [...HYPE_SONGS];
+    for (let i = hypeShuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [hypeShuffled[i], hypeShuffled[j]] = [hypeShuffled[j], hypeShuffled[i]];
+    }
+  }
+  return hypeShuffled.pop();
+}
 
 const DRAFT_MODE_KEY = 'draft_mode_2026';
 let draftChannel = null;
@@ -5517,7 +5533,11 @@ function subscribeToDraftPicks(callback) {
 
 // --- Walk-up animation (shared across modes) ---
 
+let activeWalkupDismiss = null;
+
 function showWalkUpAnimation(name, team, onDismiss) {
+  // Dismiss any currently playing animation + audio
+  if (activeWalkupDismiss) activeWalkupDismiss();
   document.querySelector('.walkup-overlay')?.remove();
 
   const pd = players.find(p => p.name === name);
@@ -5553,45 +5573,38 @@ function showWalkUpAnimation(name, team, onDismiss) {
   chime.volume = 0.9;
   chime.play().catch(() => {});
 
-  // Pick a hype song (rotate through the list)
-  const hypeSrc = HYPE_SONGS[nextHypeSongIndex % HYPE_SONGS.length];
-  nextHypeSongIndex++;
+  // Pick a hype song (shuffled, no repeats)
+  const hypeSrc = PLAYER_WALKUP_SONGS[name] || getNextHypeSong();
   let hypeAudio = null;
 
-  // Player-specific walkup song overrides hype if set
-  const playerSongUrl = PLAYER_WALKUP_SONGS[name];
-
-  const HYPE_START = 1500;     // hype song starts 1.5s after chime
-  const REVEAL_DELAY = 6500;   // reveal player 6.5s in (5s of hype music)
-  const REVEAL_DURATION = 5000; // show player for 5s after reveal
+  const HYPE_START = 1500;   // hype song starts 1.5s after chime
+  const REVEAL_DELAY = 6500; // reveal player 6.5s in (5s of hype buildup)
 
   // Start hype song while "Pick Is In" is still showing
   setTimeout(() => {
-    const src = playerSongUrl || hypeSrc;
-    if (src) {
-      hypeAudio = new Audio(src);
+    if (hypeSrc) {
+      hypeAudio = new Audio(hypeSrc);
       hypeAudio.volume = 0.85;
       hypeAudio.play().catch(() => {});
     }
   }, HYPE_START);
 
-  // Reveal player — hype song keeps playing
+  // Reveal player — hype song keeps playing until next pick
   setTimeout(() => {
     overlay.querySelector('.walkup-intro').classList.add('fade-out');
     overlay.querySelector('.walkup-reveal').classList.add('visible');
-
-    // Auto-dismiss after reveal plays
-    setTimeout(dismiss, REVEAL_DURATION);
   }, REVEAL_DELAY);
 
   function dismiss() {
     if (overlay._dismissed) return;
     overlay._dismissed = true;
+    activeWalkupDismiss = null;
     if (hypeAudio) { hypeAudio.pause(); hypeAudio.currentTime = 0; }
     chime.pause(); chime.currentTime = 0;
     overlay.classList.remove('active');
     setTimeout(() => { overlay.remove(); if (onDismiss) onDismiss(); }, 380);
   }
+  activeWalkupDismiss = dismiss;
 }
 
 // --- Mode selector ---
