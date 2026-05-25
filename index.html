@@ -5551,6 +5551,7 @@ function subscribeToDraftPicks(callback) {
 // --- Walk-up animation (shared across modes) ---
 
 let activeWalkupDismiss = null;
+let pickCooldownUntil = 0; // timestamp (ms) — pick buttons disabled until this time
 
 function showWalkUpAnimation(name, team, onDismiss) {
   // Dismiss any currently playing animation + audio
@@ -5597,7 +5598,9 @@ function showWalkUpAnimation(name, team, onDismiss) {
       ${statsHtml}
     </div>`;
 
-  document.body.appendChild(overlay);
+  // Append to fullscreen element if active, else body
+  const fsTarget = document.fullscreenElement || document.body;
+  fsTarget.appendChild(overlay);
   requestAnimationFrame(() => overlay.classList.add('active'));
 
   // Play draft chime immediately with "The Pick Is In"
@@ -5627,8 +5630,8 @@ function showWalkUpAnimation(name, team, onDismiss) {
     overlay.querySelector('.walkup-reveal').classList.add('visible');
   }, REVEAL_DELAY);
 
-  // Auto-dismiss overlay after 10s — music keeps playing
-  const OVERLAY_DURATION = 10000;
+  // Auto-dismiss overlay after 60s — music keeps playing
+  const OVERLAY_DURATION = 60000;
   setTimeout(() => {
     if (!overlay._dismissed) {
       overlay.classList.remove('active');
@@ -5875,6 +5878,8 @@ async function initCaptainMode(team) {
       const remaining = Math.ceil((new Date(s.timer_deadline).getTime() - Date.now()) / 1000);
       if (remaining > 0) {
         startDraftTimerFromDeadline(s.timer_deadline, s.timer_seconds);
+        // Set 60-second pick cooldown (synced with overlay/song duration)
+        pickCooldownUntil = Date.now() + 60000;
       } else {
         stopDraftTimerInterval();
         draftTimerDeadline = null;
@@ -5929,11 +5934,17 @@ function renderCaptainView(picks, team) {
 
   const rosterContainer = document.getElementById('captain-roster');
   rosterContainer.innerHTML = buildRosterHtml(remaining);
+  const cooldownRemaining = Math.ceil((pickCooldownUntil - Date.now()) / 1000);
+  const inCooldown = cooldownRemaining > 0;
+
   rosterContainer.querySelectorAll('.roster-player-row').forEach(row => {
     const name = row.dataset.rosterName;
     if (isMyTurn) {
+      const btnDisabled = inCooldown ? 'disabled' : '';
+      const btnLabel = inCooldown ? `Pick locked (${cooldownRemaining}s)` : `Pick ${name}`;
+      const btnBg = inCooldown ? '#555' : (team==='red'?'var(--red)':'var(--blue)');
       row.querySelector('.roster-row-detail').insertAdjacentHTML('beforeend',
-        `<button class="draft-pick-btn" style="margin-top:0.5rem;width:100%;padding:0.5rem;background:${team==='red'?'var(--red)':'var(--blue)'};color:#fff;border:none;border-radius:8px;font-size:0.9rem;font-weight:700;cursor:pointer;">Pick ${name}</button>`
+        `<button class="draft-pick-btn" ${btnDisabled} style="margin-top:0.5rem;width:100%;padding:0.5rem;background:${btnBg};color:#fff;border:none;border-radius:8px;font-size:0.9rem;font-weight:700;cursor:${inCooldown?'not-allowed':'pointer'};opacity:${inCooldown?'0.5':'1'};">${btnLabel}</button>`
       );
     }
     row.addEventListener('click', e => {
@@ -5946,6 +5957,22 @@ function renderCaptainView(picks, team) {
       }
     });
   });
+
+  // If in cooldown, tick every second to update button labels
+  if (isMyTurn && inCooldown) {
+    const cooldownInterval = setInterval(() => {
+      const secsLeft = Math.ceil((pickCooldownUntil - Date.now()) / 1000);
+      if (secsLeft <= 0) {
+        clearInterval(cooldownInterval);
+        // Re-render to enable buttons
+        dbLoadDraftPicks().then(p => renderCaptainView(p, team));
+        return;
+      }
+      document.querySelectorAll('#captain-roster .draft-pick-btn').forEach(btn => {
+        btn.textContent = `Pick locked (${secsLeft}s)`;
+      });
+    }, 1000);
+  }
 }
 
 function captainTeamsHtml(picks) {
@@ -5967,6 +5994,8 @@ function captainTeamsHtml(picks) {
 
 async function captainPick(name, team, pickNumber) {
   try {
+    // Set cooldown immediately so buttons stay disabled
+    pickCooldownUntil = Date.now() + 60000;
     await dbInsertDraftPick(pickNumber, team, name);
     const picks = await dbLoadDraftPicks();
     renderCaptainView(picks, team);
