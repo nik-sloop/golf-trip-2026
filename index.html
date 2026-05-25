@@ -5394,7 +5394,7 @@ async function startDraftFromButton() {
   if (startArea) startArea.style.display = 'none';
 
   // Show 2-minute pre-draft countdown with "The Final Countdown"
-  const PRE_DRAFT_SECS = 120;
+  const PRE_DRAFT_SECS = 90;
   const clockInfo = document.getElementById('draft-clock-info');
 
   // Play Final Countdown
@@ -5412,16 +5412,22 @@ async function startDraftFromButton() {
   }
   updatePreCountdown();
 
+  function finishPreCountdown() {
+    clearInterval(preCountdownInterval);
+    preCountdownInterval = null;
+    document.removeEventListener('keydown', skipHandler);
+    // Keep Final Countdown playing — stops when first pick's walk-up starts
+    dbStartDraft(secs);
+  }
+
+  // Secret spacebar skip for dev
+  function skipHandler(e) { if (e.code === 'Space') { e.preventDefault(); finishPreCountdown(); } }
+  document.addEventListener('keydown', skipHandler);
+
   preCountdownInterval = setInterval(() => {
     remaining--;
     if (remaining <= 0) {
-      clearInterval(preCountdownInterval);
-      preCountdownInterval = null;
-      // Keep Final Countdown playing — it will stop when the first pick's
-      // walk-up animation dismisses it via activeWalkupDismiss, or when
-      // the song naturally ends.
-      // Start the actual draft
-      dbStartDraft(secs);
+      finishPreCountdown();
       return;
     }
     updatePreCountdown();
@@ -5982,15 +5988,17 @@ function renderCaptainView(picks, team) {
   rosterContainer.innerHTML = buildRosterHtml(remaining);
   const cooldownRemaining = Math.ceil((pickCooldownUntil - Date.now()) / 1000);
   const inCooldown = cooldownRemaining > 0;
+  const draftNotStarted = !draftStarted;
+  const locked = inCooldown || draftNotStarted;
 
   rosterContainer.querySelectorAll('.roster-player-row').forEach(row => {
     const name = row.dataset.rosterName;
     if (isMyTurn) {
-      const btnDisabled = inCooldown ? 'disabled' : '';
-      const btnLabel = inCooldown ? `Pick locked (${cooldownRemaining}s)` : `Pick ${name}`;
-      const btnBg = inCooldown ? '#555' : (team==='red'?'var(--red)':'var(--blue)');
+      const btnDisabled = locked ? 'disabled' : '';
+      const btnLabel = locked ? (draftNotStarted ? 'Waiting for draft to start…' : `Pick locked (${cooldownRemaining}s)`) : `Pick ${name}`;
+      const btnBg = locked ? '#555' : (team==='red'?'var(--red)':'var(--blue)');
       row.querySelector('.roster-row-detail').insertAdjacentHTML('beforeend',
-        `<button class="draft-pick-btn" ${btnDisabled} style="margin-top:0.5rem;width:100%;padding:0.5rem;background:${btnBg};color:#fff;border:none;border-radius:8px;font-size:0.9rem;font-weight:700;cursor:${inCooldown?'not-allowed':'pointer'};opacity:${inCooldown?'0.5':'1'};">${btnLabel}</button>`
+        `<button class="draft-pick-btn" ${btnDisabled} style="margin-top:0.5rem;width:100%;padding:0.5rem;background:${btnBg};color:#fff;border:none;border-radius:8px;font-size:0.9rem;font-weight:700;cursor:${locked?'not-allowed':'pointer'};opacity:${locked?'0.5':'1'};">${btnLabel}</button>`
       );
     }
     row.addEventListener('click', e => {
