@@ -5674,8 +5674,8 @@ async function initCaptainMode(team) {
     renderCaptainView(picks, team);
   });
 
-  // Subscribe to draft_state changes — handles all timer sync
-  subscribeToDraftState(payload => {
+  // Subscribe to draft_state changes — handles timer sync + re-render
+  subscribeToDraftState(async payload => {
     const s = payload.new;
     draftStarted = s.started;
     if (s.timer_deadline) {
@@ -5690,6 +5690,9 @@ async function initCaptainMode(team) {
       stopDraftTimerInterval();
       draftTimerDeadline = null;
     }
+    // Re-render captain view so picks stay in sync across devices
+    const picks = await dbLoadDraftPicks();
+    renderCaptainView(picks, team);
   });
 
   document.getElementById('captain-mode-btn').addEventListener('click', () => {
