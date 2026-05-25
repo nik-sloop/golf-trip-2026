@@ -1954,6 +1954,19 @@
   .draft-clock-team.red { color: var(--red-light); }
   .draft-clock-team.blue { color: var(--blue-light); }
   .draft-clock-team.done { color: #f1c40f; }
+  .draft-last-pick {
+    font-size: 0.7rem; letter-spacing: 0.08em; color: rgba(255,255,255,0.45);
+    margin-top: 0.5rem; font-weight: 600;
+  }
+  .draft-last-pick .red { color: var(--red-light); }
+  .draft-last-pick .blue { color: var(--blue-light); }
+  .draft-fullscreen-btn {
+    position: fixed; top: 0.75rem; right: 0.75rem; z-index: 100;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px; color: rgba(255,255,255,0.5); font-size: 1.2rem;
+    padding: 0.4rem 0.6rem; cursor: pointer; line-height: 1;
+  }
+  .draft-fullscreen-btn:hover { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); }
   .draft-board { display: grid; grid-template-columns: 1fr 1.1fr 1fr; gap: 1rem; padding: 1rem 1rem 0.5rem; }
   .ddb-col { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 0.75rem; }
   .ddb-col.ddb-red { border-color: rgba(231,76,60,0.2); }
@@ -2177,14 +2190,17 @@
   }
   .walkup-stats {
     display: flex;
-    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.2rem 1.8rem;
     margin-top: 1.25rem;
+    padding: 0 1rem;
     opacity: 0;
     animation: walkupFadeUp 0.5s ease-out 1.0s both;
   }
-  .walkup-stat { text-align: center; }
-  .walkup-stat-val { font-size: 1.5rem; font-weight: 800; color: #f1c40f; }
-  .walkup-stat-label { font-size: 0.58rem; color: rgba(255,255,255,0.35); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.1rem; }
+  .walkup-stat { text-align: center; min-width: 3rem; }
+  .walkup-stat-val { font-size: 1.3rem; font-weight: 800; color: rgba(255,255,255,0.85); }
+  .walkup-stat-label { font-size: 0.52rem; color: rgba(255,255,255,0.35); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.1rem; }
   @keyframes walkupFadeUp {
     from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: translateY(0); }
@@ -2410,12 +2426,13 @@
           <div id="ddb-blue-picks"></div>
         </div>
       </div>
-      <div class="draft-admin-bar" style="padding-bottom:1rem;">
+      <div class="draft-admin-bar" id="draft-admin-bar" style="padding-bottom:1rem;">
         <button class="draft-admin-btn" id="display-undo-btn" disabled>&#8617; Undo</button>
         <button class="draft-admin-btn" id="display-reset-btn">&#8635; Reset</button>
         <button class="draft-admin-btn" onclick="openDraftSettings()">&#9881; Settings</button>
         <button class="draft-admin-btn" id="display-mode-btn">&#8594; Mode</button>
       </div>
+      <button class="draft-fullscreen-btn" id="draft-fullscreen-btn" title="Full Screen">&#x26F6;</button>
     </div>
     <!-- Captain mode (phone) -->
     <div id="draft-captain-mode" style="display:none;">
@@ -5541,11 +5558,29 @@ function showWalkUpAnimation(name, team, onDismiss) {
   document.querySelector('.walkup-overlay')?.remove();
 
   const pd = players.find(p => p.name === name);
-  const overall = pd?.scouting?.avgAdj != null ? pd.scouting.avgAdj.toFixed(1) : null;
-  const hcp = pd?.handicap ?? null;
+  const sc = pd?.scouting;
+  const strokes = pd?.strokes > 0 ? pd.strokes : null;
   const spotlightColor = team === 'red' ? 'rgba(192,57,43,0.28)' : 'rgba(36,113,163,0.28)';
   const teamLabel = team === 'red' ? '\u{1F534} Team Red' : '\u{1F535} Team Blue';
   const teamName = team === 'red' ? 'Team Red' : 'Team Blue';
+
+  // Build scouting stats HTML
+  let statsHtml = '';
+  if (sc || strokes != null) {
+    const statItems = [];
+    if (sc) {
+      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.driving.avg}</div><div class="walkup-stat-label">Driving</div></div>`);
+      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.irons.avg}</div><div class="walkup-stat-label">Irons</div></div>`);
+      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.chipping.avg}</div><div class="walkup-stat-label">Chipping</div></div>`);
+      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.putting.avg}</div><div class="walkup-stat-label">Putting</div></div>`);
+      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.mental.avg}</div><div class="walkup-stat-label">Mental</div></div>`);
+      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val" style="color:#f1c40f;">${sc.avgAdj.toFixed(1)}</div><div class="walkup-stat-label">Overall</div></div>`);
+    }
+    if (strokes != null) {
+      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val" style="color:#2ecc71;">+${strokes}</div><div class="walkup-stat-label">Strokes</div></div>`);
+    }
+    statsHtml = `<div class="walkup-stats">${statItems.join('')}</div>`;
+  }
 
   const overlay = document.createElement('div');
   overlay.className = 'walkup-overlay';
@@ -5559,10 +5594,7 @@ function showWalkUpAnimation(name, team, onDismiss) {
       <div class="walkup-drafted-label">Drafted By</div>
       <div class="walkup-team-label ${team}">${teamLabel}</div>
       <div class="walkup-name">${name}</div>
-      ${hcp != null || overall ? `<div class="walkup-stats">
-        ${hcp != null ? `<div class="walkup-stat"><div class="walkup-stat-val">${hcp}</div><div class="walkup-stat-label">Handicap</div></div>` : ''}
-        ${overall ? `<div class="walkup-stat"><div class="walkup-stat-val">${overall}</div><div class="walkup-stat-label">Overall</div></div>` : ''}
-      </div>` : ''}
+      ${statsHtml}
     </div>`;
 
   document.body.appendChild(overlay);
@@ -5594,6 +5626,15 @@ function showWalkUpAnimation(name, team, onDismiss) {
     overlay.querySelector('.walkup-intro').classList.add('fade-out');
     overlay.querySelector('.walkup-reveal').classList.add('visible');
   }, REVEAL_DELAY);
+
+  // Auto-dismiss overlay after 10s — music keeps playing
+  const OVERLAY_DURATION = 10000;
+  setTimeout(() => {
+    if (!overlay._dismissed) {
+      overlay.classList.remove('active');
+      setTimeout(() => overlay.remove(), 380);
+    }
+  }, OVERLAY_DURATION);
 
   function dismiss() {
     if (overlay._dismissed) return;
@@ -5703,6 +5744,30 @@ async function initDisplayMode() {
     showDraftModeSelector();
   });
 
+  // Full screen toggle — hides admin bar
+  document.getElementById('draft-fullscreen-btn').addEventListener('click', () => {
+    const el = document.getElementById('draft-display-mode');
+    const bar = document.getElementById('draft-admin-bar');
+    const btn = document.getElementById('draft-fullscreen-btn');
+    if (!document.fullscreenElement) {
+      el.requestFullscreen().then(() => {
+        bar.style.display = 'none';
+        btn.innerHTML = '&#x2716;';
+        btn.title = 'Exit Full Screen';
+      }).catch(() => {});
+    } else {
+      document.exitFullscreen();
+    }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+      const bar = document.getElementById('draft-admin-bar');
+      const btn = document.getElementById('draft-fullscreen-btn');
+      if (bar) bar.style.display = '';
+      if (btn) { btn.innerHTML = '&#x26F6;'; btn.title = 'Full Screen'; }
+    }
+  });
+
   document.getElementById('display-undo-btn').addEventListener('click', async () => {
     const picks = await dbLoadDraftPicks();
     if (!picks.length) return;
@@ -5739,13 +5804,17 @@ function renderDisplayBoard(picks) {
   }
 
   const clockInfo = document.getElementById('draft-clock-info');
+  const lastPick = picks.length > 0 ? picks[picks.length - 1] : null;
+  const lastPickHtml = lastPick
+    ? `<div class="draft-last-pick">Last Pick: <span class="${lastPick.team}">${lastPick.player}</span> &mdash; Team ${lastPick.team === 'red' ? 'Red' : 'Blue'}</div>`
+    : '';
   if (isDone) {
     stopDraftTimerInterval();
-    clockInfo.innerHTML = `<div class="draft-clock-label">Draft Complete</div><div class="draft-clock-team done">All Players Selected!</div>`;
+    clockInfo.innerHTML = `<div class="draft-clock-label">Draft Complete</div><div class="draft-clock-team done">All Players Selected!</div>${lastPickHtml}`;
   } else {
     const t = dOrder[idx];
     clockInfo.innerHTML = `<div class="draft-clock-label">On The Clock &mdash; Pick ${idx + 1} of ${dOrder.length}</div>
-      <div class="draft-clock-team ${t}">Team ${t === 'red' ? 'Red' : 'Blue'} &mdash; ${t === 'red' ? 'Nik' : 'Dan'}</div>`;
+      <div class="draft-clock-team ${t}">Team ${t === 'red' ? 'Red' : 'Blue'} &mdash; ${t === 'red' ? 'Nik' : 'Dan'}</div>${lastPickHtml}`;
   }
 
   const redPicks = picks.filter(p => p.team === 'red');
