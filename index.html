@@ -131,9 +131,9 @@
     }
   }
 
-  /* Desktop: show all tabs (except draft which is hash-gated) */
+  /* Desktop: show all tabs (except hash-gated ones) */
   @media (min-width: 768px) {
-    .tab-content:not(#tab-draft) { display: block !important; }
+    .tab-content:not(#tab-draft):not(#tab-commissioner) { display: block !important; }
   }
 
   /* ---- Ryder Cup Points Bar ---- */
@@ -2158,6 +2158,108 @@
     from { opacity: 0; transform: scale(0.55); }
     to { opacity: 1; transform: scale(1); }
   }
+
+  /* ---- Commissioner's Note ---- */
+  #tab-commissioner { background: var(--gray-100); }
+  .comm-masthead {
+    background: linear-gradient(160deg, #0a1f10 0%, var(--green-dark) 50%, #1e3a26 100%);
+    color: white;
+    padding: 2rem 1.25rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .comm-masthead::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -45deg, transparent, transparent 3px,
+      rgba(255,255,255,0.018) 3px, rgba(255,255,255,0.018) 6px
+    );
+    pointer-events: none;
+  }
+  .comm-eyebrow {
+    font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(255,255,255,0.5); margin-bottom: 0.6rem;
+  }
+  .comm-title {
+    font-size: clamp(1.4rem, 5.5vw, 2rem); font-weight: 900;
+    letter-spacing: -0.01em; line-height: 1.15;
+    margin-bottom: 0.4rem;
+  }
+  .comm-subtitle {
+    font-size: 0.8rem; color: rgba(255,255,255,0.6); font-style: italic;
+  }
+  .comm-event-strip {
+    display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center;
+    padding: 1rem 1rem 0;
+    border-bottom: 1px solid var(--gray-200);
+    background: white;
+    padding-bottom: 1rem;
+  }
+  .comm-chip {
+    font-size: 0.68rem; font-weight: 700; padding: 0.28rem 0.65rem;
+    border-radius: 20px; background: var(--sand); color: var(--green-dark);
+    border: 1px solid rgba(26,71,42,0.15);
+    white-space: nowrap;
+  }
+  .comm-body { padding: 0 1rem 3rem; }
+  .comm-intro {
+    font-size: 0.92rem; line-height: 1.75; color: var(--gray-800);
+    padding: 1.25rem 0 0.5rem;
+    border-bottom: 2px solid var(--gray-200);
+    margin-bottom: 1.25rem;
+  }
+  .comm-section-head {
+    font-size: 0.6rem; font-weight: 900; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--green-dark);
+    padding: 0.5rem 0 0.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .comm-section-head::after {
+    content: ''; flex: 1; height: 2px; background: var(--green-pale);
+  }
+  .comm-player {
+    background: white; border-radius: 12px;
+    border: 1px solid var(--gray-200);
+    margin-bottom: 0.85rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+  .comm-player-header {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--gray-200);
+    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+  }
+  .comm-player-name {
+    font-size: 0.9rem; font-weight: 800; color: white; flex: 1;
+  }
+  .comm-player-tag {
+    font-size: 0.58rem; font-weight: 700; padding: 0.15rem 0.5rem;
+    border-radius: 10px; border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.85); white-space: nowrap;
+  }
+  .comm-player-body {
+    font-size: 0.86rem; line-height: 1.72; color: var(--gray-800);
+    padding: 0.75rem 1rem;
+  }
+  .comm-closing {
+    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+    border-radius: 12px; padding: 1.25rem 1rem;
+    margin-top: 1.5rem; color: white;
+  }
+  .comm-closing-head {
+    font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(255,255,255,0.6); margin-bottom: 0.5rem;
+  }
+  .comm-closing-text {
+    font-size: 0.88rem; line-height: 1.75; font-style: italic;
+  }
+  .comm-sig {
+    font-size: 0.75rem; font-weight: 700; margin-top: 1rem;
+    color: rgba(255,255,255,0.7); text-align: right;
+  }
 </style>
 </head>
 <body>
@@ -2340,6 +2442,148 @@
     </div>
   </div>
 
+  <!-- TAB: Commissioner's Note (hidden unless #commissioner) -->
+  <div class="tab-content" id="tab-commissioner">
+    <div class="comm-masthead">
+      <div class="comm-eyebrow">Annapolis Ryder Cup 2026 &mdash; Commissioner's Note</div>
+      <div class="comm-title">The Hype Is Real.</div>
+      <div class="comm-subtitle">Monday Briefing &mdash; Everything You Need to Know</div>
+    </div>
+    <div class="comm-event-strip">
+      <span class="comm-chip">&#128197; Starts Fri 3:39 PM</span>
+      <span class="comm-chip">&#9971; 36 Holes at Queenstown Harbor</span>
+      <span class="comm-chip">&#127947; 4 Rounds</span>
+      <span class="comm-chip">Scramble &middot; Best Ball &middot; Shamble &middot; 1v1</span>
+    </div>
+    <div class="comm-body">
+      <div class="comm-intro">
+        Welcome to the first ever Annapolis Ryder Cup Commissioner&rsquo;s Note &mdash; your official pre-tournament briefing on everything that matters heading into Friday. This one&rsquo;s going to be special.<br><br>
+        Four rounds. 36 holes. Queenstown Harbor &mdash; a beautiful course and brutally unforgiving. Renditions of iconic par 3s, hole replicas that will test your nerves, your game, and your patience. This is not your weekend scramble. This is not for the faint of heart. Get ready.
+      </div>
+
+      <div class="comm-section-head">Storylines</div>
+
+      <div class="comm-player">
+        <div class="comm-player-header">
+          <span class="comm-player-name">Captain Nik vs. Captain Dan</span>
+          <span class="comm-player-tag">&#127942; The Rivalry</span>
+        </div>
+        <div class="comm-player-body">
+          Dan has Nik&rsquo;s number. 3-0 in head-to-head matchups &mdash; a streak that doesn&rsquo;t lie. But streaks are fragile things. Is this a dynasty in the making, or a straw house one good round away from collapse? Nik has had enough. Expect him to come out swinging. The real question isn&rsquo;t who&rsquo;s better &mdash; it&rsquo;s whether Dan&rsquo;s edge holds when the stakes are highest.
+        </div>
+      </div>
+
+      <div class="comm-player">
+        <div class="comm-player-header">
+          <span class="comm-player-name">Dan M</span>
+          <span class="comm-player-tag">&#128081; Clear No. 1 Pick</span>
+        </div>
+        <div class="comm-player-body">
+          The consensus top pick in this draft. Posting consistent rounds, his game looks built for tournament conditions. But consistency in casual rounds is one thing &mdash; carrying a team under real pressure is another. Can he deliver when it counts? And what&rsquo;s the deal with the 110 handicap? Trying to dodge the draft? Whatever the play is, no one&rsquo;s buying it.
+        </div>
+      </div>
+
+      <div class="comm-player">
+        <div class="comm-player-header">
+          <span class="comm-player-name">Shane</span>
+          <span class="comm-player-tag">&#128293; Comeback Story?</span>
+        </div>
+        <div class="comm-player-body">
+          The word &ldquo;chaotic&rdquo; doesn&rsquo;t do it justice. Shane looked to be rounding into form before an absolute bomb of a 105 hit the card. Latest intel, however, shows a steadier 92 &mdash; maybe he&rsquo;s stopped the bleeding. The other concern: last-minute equipment failure. His pitching wedge is out of commission. How do you fill that gap at Queenstown Harbor? Captains, take note.
+        </div>
+      </div>
+
+      <div class="comm-player">
+        <div class="comm-player-header">
+          <span class="comm-player-name">Jon</span>
+          <span class="comm-player-tag">&#128200; Meteoric Rise</span>
+        </div>
+        <div class="comm-player-body">
+          Rags to riches. From breaking driver heads to breaking 90 on the regular &mdash; Jon&rsquo;s two-year transformation is the feel-good story of this tournament. He&rsquo;s playing a boring, disciplined brand of golf now, which is exactly what tournament conditions demand. The question: a lot of guys still remember the old Jon. Will his new game hold up when the pressure hits and the cameras are on?
+        </div>
+      </div>
+
+      <div class="comm-player">
+        <div class="comm-player-header">
+          <span class="comm-player-name">Hadley</span>
+          <span class="comm-player-tag">&#127918; True Wild Card</span>
+        </div>
+        <div class="comm-player-body">
+          Could be a stick. Could be the biggest bust of the draft. As a 3-stroke guy, his performance will heavily tilt the scales for whichever team lands him. There is no in-between with Hadley &mdash; that&rsquo;s either the most exciting or most nerve-wracking asset a captain can have. If he&rsquo;s locked in? Watch out. If not? You&rsquo;ll know quickly.
+        </div>
+      </div>
+
+      <div class="comm-player">
+        <div class="comm-player-header">
+          <span class="comm-player-name">Chris</span>
+          <span class="comm-player-tag">&#128170; The Grinder</span>
+        </div>
+        <div class="comm-player-body">
+          He is putting in the work &mdash; grinding practice rounds, trying to get the game back to peak form. The problem is finding consistency. There seems to be a pretty clear floor right now (somewhere around a million rounds at 103). But floors can be broken. Is competition the thing that finally unlocks it? There&rsquo;s a dog lurking in there. Will it come out this weekend?
+        </div>
+      </div>
+
+      <div class="comm-player">
+        <div class="comm-player-header">
+          <span class="comm-player-name">Ryan</span>
+          <span class="comm-player-tag">&#128640; Power Rankings Rising</span>
+        </div>
+        <div class="comm-player-body">
+          Round after round he keeps impressing. A guy who came into camp thinking he might be the last pick has been quietly climbing the power rankings all spring. Consistent, determined, putting in the reps. All signs point to a Ryan vs. Chris Sunday matchup. If that happens, it&rsquo;s going to be electric. Don&rsquo;t sleep on this one.
+        </div>
+      </div>
+
+      <div class="comm-player">
+        <div class="comm-player-header">
+          <span class="comm-player-name">Ant</span>
+          <span class="comm-player-tag">&#127992; Tee Box Mystery</span>
+        </div>
+        <div class="comm-player-body">
+          Where to begin. Not often do you see an 11 on a scorecard alongside five steady bogeys and a par. The story is the tee box. If Ant can find a way to make peace with a ball on a tee &mdash; already playing the most &ldquo;friendly&rdquo; tees available &mdash; the rest of his game is genuinely good enough to be in the 90s. The pieces are there. The mental hurdle is real. This is must-watch golf.
+        </div>
+      </div>
+
+      <div class="comm-player">
+        <div class="comm-player-header">
+          <span class="comm-player-name">Dylan</span>
+          <span class="comm-player-tag">&#128565; Mr. Mystery</span>
+        </div>
+        <div class="comm-player-body">
+          No rounds posted. No public range sessions. Officially &ldquo;just looking to have fun.&rdquo; But anyone who knows Dylan knows that the moment the cards are dealt, the competitor comes out. He generally thrives in team formats, which makes him potentially great value &mdash; if only anyone knew where his game was. The mystery is part of the brand. Don&rsquo;t be surprised if he surprises everyone.
+        </div>
+      </div>
+
+      <div class="comm-player">
+        <div class="comm-player-header">
+          <span class="comm-player-name">Sam</span>
+          <span class="comm-player-tag">&#129504; Mental Toughness</span>
+        </div>
+        <div class="comm-player-body">
+          Sam &ldquo;Mental Toughness&rdquo; Sloop. The best Sloop golfer of the early 2020s has had a slow and steady fall from the top &mdash; but he&rsquo;s back and he wants the crown. Range sessions, par-3 courses, YouTube breakdowns, practice rounds. He&rsquo;s doing everything right. The process is there. The only question left is whether it shows up when it matters Friday through Sunday.
+        </div>
+      </div>
+
+      <div class="comm-player">
+        <div class="comm-player-header">
+          <span class="comm-player-name">Garret</span>
+          <span class="comm-player-tag">&#127917; Total Unknown</span>
+        </div>
+        <div class="comm-player-body">
+          No rounds in Birdies. No handicap estimate. No range sessions, no intel, nothing. We could be looking at a true degenerate golfer showing up on vibes alone &mdash; or a guy who has been grinding in complete silence. Either way, there is zero question that Garret will be a good time in whatever group he lands in. Sometimes that&rsquo;s worth more than a 90 on the card.
+        </div>
+      </div>
+
+      <div class="comm-closing">
+        <div class="comm-closing-head">&#9997;&#65039; Final Word</div>
+        <div class="comm-closing-text">
+          This is it. Final call. You have until Friday morning &mdash; use it. Every rep on the range matters now. Every chip, every putt, even just a slow mental walkthrough of your swing. The players who put in one more session this week are the players who feel confident on the first tee. Don&rsquo;t show up Friday wishing you had. The window is closing fast.<br><br>
+          Get out there. Lock it in. See you on the first tee at 3:39.
+        </div>
+        <div class="comm-sig">— The Commissioner</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- Bottom Navigation (mobile only) -->
@@ -2359,6 +2603,10 @@
   <button class="nav-tab" data-tab="draft" id="draft-nav-tab" style="display:none;">
     <span class="nav-icon">&#127944;</span>
     <span class="nav-label">Draft</span>
+  </button>
+  <button class="nav-tab" data-tab="commissioner" id="commissioner-nav-tab" style="display:none;">
+    <span class="nav-icon">&#128240;</span>
+    <span class="nav-label">Commish</span>
   </button>
   <button class="nav-tab nav-tab-disabled" data-tab="vote" id="vote-nav-tab" disabled>
     <span class="nav-icon">&#127937;</span>
@@ -2398,6 +2646,15 @@ if (location.hash === '#draft-live') {
   document.getElementById('tab-draft').classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('draft-nav-tab').classList.add('active');
+}
+
+// Commissioner's Note — gated behind #commissioner hash (test URL)
+if (location.hash === '#commissioner') {
+  document.getElementById('commissioner-nav-tab').style.display = '';
+  document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+  document.getElementById('tab-commissioner').classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('commissioner-nav-tab').classList.add('active');
 }
 
 // Hide vote tab once voting window is over
