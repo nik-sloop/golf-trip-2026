@@ -5230,43 +5230,47 @@ const PLAYER_WALKUP_SONGS = {
 
 const DRAFT_MODE_KEY = 'draft_mode_2026';
 let draftChannel = null;
+let draftStateChannel = null;
 let draftLastPickCount = 0;
 
-// Timer state (display mode only — local, not synced)
-let draftTimerActive = false;
-let draftTimerSecs = 0;
+// Timer state — deadline-based, synced via draft_state table
+let draftStarted = false;
+let draftTimerDeadline = null;  // Date object (UTC)
 let draftTimerTotalSecs = 0;
 let draftTimerInterval = null;
+
+function getDraftTimerRemaining() {
+  if (!draftTimerDeadline) return 0;
+  return Math.max(0, Math.ceil((draftTimerDeadline.getTime() - Date.now()) / 1000));
+}
 
 function updateAllTimerDisplays() {
   updateTimerDisplay();
   updateCaptainTimerDisplay();
 }
 
-function startDraftTimer(totalSecs) {
-  stopDraftTimer();
-  if (totalSecs <= 0) return;
-  draftTimerActive = true;
-  draftTimerTotalSecs = totalSecs;
-  draftTimerSecs = totalSecs;
+function startDraftTimerFromDeadline(deadlineISO, totalSecs) {
+  stopDraftTimerInterval();
+  if (!deadlineISO) return;
+  draftTimerDeadline = new Date(deadlineISO);
+  draftTimerTotalSecs = totalSecs || 60;
   updateAllTimerDisplays();
   draftTimerInterval = setInterval(() => {
-    draftTimerSecs = Math.max(0, draftTimerSecs - 1);
     updateAllTimerDisplays();
-    if (draftTimerSecs === 0) stopDraftTimer();
-  }, 1000);
+    if (getDraftTimerRemaining() <= 0) stopDraftTimerInterval();
+  }, 250);
 }
 
-function stopDraftTimer() {
+function stopDraftTimerInterval() {
   if (draftTimerInterval) { clearInterval(draftTimerInterval); draftTimerInterval = null; }
-  draftTimerActive = false;
 }
 
 function timerHtml() {
-  const isLow = draftTimerSecs > 0 && draftTimerSecs <= 10;
-  const pct = draftTimerTotalSecs > 0 ? (draftTimerSecs / draftTimerTotalSecs) * 100 : 0;
-  const m = Math.floor(draftTimerSecs / 60);
-  const s = (draftTimerSecs % 60).toString().padStart(2, '0');
+  const remaining = getDraftTimerRemaining();
+  const isLow = remaining > 0 && remaining <= 10;
+  const pct = draftTimerTotalSecs > 0 ? (remaining / draftTimerTotalSecs) * 100 : 0;
+  const m = Math.floor(remaining / 60);
+  const s = (remaining % 60).toString().padStart(2, '0');
   return `<div class="draft-timer-wrap">
     <div class="draft-timer-count${isLow ? ' low' : ''}">${m}:${s}</div>
     <div class="draft-timer-bar-wrap"><div class="draft-timer-bar${isLow ? ' low' : ''}" style="width:${pct}%;"></div></div>
@@ -5281,12 +5285,12 @@ function updateCaptainTimerDisplay() {
   if (el) el.innerHTML = timerHtml();
 }
 
-function startDraftFromButton() {
+async function startDraftFromButton() {
   const secs = draftSettings.timerSeconds;
   if (secs <= 0) return;
   const startArea = document.getElementById('draft-start-area');
   if (startArea) startArea.style.display = 'none';
-  startDraftTimer(secs);
+  await dbStartDraft(secs);
 }
 
 function openDraftSettings() {
@@ -5380,6 +5384,61 @@ async function dbResetDraft() {
   if (error) throw error;
 }
 
+// --- draft_state DB helpers (shared timer/state via Supabase) ---
+
+async function dbLoadDraftState() {
+  const { data, error } = await supabaseClient
+    .from('draft_state')
+    .select('*')
+    .eq('id', 1)
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function dbStartDraft(timerSeconds) {
+  const deadline = new Date(Date.now() + timerSeconds * 1000).toISOString();
+  const { error } = await supabaseClient
+    .from('draft_state')
+    .update({ started: true, timer_deadline: deadline, timer_seconds: timerSeconds, updated_at: new Date().toISOString() })
+    .eq('id', 1);
+  if (error) throw error;
+}
+
+async function dbResetTimerDeadline(timerSeconds) {
+  const deadline = new Date(Date.now() + timerSeconds * 1000).toISOString();
+  const { error } = await supabaseClient
+    .from('draft_state')
+    .update({ timer_deadline: deadline, timer_seconds: timerSeconds, updated_at: new Date().toISOString() })
+    .eq('id', 1);
+  if (error) throw error;
+}
+
+async function dbStopTimer() {
+  const { error } = await supabaseClient
+    .from('draft_state')
+    .update({ timer_deadline: null, updated_at: new Date().toISOString() })
+    .eq('id', 1);
+  if (error) throw error;
+}
+
+async function dbResetDraftState() {
+  const { error } = await supabaseClient
+    .from('draft_state')
+    .update({ started: false, timer_deadline: null, updated_at: new Date().toISOString() })
+    .eq('id', 1);
+  if (error) throw error;
+}
+
+function subscribeToDraftState(callback) {
+  if (!supabaseConfigured || !supabaseClient) return;
+  if (draftStateChannel) draftStateChannel.unsubscribe();
+  draftStateChannel = supabaseClient
+    .channel('draft_state_rt')
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'draft_state' }, callback)
+    .subscribe();
+}
+
 function subscribeToDraftPicks(callback) {
   if (!supabaseConfigured || !supabaseClient) return;
   if (draftChannel) draftChannel.unsubscribe();
@@ -5463,18 +5522,28 @@ function showDraftModeSelector() {
 
 // --- Display mode ---
 
-function initDisplayMode() {
-  stopDraftTimer();
+async function initDisplayMode() {
+  stopDraftTimerInterval();
   document.body.classList.add('draft-display-active');
   document.getElementById('draft-mode-selector').style.display = 'none';
   document.getElementById('draft-display-mode').style.display = '';
   document.getElementById('draft-captain-mode').style.display = 'none';
 
-  dbLoadDraftPicks().then(picks => {
-    draftLastPickCount = picks.length;
-    renderDisplayBoard(picks);
-  });
+  // Load picks and draft state in parallel
+  const [picks, state] = await Promise.all([dbLoadDraftPicks(), dbLoadDraftState()]);
+  draftLastPickCount = picks.length;
+  draftStarted = state.started;
+  renderDisplayBoard(picks);
 
+  // If draft is started and timer is still running, sync from deadline
+  if (state.started && state.timer_deadline) {
+    const remaining = Math.ceil((new Date(state.timer_deadline).getTime() - Date.now()) / 1000);
+    if (remaining > 0) {
+      startDraftTimerFromDeadline(state.timer_deadline, state.timer_seconds);
+    }
+  }
+
+  // Subscribe to pick changes — rendering + walk-up only, no timer logic
   subscribeToDraftPicks(async () => {
     const picks = await dbLoadDraftPicks();
     const isNewPick = picks.length > draftLastPickCount;
@@ -5483,13 +5552,27 @@ function initDisplayMode() {
     renderDisplayBoard(picks);
     if (newPick) {
       showWalkUpAnimation(newPick.player, newPick.team, null);
-      const secs = draftSettings.timerSeconds;
-      if (secs > 0 && picks.length < getDraftOrder().length) {
-        startDraftTimer(secs);
-      } else {
-        stopDraftTimer();
-      }
     }
+  });
+
+  // Subscribe to draft_state changes — handles all timer starts/stops
+  subscribeToDraftState(payload => {
+    const s = payload.new;
+    draftStarted = s.started;
+    if (s.timer_deadline) {
+      const remaining = Math.ceil((new Date(s.timer_deadline).getTime() - Date.now()) / 1000);
+      if (remaining > 0) {
+        startDraftTimerFromDeadline(s.timer_deadline, s.timer_seconds);
+      } else {
+        stopDraftTimerInterval();
+        draftTimerDeadline = null;
+      }
+    } else {
+      stopDraftTimerInterval();
+      draftTimerDeadline = null;
+    }
+    // Re-render to update start button visibility
+    dbLoadDraftPicks().then(picks => renderDisplayBoard(picks));
   });
 
   document.getElementById('display-mode-btn').addEventListener('click', () => {
@@ -5508,8 +5591,11 @@ function initDisplayMode() {
 
   document.getElementById('display-reset-btn').addEventListener('click', async () => {
     if (!confirm('Reset the entire draft?')) return;
-    await dbResetDraft();
+    await Promise.all([dbResetDraft(), dbResetDraftState()]);
     draftLastPickCount = 0;
+    draftStarted = false;
+    draftTimerDeadline = null;
+    stopDraftTimerInterval();
     renderDisplayBoard([]);
   });
 }
@@ -5526,12 +5612,12 @@ function renderDisplayBoard(picks) {
   const startArea = document.getElementById('draft-start-area');
   if (startArea) {
     startArea.style.display =
-      (!isDone && idx === 0 && !draftTimerActive && draftSettings.timerSeconds > 0) ? '' : 'none';
+      (!isDone && !draftStarted && draftSettings.timerSeconds > 0) ? '' : 'none';
   }
 
   const clockInfo = document.getElementById('draft-clock-info');
   if (isDone) {
-    stopDraftTimer();
+    stopDraftTimerInterval();
     clockInfo.innerHTML = `<div class="draft-clock-label">Draft Complete</div><div class="draft-clock-team done">All Players Selected!</div>`;
   } else {
     const t = dOrder[idx];
@@ -5563,26 +5649,46 @@ function renderDisplayBoard(picks) {
 
 // --- Captain mode ---
 
-function initCaptainMode(team) {
+async function initCaptainMode(team) {
   document.body.classList.remove('draft-display-active');
   document.getElementById('draft-mode-selector').style.display = 'none';
   document.getElementById('draft-display-mode').style.display = 'none';
   document.getElementById('draft-captain-mode').style.display = '';
 
-  dbLoadDraftPicks().then(picks => {
-    renderCaptainView(picks, team);
-    const secs = draftSettings.timerSeconds;
-    if (secs > 0 && picks.length < getDraftOrder().length) startDraftTimer(secs);
-  });
+  // Load picks and draft state in parallel
+  const [picks, state] = await Promise.all([dbLoadDraftPicks(), dbLoadDraftState()]);
+  draftStarted = state.started;
+  renderCaptainView(picks, team);
 
+  // Only start timer if draft has been started and deadline is in the future
+  if (state.started && state.timer_deadline) {
+    const remaining = Math.ceil((new Date(state.timer_deadline).getTime() - Date.now()) / 1000);
+    if (remaining > 0) {
+      startDraftTimerFromDeadline(state.timer_deadline, state.timer_seconds);
+    }
+  }
+
+  // Subscribe to pick changes — rendering only, no timer logic
   subscribeToDraftPicks(async () => {
     const picks = await dbLoadDraftPicks();
     renderCaptainView(picks, team);
-    const secs = draftSettings.timerSeconds;
-    if (secs > 0 && picks.length < getDraftOrder().length) {
-      startDraftTimer(secs);
+  });
+
+  // Subscribe to draft_state changes — handles all timer sync
+  subscribeToDraftState(payload => {
+    const s = payload.new;
+    draftStarted = s.started;
+    if (s.timer_deadline) {
+      const remaining = Math.ceil((new Date(s.timer_deadline).getTime() - Date.now()) / 1000);
+      if (remaining > 0) {
+        startDraftTimerFromDeadline(s.timer_deadline, s.timer_seconds);
+      } else {
+        stopDraftTimerInterval();
+        draftTimerDeadline = null;
+      }
     } else {
-      stopDraftTimer();
+      stopDraftTimerInterval();
+      draftTimerDeadline = null;
     }
   });
 
@@ -5621,7 +5727,7 @@ function renderCaptainView(picks, team) {
       <div class="draft-on-clock-team ${otherTeam}">Team ${otherTeam === 'red' ? 'Red' : 'Blue'} — ${otherCaptain} is picking…</div>
       <div id="captain-timer-display"></div>`;
   }
-  if (draftTimerActive) updateCaptainTimerDisplay();
+  if (draftTimerDeadline && getDraftTimerRemaining() > 0) updateCaptainTimerDisplay();
 
   body.innerHTML = '<div class="draft-section-label" style="display:block;">Available Players</div><div id="captain-roster"></div>' + captainTeamsHtml(picks);
 
@@ -5670,9 +5776,9 @@ async function captainPick(name, team, pickNumber) {
     renderCaptainView(picks, team);
     const secs = draftSettings.timerSeconds;
     if (secs > 0 && picks.length < getDraftOrder().length) {
-      startDraftTimer(secs);
+      await dbResetTimerDeadline(secs);
     } else {
-      stopDraftTimer();
+      await dbStopTimer();
     }
   } catch (err) {
     alert('Pick failed: ' + (err?.message || err?.details || JSON.stringify(err)));
