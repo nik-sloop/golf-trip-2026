@@ -5271,12 +5271,12 @@ const PLAYER_WALKUP_SONGS = {
   'Dan M':  '',
   'Hadley': '',
   'Shane':  '',
-  'Jon':    '',
+  'Jon':    'hype-enter-sandman.m4a',
   'Sam':    '',
   'Garret': '',
-  'Ant':    '',
+  'Ant':    'hype-split-only-u.m4a',
   'Dylan':  '',
-  'Chris':  '',
+  'Chris':  'hype-higher.m4a',
   'Ryan':   '',
 };
 
@@ -5289,15 +5289,17 @@ const HYPE_SONGS = [
   'hype-power.m4a',
   'hype-stronger.m4a',
   'hype-remember-the-name.m4a',
-  'hype-all-i-do-is-win.m4a',
   'hype-through-the-fire.m4a',
-  'hype-radioactive.m4a',
   'hype-blue.m4a',
   'hype-drop-the-world.m4a',
   'hype-real-slim-shady.m4a',
   'hype-we-didnt-start-the-fire.m4a',
   'hype-mercy.m4a',
   'hype-in-paris.m4a',
+  'hype-thunderstruck.m4a',
+  'hype-enter-sandman.m4a',
+  'hype-higher.m4a',
+  'hype-split-only-u.m4a',
 ];
 let hypeShuffled = [];
 function getNextHypeSong() {
@@ -5385,12 +5387,57 @@ function updateCaptainTimerDisplay() {
   if (el) el.innerHTML = timerHtml();
 }
 
+let preCountdownAudio = null;
+let preCountdownInterval = null;
+
 async function startDraftFromButton() {
   const secs = draftSettings.timerSeconds;
   if (secs <= 0) return;
   const startArea = document.getElementById('draft-start-area');
   if (startArea) startArea.style.display = 'none';
-  await dbStartDraft(secs);
+
+  // Show 2-minute pre-draft countdown with "The Final Countdown"
+  const PRE_DRAFT_SECS = 120;
+  const clockInfo = document.getElementById('draft-clock-info');
+
+  // Play Final Countdown
+  preCountdownAudio = new Audio('hype-final-countdown.m4a');
+  preCountdownAudio.volume = 0.9;
+  preCountdownAudio.play().catch(() => {});
+
+  let remaining = PRE_DRAFT_SECS;
+  function updatePreCountdown() {
+    const m = Math.floor(remaining / 60);
+    const s = remaining % 60;
+    clockInfo.innerHTML = `
+      <div class="draft-clock-label">Draft Starting In</div>
+      <div class="draft-clock-team" style="color:#f1c40f;font-size:2.5rem;letter-spacing:0.05em;">${m}:${s.toString().padStart(2, '0')}</div>`;
+  }
+  updatePreCountdown();
+
+  preCountdownInterval = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      clearInterval(preCountdownInterval);
+      preCountdownInterval = null;
+      // Fade out music
+      if (preCountdownAudio) {
+        const fadeOut = setInterval(() => {
+          if (preCountdownAudio.volume > 0.05) {
+            preCountdownAudio.volume = Math.max(0, preCountdownAudio.volume - 0.05);
+          } else {
+            clearInterval(fadeOut);
+            preCountdownAudio.pause();
+            preCountdownAudio = null;
+          }
+        }, 80);
+      }
+      // Start the actual draft
+      dbStartDraft(secs);
+      return;
+    }
+    updatePreCountdown();
+  }, 1000);
 }
 
 function openDraftSettings() {
@@ -5807,17 +5854,21 @@ function renderDisplayBoard(picks) {
   }
 
   const clockInfo = document.getElementById('draft-clock-info');
-  const lastPick = picks.length > 0 ? picks[picks.length - 1] : null;
-  const lastPickHtml = lastPick
-    ? `<div class="draft-last-pick">Last Pick: <span class="${lastPick.team}">${lastPick.player}</span> &mdash; Team ${lastPick.team === 'red' ? 'Red' : 'Blue'}</div>`
-    : '';
-  if (isDone) {
-    stopDraftTimerInterval();
-    clockInfo.innerHTML = `<div class="draft-clock-label">Draft Complete</div><div class="draft-clock-team done">All Players Selected!</div>${lastPickHtml}`;
-  } else {
-    const t = dOrder[idx];
-    clockInfo.innerHTML = `<div class="draft-clock-label">On The Clock &mdash; Pick ${idx + 1} of ${dOrder.length}</div>
-      <div class="draft-clock-team ${t}">Team ${t === 'red' ? 'Red' : 'Blue'} &mdash; ${t === 'red' ? 'Nik' : 'Dan'}</div>${lastPickHtml}`;
+
+  // Skip clock update if pre-draft countdown is running (don't overwrite it)
+  if (!preCountdownInterval) {
+    const lastPick = picks.length > 0 ? picks[picks.length - 1] : null;
+    const lastPickHtml = lastPick
+      ? `<div class="draft-last-pick">Last Pick: <span class="${lastPick.team}">${lastPick.player}</span> &mdash; Team ${lastPick.team === 'red' ? 'Red' : 'Blue'}</div>`
+      : '';
+    if (isDone) {
+      stopDraftTimerInterval();
+      clockInfo.innerHTML = `<div class="draft-clock-label">Draft Complete</div><div class="draft-clock-team done">All Players Selected!</div>${lastPickHtml}`;
+    } else {
+      const t = dOrder[idx];
+      clockInfo.innerHTML = `<div class="draft-clock-label">On The Clock &mdash; Pick ${idx + 1} of ${dOrder.length}</div>
+        <div class="draft-clock-team ${t}">Team ${t === 'red' ? 'Red' : 'Blue'} &mdash; ${t === 'red' ? 'Nik' : 'Dan'}</div>${lastPickHtml}`;
+    }
   }
 
   const redPicks = picks.filter(p => p.team === 'red');
