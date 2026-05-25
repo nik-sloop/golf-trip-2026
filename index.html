@@ -5601,7 +5601,7 @@ async function initDisplayMode() {
     }
   }
 
-  // Subscribe to pick changes — rendering + walk-up only, no timer logic
+  // Subscribe to pick changes — rendering + walk-up
   subscribeToDraftPicks(async () => {
     const picks = await dbLoadDraftPicks();
     const isNewPick = picks.length > draftLastPickCount;
@@ -5613,8 +5613,8 @@ async function initDisplayMode() {
     }
   });
 
-  // Subscribe to draft_state changes — handles all timer starts/stops
-  subscribeToDraftState(payload => {
+  // Subscribe to draft_state changes — timer sync + walk-up fallback
+  subscribeToDraftState(async payload => {
     const s = payload.new;
     draftStarted = s.started;
     if (s.timer_deadline) {
@@ -5629,8 +5629,15 @@ async function initDisplayMode() {
       stopDraftTimerInterval();
       draftTimerDeadline = null;
     }
-    // Re-render to update start button visibility
-    dbLoadDraftPicks().then(picks => renderDisplayBoard(picks));
+    // Re-render and trigger walk-up if there's a new pick
+    const picks = await dbLoadDraftPicks();
+    const isNewPick = picks.length > draftLastPickCount;
+    const newPick = isNewPick ? picks[picks.length - 1] : null;
+    draftLastPickCount = picks.length;
+    renderDisplayBoard(picks);
+    if (newPick) {
+      showWalkUpAnimation(newPick.player, newPick.team, null);
+    }
   });
 
   document.getElementById('display-mode-btn').addEventListener('click', () => {
