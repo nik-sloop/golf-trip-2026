@@ -1972,6 +1972,8 @@
   .ddb-col.ddb-red { border-color: rgba(231,76,60,0.2); }
   .ddb-col.ddb-blue { border-color: rgba(52,152,219,0.2); }
   .ddb-col.ddb-avail { border-color: rgba(241,196,15,0.15); }
+  .ddb-col.ddb-red.on-the-clock { border-color: var(--red-light); box-shadow: 0 0 18px rgba(231,76,60,0.35), inset 0 0 12px rgba(231,76,60,0.08); }
+  .ddb-col.ddb-blue.on-the-clock { border-color: var(--blue-light); box-shadow: 0 0 18px rgba(52,152,219,0.35), inset 0 0 12px rgba(52,152,219,0.08); }
   .ddb-col-header { font-size: clamp(0.8rem, 2vw, 1.1rem); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; text-align: center; padding-bottom: 0.55rem; margin-bottom: 0.55rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
   .ddb-col-header.red { color: var(--red-light); }
   .ddb-col-header.blue { color: var(--blue-light); }
@@ -5576,6 +5578,8 @@ function showFirstPickSpinner() {
   });
 }
 
+let draftSpinnerDone = false;
+
 async function startDraftFromButton() {
   const secs = draftSettings.timerSeconds;
   if (secs <= 0) return;
@@ -5584,6 +5588,7 @@ async function startDraftFromButton() {
 
   // Show first-pick spinner before the countdown
   await showFirstPickSpinner();
+  draftSpinnerDone = true;
 
   // Re-render board after potential order swap
   const picks = await dbLoadDraftPicks();
@@ -6155,11 +6160,22 @@ function renderDisplayBoard(picks) {
   const idx = picks.length;
   const isDone = idx >= dOrder.length;
 
-  // Start Draft button — visible only when timer is on, no picks yet, timer not running
+  // Start Draft button — visible only when timer is on, no picks yet, timer not running, spinner not done
   const startArea = document.getElementById('draft-start-area');
   if (startArea) {
     startArea.style.display =
-      (!isDone && !draftStarted && draftSettings.timerSeconds > 0) ? '' : 'none';
+      (!isDone && !draftStarted && !draftSpinnerDone && draftSettings.timerSeconds > 0) ? '' : 'none';
+  }
+
+  // Highlight the column that is on the clock
+  const redCol = document.querySelector('.ddb-col.ddb-red');
+  const blueCol = document.querySelector('.ddb-col.ddb-blue');
+  if (redCol) redCol.classList.remove('on-the-clock');
+  if (blueCol) blueCol.classList.remove('on-the-clock');
+  if (!isDone) {
+    const onClock = dOrder[idx];
+    if (onClock === 'red' && redCol) redCol.classList.add('on-the-clock');
+    if (onClock === 'blue' && blueCol) blueCol.classList.add('on-the-clock');
   }
 
   const clockInfo = document.getElementById('draft-clock-info');
