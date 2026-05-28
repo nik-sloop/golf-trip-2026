@@ -6123,6 +6123,7 @@ async function initDisplayMode() {
     await Promise.all([dbResetDraft(), dbResetDraftState()]);
     draftLastPickCount = 0;
     draftStarted = false;
+    draftSpinnerDone = false;
     draftFinalShown = false;
     draftTimerDeadline = null;
     stopDraftTimerInterval();
@@ -6176,7 +6177,7 @@ function renderDisplayBoard(picks) {
   const blueCol = document.querySelector('.ddb-col.ddb-blue');
   if (redCol) redCol.classList.remove('on-the-clock');
   if (blueCol) blueCol.classList.remove('on-the-clock');
-  if (!isDone) {
+  if (!isDone && draftStarted) {
     const onClock = dOrder[idx];
     if (onClock === 'red' && redCol) redCol.classList.add('on-the-clock');
     if (onClock === 'blue' && blueCol) blueCol.classList.add('on-the-clock');
