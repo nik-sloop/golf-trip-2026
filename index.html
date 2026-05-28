@@ -5546,11 +5546,15 @@ function showFirstPickSpinner() {
         resultEl.innerHTML = `<span style="color:${winnerColor};">${winnerName} picks first!</span>`;
         resultEl.classList.add('visible');
 
-        // Update draft order if Dan won (swap so blue goes first)
-        if (winnerTeam === 'blue') {
-          draftSettings.draftOrder = draftSettings.draftOrder.map(t => t === 'red' ? 'blue' : 'red');
-          localStorage.setItem(DRAFT_SETTINGS_KEY, JSON.stringify(draftSettings));
+        // Set draft order based on spinner winner
+        // Default order has red first — if blue won, swap all entries; if red won, reset to default
+        const defaultFirst = DRAFT_ORDER_DEFAULT[0];
+        if (winnerTeam !== defaultFirst) {
+          draftSettings.draftOrder = DRAFT_ORDER_DEFAULT.map(t => t === 'red' ? 'blue' : 'red');
+        } else {
+          draftSettings.draftOrder = [...DRAFT_ORDER_DEFAULT];
         }
+        localStorage.setItem(DRAFT_SETTINGS_KEY, JSON.stringify(draftSettings));
 
         // Auto-dismiss after 3s
         setTimeout(() => {
