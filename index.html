@@ -2210,6 +2210,58 @@
     to { opacity: 1; transform: scale(1); }
   }
 
+  /* First-pick spinner overlay */
+  .spinner-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.97); opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
+  }
+  .spinner-overlay.active { opacity: 1; pointer-events: all; }
+  .spinner-title {
+    font-size: clamp(1.4rem, 6vw, 2.5rem); font-weight: 900; letter-spacing: 0.1em;
+    text-transform: uppercase; color: #f1c40f; margin-bottom: 2rem;
+    text-shadow: 0 0 30px rgba(241,196,15,0.4);
+  }
+  .spinner-wheel {
+    position: relative; width: 260px; height: 260px; border-radius: 50%;
+    background: conic-gradient(
+      var(--red-mid) 0deg 180deg,
+      var(--blue-mid) 180deg 360deg
+    );
+    box-shadow: 0 0 40px rgba(241,196,15,0.25), inset 0 0 20px rgba(0,0,0,0.4);
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .spinner-wheel .spinner-label {
+    position: absolute; font-weight: 900; font-size: 1.3rem; letter-spacing: 0.08em;
+    text-transform: uppercase; text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+  .spinner-label-nik { top: 25%; left: 50%; transform: translate(-50%, -50%); color: #fff; }
+  .spinner-label-dan { bottom: 25%; left: 50%; transform: translate(-50%, 50%); color: #fff; }
+  .spinner-pointer {
+    position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 14px solid transparent; border-right: 14px solid transparent;
+    border-top: 24px solid #f1c40f;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+    z-index: 2;
+  }
+  .spinner-center-dot {
+    width: 28px; height: 28px; border-radius: 50%; background: #f1c40f;
+    box-shadow: 0 0 12px rgba(241,196,15,0.6);
+    z-index: 1;
+  }
+  .spinner-result {
+    margin-top: 2rem; font-size: clamp(1.2rem, 5vw, 2rem); font-weight: 900;
+    letter-spacing: 0.1em; text-transform: uppercase; opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .spinner-result.visible { opacity: 1; }
+  .spinner-hint {
+    margin-top: 1.5rem; font-size: 0.75rem; color: rgba(255,255,255,0.3);
+    letter-spacing: 0.1em;
+  }
+
   /* End-of-draft matchup overlay */
   .draft-final-overlay {
     position: fixed; inset: 0; z-index: 9999;
@@ -5428,13 +5480,116 @@ function updateCaptainTimerDisplay() {
 let preCountdownAudio = null;
 let preCountdownInterval = null;
 
+// --- First-pick spinner ---
+function showFirstPickSpinner() {
+  return new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.className = 'spinner-overlay';
+    overlay.innerHTML = `
+      <div class="spinner-title">Who Picks First?</div>
+      <div style="position:relative;display:inline-block;">
+        <div class="spinner-pointer"></div>
+        <div class="spinner-wheel">
+          <span class="spinner-label spinner-label-nik">Nik</span>
+          <span class="spinner-label spinner-label-dan">Dan</span>
+          <div class="spinner-center-dot"></div>
+        </div>
+      </div>
+      <div class="spinner-result" id="spinner-result"></div>
+      <div class="spinner-hint">Press any key to spin</div>`;
+
+    const fsTarget = document.fullscreenElement || document.body;
+    fsTarget.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('active'));
+
+    const wheel = overlay.querySelector('.spinner-wheel');
+    const resultEl = overlay.querySelector('#spinner-result');
+    const hintEl = overlay.querySelector('.spinner-hint');
+    let spun = false;
+
+    // Pointer is at top (0deg / 360deg).
+    // Wheel layout: red (Nik) = 0-180deg, blue (Dan) = 180-360deg
+    // After rotation, the sector under the pointer determines winner.
+    // Final angle mod 360: 0-180 = Nik (red), 180-360 = Dan (blue)
+    // We spin multiple full rotations + land in the target zone.
+
+    function spin(winner) {
+      if (spun) return;
+      spun = true;
+      hintEl.style.display = 'none';
+
+      const fullSpins = 5 + Math.floor(Math.random() * 3); // 5-7 full rotations
+      let targetAngle;
+      if (winner === 'nik') {
+        // Land pointer in red zone (0-180). Pick random spot in 20-160 range (avoiding edges)
+        targetAngle = 20 + Math.random() * 140;
+      } else if (winner === 'dan') {
+        // Land pointer in blue zone (180-360). Pick random spot in 200-340 range
+        targetAngle = 200 + Math.random() * 140;
+      } else {
+        // Truly random
+        targetAngle = Math.random() * 360;
+      }
+
+      const totalRotation = fullSpins * 360 + (360 - targetAngle);
+      wheel.style.transform = `rotate(${totalRotation}deg)`;
+
+      // Determine actual winner from targetAngle
+      const actualWinner = targetAngle < 180 ? 'nik' : 'dan';
+      const winnerName = actualWinner === 'nik' ? 'Nik' : 'Dan';
+      const winnerColor = actualWinner === 'nik' ? 'var(--red-light)' : 'var(--blue-light)';
+      const winnerTeam = actualWinner === 'nik' ? 'red' : 'blue';
+
+      setTimeout(() => {
+        resultEl.innerHTML = `<span style="color:${winnerColor};">${winnerName} picks first!</span>`;
+        resultEl.classList.add('visible');
+
+        // Update draft order if Dan won (swap so blue goes first)
+        if (winnerTeam === 'blue') {
+          draftSettings.draftOrder = draftSettings.draftOrder.map(t => t === 'red' ? 'blue' : 'red');
+          localStorage.setItem(DRAFT_SETTINGS_KEY, JSON.stringify(draftSettings));
+        }
+
+        // Auto-dismiss after 3s
+        setTimeout(() => {
+          overlay.classList.remove('active');
+          setTimeout(() => { overlay.remove(); resolve(); }, 400);
+        }, 3000);
+      }, 4200); // slightly after the CSS transition ends (4s)
+    }
+
+    function keyHandler(e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (spun) return;
+      e.preventDefault();
+
+      if (e.key === 'n' || e.key === 'N') {
+        spin('nik');
+      } else if (e.key === 'd' || e.key === 'D') {
+        spin('dan');
+      } else {
+        spin(null); // random
+      }
+      document.removeEventListener('keydown', keyHandler);
+    }
+    document.addEventListener('keydown', keyHandler);
+  });
+}
+
 async function startDraftFromButton() {
   const secs = draftSettings.timerSeconds;
   if (secs <= 0) return;
   const startArea = document.getElementById('draft-start-area');
   if (startArea) startArea.style.display = 'none';
 
-  // Show 2-minute pre-draft countdown with "The Final Countdown"
+  // Show first-pick spinner before the countdown
+  await showFirstPickSpinner();
+
+  // Re-render board after potential order swap
+  const picks = await dbLoadDraftPicks();
+  renderDisplayBoard(picks);
+
+  // Show 90s pre-draft countdown with "The Final Countdown"
   const PRE_DRAFT_SECS = 90;
   const clockInfo = document.getElementById('draft-clock-info');
 
@@ -5698,7 +5853,7 @@ function showWalkUpAnimation(name, team, onDismiss) {
   let hypeAudio = null;
 
   const HYPE_START = 1500;   // hype song starts 1.5s after chime
-  const REVEAL_DELAY = 30000; // 30s of hype buildup before reveal
+  const REVEAL_DELAY = 20000; // 20s of hype buildup before reveal
 
   // Start hype song while "Pick Is In" is still showing
   setTimeout(() => {
@@ -5717,8 +5872,8 @@ function showWalkUpAnimation(name, team, onDismiss) {
     overlay.querySelector('.walkup-reveal').classList.add('visible');
   }, REVEAL_DELAY);
 
-  // Auto-dismiss overlay after 60s — stops music and fires onDismiss
-  const OVERLAY_DURATION = 60000;
+  // Auto-dismiss overlay after 40s (20s hype + 20s stats) — stops music and fires onDismiss
+  const OVERLAY_DURATION = 40000;
   setTimeout(() => {
     if (!overlay._dismissed) dismiss();
   }, OVERLAY_DURATION);
@@ -5740,6 +5895,8 @@ document.addEventListener('keydown', (e) => {
   if (e.code !== 'Space') return;
   // Don't intercept if typing in an input
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  // Don't intercept if first-pick spinner is active
+  if (document.querySelector('.spinner-overlay.active')) return;
   e.preventDefault();
 
   // Skip walk-up animation
