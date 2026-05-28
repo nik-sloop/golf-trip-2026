@@ -6227,6 +6227,13 @@ function renderDisplayBoard(picks) {
     (bluePicks.length ? bluePicks.map((p, i) => `<div class="ddb-pick-item">${pickEntryHtml(p.player, i)}</div>`).join('') : '');
   const availEl = document.getElementById('ddb-available');
   if (remaining.length) {
+    remaining.sort((a, b) => {
+      const pa = players.find(p => p.name === a);
+      const pb = players.find(p => p.name === b);
+      const oa = pa?.scouting ? pa.scouting.avgAdj : 0;
+      const ob = pb?.scouting ? pb.scouting.avgAdj : 0;
+      return ob - oa;
+    });
     availEl.innerHTML = remaining.map(n => {
       const pd = players.find(p => p.name === n);
       const overall = pd?.scouting ? Math.round(pd.scouting.avgAdj / 50 * 100) : null;
