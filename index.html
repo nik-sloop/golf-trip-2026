@@ -118,11 +118,6 @@
       color: var(--green-dark);
     }
 
-    .nav-tab.nav-tab-disabled {
-      opacity: 0.35;
-      pointer-events: none;
-    }
-
     .tab-content {
       display: none;
     }
@@ -131,9 +126,9 @@
     }
   }
 
-  /* Desktop: show all tabs (except hash-gated ones) */
+  /* Desktop: show all tabs */
   @media (min-width: 768px) {
-    .tab-content:not(#tab-draft) { display: block !important; }
+    .tab-content { display: block !important; }
   }
 
   /* ---- Ryder Cup Points Bar ---- */
@@ -253,34 +248,6 @@
     gap: 1.25rem;
   }
 
-  .cvp-wrap {
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-  }
-
-  .cvp-bar-track {
-    height: 8px;
-    background: rgba(255,255,255,0.3);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 0.4rem;
-  }
-
-  .cvp-bar-fill {
-    height: 100%;
-    background: white;
-    border-radius: 4px;
-    transition: width 0.5s ease;
-  }
-
-  .cvp-stats {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.78rem;
-    opacity: 0.9;
-  }
-
   .countdown-unit {
     display: flex;
     flex-direction: column;
@@ -393,28 +360,6 @@
     margin-top: 0.3rem;
   }
 
-  .draft-captains-row {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 0.4rem;
-    margin-bottom: 0.15rem;
-  }
-
-  .draft-captain-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: 800;
-    padding: 0.3rem 0.7rem;
-    border-radius: 10px;
-    color: #fff;
-  }
-  .draft-captain-pill.red { background: var(--red); box-shadow: 0 2px 6px rgba(192,57,43,0.3); }
-  .draft-captain-pill.blue { background: var(--blue); box-shadow: 0 2px 6px rgba(36,113,163,0.3); }
-
   .draft-pill {
     font-size: 0.7rem;
     font-weight: 600;
@@ -424,55 +369,6 @@
 
   .draft-pill.round1 { background: #d4edda; color: #155724; }
   .draft-pill.round2 { background: #fff3cd; color: #856404; }
-  .draft-pill.captain-red {
-    background: var(--red);
-    color: #fff;
-    font-weight: 800;
-    box-shadow: 0 2px 6px rgba(192,57,43,0.3);
-  }
-  .draft-pill.captain-blue {
-    background: var(--blue);
-    color: #fff;
-    font-weight: 800;
-    box-shadow: 0 2px 6px rgba(36,113,163,0.3);
-  }
-  .captain-badge {
-    font-size: 0.6rem;
-    font-weight: 900;
-    background: rgba(255,255,255,0.35);
-    border-radius: 3px;
-    padding: 0 3px;
-    margin-left: 3px;
-    vertical-align: middle;
-  }
-
-  /* ---- Player Roster (draft tab captain mode) ---- */
-  .draft-roster { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.25rem 1rem 0.75rem; }
-  .roster-player-row {
-    display: flex; flex-direction: column;
-    background: white; border: 1px solid var(--gray-200);
-    border-radius: 10px; overflow: hidden; cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    -webkit-tap-highlight-color: transparent;
-  }
-  .roster-player-row.expanded { border-color: var(--green-light); }
-  .roster-row-main { display: flex; align-items: center; gap: 0.4rem; padding: 0.6rem 0.75rem; flex-wrap: wrap; }
-  .roster-player-name { font-size: 0.95rem; font-weight: 700; flex: 1; min-width: 60px; color: var(--gray-800); }
-  .roster-chip { font-size: 0.65rem; font-weight: 600; padding: 0.12rem 0.4rem; border-radius: 5px; background: var(--sand); color: var(--green-dark); white-space: nowrap; }
-  .roster-chevron { font-size: 0.65rem; color: var(--gray-500); margin-left: auto; transition: transform 0.15s; flex-shrink: 0; }
-  .roster-player-row.expanded .roster-chevron { transform: rotate(90deg); }
-  .roster-row-detail { display: none; padding: 0 0.75rem 0.75rem; border-top: 1px solid var(--gray-200); }
-  .roster-player-row.expanded .roster-row-detail { display: block; }
-  .roster-round-table { width: 100%; border-collapse: collapse; font-size: 0.73rem; margin: 0.4rem 0 0.5rem; }
-  .roster-round-table th { color: var(--gray-500); font-weight: 600; padding: 0.2rem 0.35rem; text-align: left; border-bottom: 1px solid var(--gray-200); }
-  .roster-round-table td { padding: 0.2rem 0.35rem; color: var(--gray-800); }
-  .roster-scout-section { margin-top: 0.3rem; }
-  .roster-scout-row { display: flex; align-items: center; gap: 0.4rem; margin: 0.25rem 0; font-size: 0.7rem; }
-  .roster-scout-label { width: 52px; color: var(--gray-500); flex-shrink: 0; }
-  .roster-scout-bar { flex: 1; height: 5px; background: var(--gray-200); border-radius: 3px; position: relative; }
-  .roster-scout-fill { position: absolute; top: 0; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--blue-light), var(--green-light)); }
-  .roster-scout-marker { position: absolute; top: -3px; width: 2px; height: 11px; background: var(--green-dark); border-radius: 1px; transform: translateX(-50%); }
-  .roster-scout-val { width: 20px; text-align: right; color: var(--gray-800); flex-shrink: 0; }
 
   /* ---- Player Grid ---- */
   .player-grid {
@@ -1282,169 +1178,122 @@
     font-style: italic;
   }
 
-  .vote-voters-label {
+  .vote-voters-list {
     font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
     color: var(--gray-500);
-    margin-bottom: 0.25rem;
+    margin-top: 0.3rem;
+    line-height: 1.5;
   }
 
-  .vote-voters-list {
-    font-size: 0.82rem;
-    color: var(--gray-800);
-    line-height: 1.6;
+  #tab-vote { display: none !important; }
+  .vote-unlocked #tab-vote { display: block !important; }
+
+  /* ---- Results ---- */
+  .final-banner {
+    background: linear-gradient(135deg, var(--blue), #1a5276);
+    color: white;
+    border-radius: 14px;
+    padding: 1.25rem 1rem 1rem;
+    margin-bottom: 0.75rem;
+    text-align: center;
+  }
+  .final-banner-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.8;
     margin-bottom: 0.5rem;
   }
-
-  .vote-hidden-msg {
-    margin-top: 0.75rem;
-    text-align: center;
+  .final-scoreboard {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-bottom: 0.6rem;
+  }
+  .final-team-block { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+  .final-team-pts { font-size: 3rem; font-weight: 900; line-height: 1; }
+  .final-team-name { font-size: 0.8rem; font-weight: 600; opacity: 0.9; }
+  .final-sep { font-size: 2rem; font-weight: 300; opacity: 0.5; }
+  .final-winner-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border-radius: 20px;
+    padding: 0.25rem 0.85rem;
     font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--green-dark);
-    background: var(--green-pale);
-    border-radius: 8px;
-    padding: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
   }
 
-  .vote-pick-status {
-    text-align: center;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--gray-500);
-    padding: 0.5rem 0.25rem;
-  }
-
-  .vote-pick-status.ready { color: var(--green-dark); }
-
-  .vote-player-grid {
+  .result-rosters {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
     margin-bottom: 0.75rem;
   }
-
-  .vote-player-card {
-    background: var(--gray-100);
+  .roster-card {
     border-radius: 10px;
-    padding: 0.65rem 0.7rem;
-    cursor: pointer;
-    border: 2px solid transparent;
-    position: relative;
-    transition: border-color 0.15s, background 0.15s;
-    -webkit-tap-highlight-color: transparent;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.78rem;
   }
+  .roster-card.blue { background: #ebf5fb; border-left: 3px solid var(--blue); }
+  .roster-card.red { background: #fdedec; border-left: 3px solid var(--red); }
+  .roster-label { font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.3rem; }
+  .roster-card.blue .roster-label { color: var(--blue); }
+  .roster-card.red .roster-label { color: var(--red); }
+  .roster-names { color: var(--gray-800); line-height: 1.6; }
 
-  .vote-player-card:not(.vpc-self):active { transform: scale(0.97); }
-
-  .vote-player-card.vpc-pick1 {
-    border-color: var(--green-dark);
-    background: var(--green-pale);
-  }
-
-  .vote-player-card.vpc-pick2 {
-    border-color: var(--blue);
-    background: #dbeafe;
-  }
-
-  .vote-player-card.vpc-self {
-    opacity: 0.35;
-    cursor: default;
-  }
-
-  .vpc-badge {
-    display: none;
-    position: absolute;
-    top: -7px;
-    right: -7px;
-    font-size: 0.58rem;
-    font-weight: 800;
-    padding: 0.12rem 0.4rem;
-    border-radius: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-
-  .vpc-pick1 .vpc-badge { display: block; background: var(--green-dark); color: white; }
-  .vpc-pick2 .vpc-badge { display: block; background: var(--blue); color: white; }
-
-  .vpc-header {
+  .result-day { margin-bottom: 1rem; }
+  .result-day-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.2rem;
-  }
-
-  .vpc-name { font-size: 0.88rem; font-weight: 700; }
-
-  .vpc-hdcp {
-    background: var(--sand);
-    padding: 0.1rem 0.35rem;
-    border-radius: 6px;
-    font-size: 0.62rem;
-    font-weight: 600;
-    color: var(--green-dark);
-    white-space: nowrap;
-  }
-
-  .vpc-strokes {
-    font-size: 0.68rem;
-    color: var(--gray-500);
+    align-items: baseline;
     margin-bottom: 0.35rem;
   }
+  .result-day-title { font-size: 0.95rem; font-weight: 700; color: var(--green-dark); }
+  .result-day-meta { font-size: 0.72rem; color: var(--gray-500); }
+  .result-day-tally {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0 0.1rem;
+  }
+  .rdt-blue { color: var(--blue); }
+  .rdt-red { color: var(--red); }
+  .rdt-sep { color: var(--gray-500); }
 
-  .vpc-overall-row {
+  .result-match {
+    background: white;
+    border-radius: 10px;
+    padding: 0.65rem 0.85rem;
+    margin-bottom: 0.4rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    border-left: 4px solid var(--gray-200);
+  }
+  .result-match.blue-win { border-left-color: var(--blue); }
+  .result-match.red-win { border-left-color: var(--red); }
+  .result-match.tie { border-left-color: var(--gold); }
+
+  .result-teams {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.4rem;
+    margin-bottom: 0.25rem;
+    flex-wrap: wrap;
   }
-
-  .vpc-overall-track {
-    flex: 1;
-    height: 10px;
-    background: linear-gradient(to right,
-      rgba(220,53,69,0.12) 0%, rgba(220,53,69,0.12) 40%,
-      rgba(230,126,34,0.12) 40%, rgba(230,126,34,0.12) 50%,
-      rgba(234,179,8,0.12) 50%, rgba(234,179,8,0.12) 70%,
-      rgba(34,197,94,0.12) 70%, rgba(34,197,94,0.12) 100%
-    );
-    border-radius: 5px;
-    position: relative;
-  }
-
-  .vpc-overall-fill {
-    position: absolute;
-    top: 0; bottom: 0;
-    border-radius: 5px;
-  }
-
-  .vpc-overall-marker {
-    position: absolute;
-    top: -2px; bottom: -2px;
-    width: 3px;
-    background: white;
-    border-radius: 1.5px;
-    transform: translateX(-50%);
-    z-index: 2;
-    box-shadow: 0 0 0 1.5px rgba(0,0,0,0.35);
-  }
-
-  .vpc-overall-val {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--green-dark);
-    min-width: 26px;
-    text-align: right;
-  }
-
-  .vpc-no-scout {
-    font-size: 0.65rem;
-    color: var(--gray-500);
-    font-style: italic;
-  }
-
+  .result-names { font-size: 0.85rem; font-weight: 600; }
+  .result-names.rn-blue { color: var(--blue); }
+  .result-names.rn-red { color: var(--red); }
+  .result-vs { font-size: 0.7rem; color: var(--gray-500); font-weight: 500; }
+  .result-outcome { display: flex; align-items: center; gap: 0.5rem; }
+  .result-winner { font-size: 0.78rem; font-weight: 700; }
+  .result-winner.rw-blue { color: var(--blue); }
+  .result-winner.rw-red { color: var(--red); }
+  .result-winner.rw-tie { color: var(--gray-500); }
+  .result-margin { font-size: 0.78rem; color: var(--gray-500); }
 
   /* ---- Desktop ---- */
   @media (min-width: 768px) {
@@ -1462,949 +1311,6 @@
     .ryder-bar-red { border-radius: 26px 0 0 26px; font-size: 1.3rem; }
     .ryder-bar-blue { border-radius: 0 26px 26px 0; font-size: 1.3rem; }
     .scout-grid { grid-template-columns: 1fr 1fr; }
-  }
-
-  /* ---- Captain Reveal Overlay ---- */
-  .reveal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: #0a0a0a;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.6s ease;
-  }
-  .reveal-overlay.active {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  .reveal-stage { display: none; width: 100%; height: 100%; position: absolute; inset: 0; }
-  .reveal-stage.visible { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-
-  /* Spotlight / particles */
-  .reveal-spotlight {
-    position: absolute;
-    width: 300px; height: 300px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(241,196,15,0.15) 0%, transparent 70%);
-    animation: spotlightPulse 2s ease-in-out infinite;
-  }
-  @keyframes spotlightPulse {
-    0%, 100% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.3); opacity: 1; }
-  }
-
-  .reveal-label {
-    font-size: 0.85rem;
-    font-weight: 800;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    color: var(--gold);
-    opacity: 0;
-    transform: translateY(20px);
-    animation: revealFadeUp 0.6s ease forwards;
-  }
-
-  .reveal-captain-name {
-    font-size: 2.8rem;
-    font-weight: 900;
-    color: #fff;
-    text-align: center;
-    opacity: 0;
-    transform: scale(0.3);
-    animation: captainNameReveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    text-shadow: 0 0 40px rgba(241,196,15,0.5), 0 0 80px rgba(241,196,15,0.2);
-    position: relative;
-    z-index: 2;
-  }
-
-  .reveal-captain-name .emoji {
-    display: block;
-    font-size: 3.5rem;
-    margin-bottom: 0.25rem;
-    filter: drop-shadow(0 0 20px rgba(241,196,15,0.6));
-  }
-
-  .reveal-votes-badge {
-    margin-top: 0.75rem;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: rgba(255,255,255,0.7);
-    opacity: 0;
-    animation: revealFadeUp 0.5s ease 0.4s forwards;
-  }
-
-  @keyframes revealFadeUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes captainNameReveal {
-    0% { opacity: 0; transform: scale(0.3) rotateX(40deg); }
-    60% { opacity: 1; transform: scale(1.1) rotateX(-5deg); }
-    100% { opacity: 1; transform: scale(1) rotateX(0); }
-  }
-
-  /* Particle burst */
-  .reveal-particles {
-    position: absolute;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  .reveal-particle {
-    position: absolute;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    opacity: 0;
-  }
-
-  /* Face-off stage */
-  .faceoff-stage {
-    width: 100%; height: 100%;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .faceoff-bg {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #1a0a0a 0%, #0a0a0a 40%, #0a0a0a 60%, #0a0a1a 100%);
-  }
-
-  .faceoff-slash {
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 50%;
-    width: 4px;
-    background: var(--gold);
-    transform: translateX(-50%) skewX(-8deg);
-    box-shadow: 0 0 30px rgba(241,196,15,0.4);
-    opacity: 0;
-    animation: slashReveal 0.4s ease 0.3s forwards;
-  }
-  @keyframes slashReveal {
-    0% { opacity: 0; transform: translateX(-50%) skewX(-8deg) scaleY(0); }
-    100% { opacity: 1; transform: translateX(-50%) skewX(-8deg) scaleY(1); }
-  }
-
-  .faceoff-side {
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    padding: 1rem;
-  }
-  .faceoff-side.left {
-    left: 0;
-    background: linear-gradient(135deg, rgba(192,57,43,0.12), transparent);
-    animation: sideSlideLeft 0.6s ease 0.5s forwards;
-  }
-  .faceoff-side.right {
-    right: 0;
-    background: linear-gradient(225deg, rgba(36,113,163,0.12), transparent);
-    animation: sideSlideRight 0.6s ease 0.5s forwards;
-  }
-  @keyframes sideSlideLeft {
-    0% { opacity: 0; transform: translateX(-40px); }
-    100% { opacity: 1; transform: translateX(0); }
-  }
-  @keyframes sideSlideRight {
-    0% { opacity: 0; transform: translateX(40px); }
-    100% { opacity: 1; transform: translateX(0); }
-  }
-
-  .faceoff-team-label {
-    font-size: 0.65rem;
-    font-weight: 800;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin-bottom: 0.25rem;
-  }
-  .faceoff-side.left .faceoff-team-label { color: var(--red-light); }
-  .faceoff-side.right .faceoff-team-label { color: var(--blue-light); }
-
-  .faceoff-emoji {
-    font-size: 3rem;
-    margin-bottom: 0.25rem;
-    filter: drop-shadow(0 0 15px rgba(255,255,255,0.3));
-  }
-
-  .faceoff-name {
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: #fff;
-    text-align: center;
-    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
-  }
-
-  .faceoff-votes {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: rgba(255,255,255,0.5);
-    margin-top: 0.25rem;
-  }
-
-  .faceoff-vs {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    opacity: 0;
-    animation: vsReveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.8s forwards;
-  }
-  .faceoff-vs span {
-    display: block;
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--gold);
-    text-shadow: 0 0 30px rgba(241,196,15,0.6), 0 0 60px rgba(241,196,15,0.3);
-    line-height: 1;
-  }
-
-  /* 3-way (or more) tie layout */
-  .faceoff-multi {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-  }
-  .faceoff-card {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-    opacity: 0;
-    animation: sideSlideLeft 0.6s ease 0.5s forwards;
-  }
-  .faceoff-vs-sm {
-    font-size: 1.4rem;
-    font-weight: 900;
-    color: var(--gold);
-    text-shadow: 0 0 20px rgba(241,196,15,0.5);
-    opacity: 0;
-    animation: vsReveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.85s forwards;
-    flex-shrink: 0;
-    padding: 0 0.1rem;
-  }
-  @keyframes vsReveal {
-    0% { opacity: 0; transform: translate(-50%, -50%) scale(3); }
-    60% { opacity: 1; transform: translate(-50%, -50%) scale(0.9); }
-    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  }
-
-  .faceoff-subtitle {
-    position: absolute;
-    bottom: 15%;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    opacity: 0;
-    animation: revealFadeUp 0.6s ease 1.4s forwards;
-  }
-  .faceoff-subtitle span {
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--gold);
-  }
-
-  .reveal-close-btn {
-    position: absolute;
-    bottom: 5%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.7);
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 0.6rem 2rem;
-    border-radius: 30px;
-    cursor: pointer;
-    opacity: 0;
-    animation: revealFadeUp 0.5s ease 2s forwards;
-    transition: background 0.2s;
-    z-index: 20;
-  }
-  .reveal-close-btn:active { background: rgba(255,255,255,0.2); }
-
-  /* Nominee animated pills */
-  .nominee-grid {
-    position: relative;
-    height: 90px;
-    margin: 0.75rem 0;
-    overflow: hidden;
-  }
-  .nominee-pill {
-    position: absolute;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
-    color: #fff;
-    font-size: 0.82rem;
-    font-weight: 700;
-    padding: 0.4rem 0.75rem;
-    border-radius: 20px;
-    opacity: 0;
-    transform: scale(0.5);
-    animation: nomineePopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    box-shadow: 0 2px 8px rgba(26,71,42,0.25);
-    white-space: nowrap;
-  }
-  .nominee-pill .np-q { font-size: 0.7rem; opacity: 0.7; }
-
-  /* Banner variant (white on green background) */
-  .nominee-pill.banner-pill {
-    background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255,255,255,0.3);
-  }
-
-  @keyframes nomineePopIn {
-    0% { opacity: 0; transform: scale(0.5) translateY(10px); }
-    60% { opacity: 1; transform: scale(1.08) translateY(-2px); }
-    100% { opacity: 1; transform: scale(1) translateY(0); }
-  }
-
-
-  .reveal-trigger-btn.banner-btn {
-    background: rgba(255,255,255,0.15);
-    border-color: rgba(255,255,255,0.5);
-    color: #fff;
-    margin-top: 0.75rem;
-    font-size: 0.82rem;
-    padding: 0.65rem 1.5rem;
-    display: inline-block;
-    width: auto;
-  }
-  .reveal-trigger-btn.banner-btn::before {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-  }
-
-  .reveal-trigger-btn {
-    display: block;
-    width: 100%;
-    margin-top: 1rem;
-    padding: 0.9rem;
-    background: linear-gradient(135deg, var(--green-dark), #1a472a);
-    color: var(--gold);
-    font-size: 0.95rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    border: 2px solid var(--gold);
-    border-radius: 12px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.15s;
-  }
-  .reveal-trigger-btn:active { transform: scale(0.97); }
-  .reveal-trigger-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(241,196,15,0.15), transparent);
-    animation: btnShimmer 2s ease-in-out infinite;
-  }
-  @keyframes btnShimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-
-  /* Runoff vote styles */
-  .runoff-confirmed {
-    text-align: center;
-    padding: 0.75rem;
-    border-radius: 12px;
-    background: linear-gradient(135deg, rgba(192,57,43,0.15), rgba(192,57,43,0.05));
-    border: 1px solid rgba(192,57,43,0.3);
-    margin-bottom: 1rem;
-  }
-  .runoff-confirmed .rc-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.5); margin-bottom: 0.25rem; }
-  .runoff-confirmed .rc-name { font-size: 1.1rem; font-weight: 700; color: #e74c3c; }
-  .runoff-tied-label {
-    text-align: center;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--blue-light, #5dade2);
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  .runoff-candidate-grid {
-    display: flex;
-    justify-content: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-  }
-  .runoff-candidate-card {
-    padding: 0.6rem 1.2rem;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.06);
-    border: 2px solid rgba(255,255,255,0.12);
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: all 0.2s;
-    user-select: none;
-  }
-  .runoff-candidate-card:hover { border-color: var(--blue-light, #5dade2); background: rgba(93,173,226,0.1); }
-  .runoff-candidate-card.selected {
-    border-color: var(--blue-light, #5dade2);
-    background: rgba(93,173,226,0.2);
-    box-shadow: 0 0 12px rgba(93,173,226,0.25);
-  }
-  .runoff-progress { margin-top: 1rem; }
-  .runoff-tally-bar {
-    height: 28px;
-    border-radius: 14px;
-    overflow: hidden;
-    display: flex;
-    background: rgba(255,255,255,0.06);
-    margin-bottom: 0.5rem;
-  }
-  .runoff-tally-segment {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    transition: width 0.5s ease;
-    min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-  .runoff-tally-segment.seg-0 { background: linear-gradient(90deg, #5dade2, #3498db); color: #fff; }
-  .runoff-tally-segment.seg-1 { background: linear-gradient(90deg, #48c9b0, #1abc9c); color: #fff; }
-  .runoff-tally-segment.seg-2 { background: linear-gradient(90deg, #f39c12, #e67e22); color: #fff; }
-  .runoff-tally-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.5);
-  }
-  .runoff-winner-msg {
-    text-align: center;
-    margin-top: 0.75rem;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--blue-light, #5dade2);
-  }
-  .runoff-banner-vs {
-    color: rgba(255,255,255,0.5);
-    font-size: 0.75rem;
-    font-weight: 700;
-    margin: 0 0.25rem;
-  }
-  /* ---- Draft Display Mode (TV/laptop) — full-screen dark overlay ---- */
-  body.draft-display-active header,
-  body.draft-display-active #countdown-banner,
-  body.draft-display-active #bottom-nav,
-  body.draft-display-active .tab-content:not(#tab-draft) { display: none !important; }
-  body.draft-display-active #tab-draft {
-    display: block !important;
-    position: fixed;
-    inset: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    background: #0d0d18;
-    color: #fff;
-    z-index: 100;
-  }
-
-  /* ---- Draft mode selector ---- */
-  .dms-wrap { padding: 2.5rem 1rem; text-align: center; max-width: 400px; margin: 0 auto; }
-  .dms-title { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 1.75rem; }
-  .dms-btns { display: flex; flex-direction: column; gap: 0.75rem; }
-  .dms-btn {
-    display: flex; align-items: center; gap: 0.75rem;
-    padding: 0.9rem 1.25rem; border-radius: 12px;
-    border: 1px solid var(--gray-200); background: white;
-    color: var(--gray-800); font-size: 0.95rem; font-weight: 700; cursor: pointer; text-align: left;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
-  }
-  .dms-btn span { font-size: 0.68rem; font-weight: 400; color: var(--gray-500); display: block; margin-top: 0.1rem; }
-  .dms-btn .dms-icon { font-size: 1.4rem; flex-shrink: 0; }
-  .dms-btn.red { border-left: 4px solid var(--red); }
-  .dms-btn.blue { border-left: 4px solid var(--blue); }
-
-  /* ---- Draft display board (laptop/TV — dark theme) ---- */
-  .draft-clock {
-    padding: 1.25rem 2rem 1rem; text-align: center;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-  }
-  .draft-clock-label { font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 0.4rem; }
-  .draft-clock-team { font-size: clamp(1.75rem, 4.5vw, 3.2rem); font-weight: 900; letter-spacing: 0.01em; }
-  .draft-clock-team.red { color: var(--red-light); }
-  .draft-clock-team.blue { color: var(--blue-light); }
-  .draft-clock-team.done { color: #f1c40f; }
-  .draft-last-pick {
-    font-size: 0.7rem; letter-spacing: 0.08em; color: rgba(255,255,255,0.45);
-    margin-top: 0.5rem; font-weight: 600;
-  }
-  .draft-last-pick .red { color: var(--red-light); }
-  .draft-last-pick .blue { color: var(--blue-light); }
-  .draft-fullscreen-btn {
-    position: fixed; top: 0.75rem; right: 0.75rem; z-index: 100;
-    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 8px; color: rgba(255,255,255,0.5); font-size: 1.2rem;
-    padding: 0.4rem 0.6rem; cursor: pointer; line-height: 1;
-  }
-  .draft-fullscreen-btn:hover { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); }
-  .draft-board { display: grid; grid-template-columns: 1fr 1.1fr 1fr; gap: 1rem; padding: 1rem 1rem 0.5rem; }
-  .ddb-col { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 0.75rem; }
-  .ddb-col.ddb-red { border-color: rgba(231,76,60,0.2); }
-  .ddb-col.ddb-blue { border-color: rgba(52,152,219,0.2); }
-  .ddb-col.ddb-avail { border-color: rgba(241,196,15,0.15); }
-  .ddb-col.ddb-red.on-the-clock { border-color: var(--red-light); box-shadow: 0 0 18px rgba(231,76,60,0.35), inset 0 0 12px rgba(231,76,60,0.08); }
-  .ddb-col.ddb-blue.on-the-clock { border-color: var(--blue-light); box-shadow: 0 0 18px rgba(52,152,219,0.35), inset 0 0 12px rgba(52,152,219,0.08); }
-  .ddb-col-header { font-size: clamp(0.8rem, 2vw, 1.1rem); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; text-align: center; padding-bottom: 0.55rem; margin-bottom: 0.55rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
-  .ddb-col-header.red { color: var(--red-light); }
-  .ddb-col-header.blue { color: var(--blue-light); }
-  .ddb-col-header.avail { color: rgba(241,196,15,0.75); }
-  .ddb-pick-item { font-size: clamp(1rem, 2.2vw, 1.4rem); font-weight: 600; color: rgba(255,255,255,0.85); padding: 0.35rem 0.2rem; display: flex; align-items: center; gap: 0.4rem; }
-  .ddb-pick-num { font-size: 0.65rem; color: rgba(255,255,255,0.22); min-width: 1.2rem; }
-  .ddb-avail-item { font-size: clamp(0.95rem, 2vw, 1.25rem); color: rgba(255,255,255,0.55); padding: 0.3rem 0.2rem; }
-  .ddb-empty { font-size: 0.72rem; color: rgba(255,255,255,0.2); padding: 0.25rem; }
-
-  /* ---- Captain mode (light theme) ---- */
-  .draft-header {
-    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
-    color: white;
-    padding: 1rem 1.25rem 0.85rem;
-    text-align: center;
-  }
-  .draft-on-clock-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-bottom: 0.3rem; }
-  .draft-on-clock-team { font-size: 1.5rem; font-weight: 800; color: white; }
-  .draft-on-clock-team.red { color: #ffb3ab; }
-  .draft-on-clock-team.blue { color: #a8d8f0; }
-  .draft-section-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green-dark); font-weight: 700; padding: 0.75rem 1rem 0.3rem; }
-  .captain-waiting { text-align: center; padding: 2rem 1.25rem; }
-  .captain-waiting-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 0.5rem; }
-  .captain-waiting-team { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.3rem; color: var(--gray-800); }
-  .captain-waiting-team.red { color: var(--red); }
-  .captain-waiting-team.blue { color: var(--blue); }
-  .draft-teams-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0 1rem 1rem; }
-  .draft-team-col { background: white; border: 1px solid var(--gray-200); border-radius: 10px; padding: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
-  .draft-team-col.red { border-left: 3px solid var(--red); }
-  .draft-team-col.blue { border-left: 3px solid var(--blue); }
-  .draft-team-col-header { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em; text-align: center; padding-bottom: 0.3rem; margin-bottom: 0.3rem; border-bottom: 1px solid var(--gray-200); }
-  .draft-team-col.red .draft-team-col-header { color: var(--red); }
-  .draft-team-col.blue .draft-team-col-header { color: var(--blue); }
-  .draft-pick-entry { font-size: 0.82rem; font-weight: 600; color: var(--gray-800); padding: 0.22rem 0.25rem; display: flex; align-items: center; gap: 0.3rem; }
-  .draft-pick-entry .dpe-num { font-size: 0.6rem; color: var(--gray-500); min-width: 1rem; }
-  .draft-admin-bar { display: flex; justify-content: center; gap: 0.75rem; padding: 0.5rem 1rem; border-bottom: 1px solid var(--gray-200); background: white; }
-  .draft-admin-btn { background: white; border: 1px solid var(--gray-200); border-radius: 6px; color: var(--gray-800); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.9rem; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
-  .draft-admin-btn:disabled { opacity: 0.35; cursor: default; }
-
-  /* ---- Draft Settings Panel ---- */
-  #draft-settings-panel {
-    position: fixed; inset: 0; z-index: 500;
-    display: flex; flex-direction: column; justify-content: flex-end;
-  }
-  .dsp-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
-  .dsp-sheet {
-    position: relative; background: white;
-    border-radius: 20px 20px 0 0;
-    max-height: 88vh; overflow-y: auto;
-    box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  .dsp-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.1rem 1.25rem 0.75rem;
-    border-bottom: 1px solid var(--gray-200);
-    position: sticky; top: 0; background: white; z-index: 1;
-  }
-  .dsp-title { font-size: 1rem; font-weight: 800; color: var(--gray-800); }
-  .dsp-close-btn {
-    background: var(--gray-200); border: none; border-radius: 50%;
-    width: 1.75rem; height: 1.75rem; font-size: 0.8rem;
-    cursor: pointer; color: var(--gray-800); line-height: 1.75rem; text-align: center;
-  }
-  .dsp-body { padding: 1rem 1.25rem; }
-  .dsp-field { margin-bottom: 1.5rem; }
-  .dsp-label {
-    display: block; font-size: 0.7rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.1em;
-    color: var(--gray-500); margin-bottom: 0.6rem;
-  }
-  .dsp-timer-row { display: flex; align-items: center; gap: 0.75rem; }
-  .dsp-timer-input {
-    width: 6rem; padding: 0.45rem 0.75rem;
-    border: 1.5px solid var(--gray-200); border-radius: 8px;
-    font-size: 1.1rem; font-weight: 700; color: var(--gray-800); font-family: inherit;
-  }
-  .dsp-timer-input:focus { outline: none; border-color: var(--green-mid); }
-  .dsp-timer-hint { font-size: 0.75rem; color: var(--gray-500); }
-  .dsp-order-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-top: 0.5rem; }
-  .dsp-order-pick { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
-  .dsp-order-num { font-size: 0.6rem; color: var(--gray-500); font-weight: 600; }
-  .dsp-order-btn {
-    width: 100%; aspect-ratio: 1/1; border-radius: 8px; border: none;
-    font-size: 0.8rem; font-weight: 800; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    touch-action: manipulation;
-  }
-  .dsp-order-btn.red { background: var(--red); color: white; }
-  .dsp-order-btn.blue { background: var(--blue); color: white; }
-  .dsp-order-hint { font-size: 0.72rem; color: var(--gray-500); margin-top: 0.6rem; text-align: center; }
-  .dsp-footer { padding: 0.75rem 1.25rem 1.5rem; }
-  .dsp-save-btn {
-    width: 100%; padding: 0.8rem; background: var(--green-dark);
-    color: white; border: none; border-radius: 10px;
-    font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: inherit;
-  }
-  /* Draft start button (display mode) */
-  .draft-start-area { text-align: center; padding: 0.75rem 1rem 0; }
-  .draft-start-btn {
-    padding: 0.65rem 2.5rem; background: var(--green-mid); color: white;
-    border: none; border-radius: 10px; font-size: 1rem; font-weight: 700;
-    cursor: pointer; font-family: inherit; letter-spacing: 0.02em;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.35); touch-action: manipulation;
-  }
-  /* Countdown timer in display mode */
-  .draft-timer-wrap { margin-top: 0.5rem; }
-  .draft-timer-count {
-    font-size: clamp(2rem, 7vw, 4rem); font-weight: 900;
-    font-variant-numeric: tabular-nums; letter-spacing: -0.02em; color: white;
-  }
-  .draft-timer-count.low { color: #e74c3c; animation: timer-pulse 0.5s ease infinite alternate; }
-  @keyframes timer-pulse { from { opacity: 1; } to { opacity: 0.35; } }
-  .draft-timer-bar-wrap {
-    width: min(260px, 65%); margin: 0.3rem auto 0;
-    height: 3px; background: rgba(255,255,255,0.12); border-radius: 2px; overflow: hidden;
-  }
-  .draft-timer-bar { height: 100%; background: rgba(255,255,255,0.55); border-radius: 2px; transition: width 0.9s linear; }
-  .draft-timer-bar.low { background: #e74c3c; }
-
-  /* Walk-up animation overlay */
-  .walkup-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.97);
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    pointer-events: none;
-  }
-  .walkup-overlay.active { opacity: 1; pointer-events: all; }
-  .walkup-spotlight { position: absolute; inset: 0; pointer-events: none; }
-  /* "The Pick Is In" intro phase */
-  .walkup-intro {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    transition: opacity 0.4s ease;
-  }
-  .walkup-intro.fade-out { opacity: 0; }
-  .walkup-intro-text {
-    font-size: clamp(1.8rem, 8vw, 3.5rem);
-    font-weight: 900;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #f1c40f;
-    text-align: center;
-    opacity: 0;
-    animation: walkupPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
-    text-shadow: 0 0 40px rgba(241,196,15,0.4);
-  }
-  .walkup-intro-team {
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-top: 1rem;
-    opacity: 0;
-    animation: walkupFadeUp 0.5s ease-out 0.6s both;
-  }
-  .walkup-intro-team.red { color: var(--red-light); }
-  .walkup-intro-team.blue { color: var(--blue-light); }
-
-  /* Player reveal phase */
-  .walkup-reveal {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;
-  }
-  .walkup-reveal.visible { opacity: 1; pointer-events: all; }
-
-  .walkup-drafted-label {
-    font-size: 0.62rem;
-    letter-spacing: 0.28em;
-    color: rgba(255,255,255,0.3);
-    text-transform: uppercase;
-    opacity: 0;
-    animation: walkupFadeUp 0.5s ease-out 0.15s both;
-  }
-  .walkup-team-label {
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-top: 0.35rem;
-    margin-bottom: 0.6rem;
-    opacity: 0;
-    animation: walkupFadeUp 0.5s ease-out 0.3s both;
-  }
-  .walkup-team-label.red { color: var(--red-light); }
-  .walkup-team-label.blue { color: var(--blue-light); }
-  .walkup-name {
-    font-size: clamp(2.5rem, 11vw, 5rem);
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    color: #fff;
-    text-align: center;
-    padding: 0 1.5rem;
-    line-height: 1.05;
-    opacity: 0;
-    animation: walkupPop 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
-  }
-  .walkup-stats {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.2rem 1.8rem;
-    margin-top: 1.25rem;
-    padding: 0 1rem;
-    opacity: 0;
-    animation: walkupFadeUp 0.5s ease-out 1.0s both;
-  }
-  .walkup-stat { text-align: center; min-width: 3rem; }
-  .walkup-stat-val { font-size: 1.3rem; font-weight: 800; color: rgba(255,255,255,0.85); }
-  .walkup-stat-label { font-size: 0.52rem; color: rgba(255,255,255,0.35); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.1rem; }
-  @keyframes walkupFadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes walkupPop {
-    from { opacity: 0; transform: scale(0.55); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
-  /* First-pick spinner overlay */
-  .spinner-overlay {
-    position: fixed; inset: 0; z-index: 9999;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    background: rgba(0,0,0,0.97); opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
-  }
-  .spinner-overlay.active { opacity: 1; pointer-events: all; }
-  .spinner-title {
-    font-size: clamp(1.4rem, 6vw, 2.5rem); font-weight: 900; letter-spacing: 0.1em;
-    text-transform: uppercase; color: #f1c40f; margin-bottom: 2rem;
-    text-shadow: 0 0 30px rgba(241,196,15,0.4);
-  }
-  .spinner-wheel {
-    position: relative; width: 260px; height: 260px; border-radius: 50%;
-    background: conic-gradient(
-      var(--red) 0deg 180deg,
-      var(--blue) 180deg 360deg
-    );
-    box-shadow: 0 0 40px rgba(241,196,15,0.25), inset 0 0 20px rgba(0,0,0,0.4);
-    transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .spinner-wheel .spinner-label {
-    position: absolute; font-weight: 900; font-size: 1.3rem; letter-spacing: 0.08em;
-    text-transform: uppercase; text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-  }
-  .spinner-label-nik { top: 50%; left: 75%; transform: translate(-50%, -50%); color: #fff; }
-  .spinner-label-dan { top: 50%; left: 25%; transform: translate(-50%, -50%); color: #fff; }
-  .spinner-pointer {
-    position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 14px solid transparent; border-right: 14px solid transparent;
-    border-top: 24px solid #f1c40f;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
-    z-index: 2;
-  }
-  .spinner-center-dot {
-    width: 28px; height: 28px; border-radius: 50%; background: #f1c40f;
-    box-shadow: 0 0 12px rgba(241,196,15,0.6);
-    z-index: 1;
-  }
-  .spinner-result {
-    margin-top: 2rem; font-size: clamp(1.2rem, 5vw, 2rem); font-weight: 900;
-    letter-spacing: 0.1em; text-transform: uppercase; opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-  .spinner-result.visible { opacity: 1; }
-  .spinner-hint {
-    margin-top: 1.5rem; font-size: 0.75rem; color: rgba(255,255,255,0.3);
-    letter-spacing: 0.1em;
-  }
-
-  /* End-of-draft matchup overlay */
-  .draft-final-overlay {
-    position: fixed; inset: 0; z-index: 9999;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    background: rgba(0,0,0,0.97); opacity: 0; transition: opacity 0.5s ease; pointer-events: none;
-  }
-  .draft-final-overlay.active { opacity: 1; pointer-events: all; }
-  .draft-final-title {
-    font-size: clamp(1.2rem, 5vw, 2rem); font-weight: 900; letter-spacing: 0.1em;
-    text-transform: uppercase; color: #f1c40f; margin-bottom: 1.5rem;
-    opacity: 0; animation: walkupPop 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
-    text-shadow: 0 0 30px rgba(241,196,15,0.4);
-  }
-  .draft-final-vs { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
-  .draft-final-team {
-    text-align: center; min-width: 140px; padding: 1rem;
-    opacity: 0;
-  }
-  .draft-final-team.red { animation: walkupFadeUp 0.5s ease-out 0.7s both; }
-  .draft-final-team.blue { animation: walkupFadeUp 0.5s ease-out 0.9s both; }
-  .draft-final-team-name { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.5rem; }
-  .draft-final-team.red .draft-final-team-name { color: var(--red-light); }
-  .draft-final-team.blue .draft-final-team-name { color: var(--blue-light); }
-  .draft-final-rating { font-size: 2.5rem; font-weight: 900; color: #f1c40f; }
-  .draft-final-strokes { font-size: 0.8rem; color: #2ecc71; margin-top: 0.25rem; }
-  .draft-final-players { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 0.5rem; line-height: 1.5; }
-  .draft-final-vs-text {
-    font-size: clamp(1.5rem, 6vw, 2.5rem); font-weight: 900; color: rgba(255,255,255,0.15);
-    opacity: 0; animation: walkupPop 0.5s ease-out 0.8s both;
-  }
-  .draft-final-favorite {
-    margin-top: 1.5rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em;
-    text-transform: uppercase; opacity: 0; animation: walkupFadeUp 0.5s ease-out 1.2s both;
-  }
-  .draft-final-close {
-    margin-top: 2rem; padding: 0.6rem 2rem; background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 8px;
-    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; cursor: pointer;
-    opacity: 0; animation: walkupFadeUp 0.4s ease-out 1.5s both;
-  }
-
-  /* ---- Commissioner's Note ---- */
-  #tab-commissioner { background: var(--gray-100); }
-  .comm-masthead {
-    background: linear-gradient(160deg, #0a1f10 0%, var(--green-dark) 50%, #1e3a26 100%);
-    color: white;
-    padding: 2rem 1.25rem 1.5rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .comm-masthead::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: repeating-linear-gradient(
-      -45deg, transparent, transparent 3px,
-      rgba(255,255,255,0.018) 3px, rgba(255,255,255,0.018) 6px
-    );
-    pointer-events: none;
-  }
-  .comm-eyebrow {
-    font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase;
-    color: rgba(255,255,255,0.5); margin-bottom: 0.6rem;
-  }
-  .comm-title {
-    font-size: clamp(1.4rem, 5.5vw, 2rem); font-weight: 900;
-    letter-spacing: -0.01em; line-height: 1.15;
-    margin-bottom: 0.4rem;
-  }
-  .comm-subtitle {
-    font-size: 0.8rem; color: rgba(255,255,255,0.6); font-style: italic;
-  }
-  .comm-event-strip {
-    display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center;
-    padding: 1rem 1rem 0;
-    border-bottom: 1px solid var(--gray-200);
-    background: white;
-    padding-bottom: 1rem;
-  }
-  .comm-chip {
-    font-size: 0.68rem; font-weight: 700; padding: 0.28rem 0.65rem;
-    border-radius: 20px; background: var(--sand); color: var(--green-dark);
-    border: 1px solid rgba(26,71,42,0.15);
-    white-space: nowrap;
-  }
-  .comm-body { padding: 0 1rem 3rem; }
-  .comm-intro {
-    font-size: 0.92rem; line-height: 1.75; color: var(--gray-800);
-    padding: 1.25rem 0 0.5rem;
-    border-bottom: 2px solid var(--gray-200);
-    margin-bottom: 1.25rem;
-  }
-  .comm-section-head {
-    font-size: 0.6rem; font-weight: 900; letter-spacing: 0.22em;
-    text-transform: uppercase; color: var(--green-dark);
-    padding: 0.5rem 0 0.75rem;
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .comm-section-head::after {
-    content: ''; flex: 1; height: 2px; background: var(--green-pale);
-  }
-  .comm-player {
-    background: white; border-radius: 12px;
-    border: 1px solid var(--gray-200);
-    margin-bottom: 0.85rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    overflow: hidden;
-  }
-  .comm-player-header {
-    display: flex; align-items: center; gap: 0.6rem;
-    padding: 0.7rem 1rem;
-    border-bottom: 1px solid var(--gray-200);
-    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
-  }
-  .comm-player-name {
-    font-size: 0.9rem; font-weight: 800; color: white; flex: 1;
-  }
-  .comm-player-tag {
-    font-size: 0.58rem; font-weight: 700; padding: 0.15rem 0.5rem;
-    border-radius: 10px; border: 1px solid rgba(255,255,255,0.25);
-    color: rgba(255,255,255,0.85); white-space: nowrap;
-  }
-  .comm-player-body {
-    font-size: 0.86rem; line-height: 1.72; color: var(--gray-800);
-    padding: 0.75rem 1rem;
-  }
-  .comm-closing {
-    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
-    border-radius: 12px; padding: 1.25rem 1rem;
-    margin-top: 1.5rem; color: white;
-  }
-  .comm-closing-head {
-    font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
-    color: rgba(255,255,255,0.6); margin-bottom: 0.5rem;
-  }
-  .comm-closing-text {
-    font-size: 0.88rem; line-height: 1.75; font-style: italic;
-  }
-  .comm-sig {
-    font-size: 0.75rem; font-weight: 700; margin-top: 1rem;
-    color: rgba(255,255,255,0.7); text-align: right;
   }
 </style>
 </head>
@@ -2428,7 +1334,7 @@
     <div class="ryder-bar-wrap">
       <div class="ryder-header">
         <span class="team-red">Team Red</span>
-        <span class="vs">14 pts available</span>
+        <span class="vs">FINAL</span>
         <span class="team-blue">Team Blue</span>
       </div>
       <div class="ryder-bar-container" id="ryder-bar">
@@ -2486,247 +1392,60 @@
     <div class="scout-grid" id="scout-grid"></div>
   </div>
 
-  <!-- TAB: Draft Live (hidden unless #draft-live) -->
-  <div class="tab-content" id="tab-draft">
-    <!-- Mode selector -->
-    <div id="draft-mode-selector" style="display:none;">
-      <div class="dms-wrap">
-        <div class="dms-title">Select Your Role</div>
-        <div class="dms-btns" id="dms-btns"></div>
-        <div style="text-align:center;margin-top:1.25rem;">
-          <button class="draft-admin-btn" onclick="openDraftSettings()">&#9881; Settings</button>
-        </div>
-      </div>
-    </div>
-    <!-- Display mode (laptop / TV) -->
-    <div id="draft-display-mode" style="display:none;">
-      <div id="draft-start-area" class="draft-start-area" style="display:none;">
-        <button class="draft-start-btn" onclick="startDraftFromButton()">&#9654; Start Draft</button>
-      </div>
-      <div id="draft-clock" class="draft-clock">
-        <div id="draft-clock-info"></div>
-        <div id="draft-timer-display"></div>
-      </div>
-      <div class="draft-board" id="draft-board">
-        <div class="ddb-col ddb-red">
-          <div class="ddb-col-header red">&#128308; Team Red &mdash; Nik</div>
-          <div id="ddb-red-picks"></div>
-        </div>
-        <div class="ddb-col ddb-avail">
-          <div class="ddb-col-header avail">Available</div>
-          <div id="ddb-available"></div>
-        </div>
-        <div class="ddb-col ddb-blue">
-          <div class="ddb-col-header blue">&#128309; Team Blue &mdash; Dan</div>
-          <div id="ddb-blue-picks"></div>
-        </div>
-      </div>
-      <div class="draft-admin-bar" id="draft-admin-bar" style="padding-bottom:1rem;">
-        <button class="draft-admin-btn" id="display-undo-btn" disabled>&#8617; Undo</button>
-        <button class="draft-admin-btn" id="display-reset-btn">&#8635; Reset</button>
-        <button class="draft-admin-btn" onclick="openDraftSettings()">&#9881; Settings</button>
-        <button class="draft-admin-btn" id="display-mode-btn">&#8594; Mode</button>
-      </div>
-      <button class="draft-fullscreen-btn" id="draft-fullscreen-btn" title="Full Screen">&#x26F6;</button>
-    </div>
-    <!-- Captain mode (phone) -->
-    <div id="draft-captain-mode" style="display:none;">
-      <div class="draft-admin-bar">
-        <button class="draft-admin-btn" id="captain-mode-btn">&#8594; Change Mode</button>
-        <button class="draft-admin-btn" onclick="openDraftSettings()">&#9881; Settings</button>
-      </div>
-      <div id="draft-captain-header" class="draft-header"></div>
-      <div id="draft-captain-body"></div>
-    </div>
-    <!-- Draft Settings Panel -->
-    <div id="draft-settings-panel" style="display:none;">
-      <div class="dsp-overlay" onclick="closeDraftSettings()"></div>
-      <div class="dsp-sheet">
-        <div class="dsp-header">
-          <span class="dsp-title">Draft Settings</span>
-          <button class="dsp-close-btn" onclick="closeDraftSettings()">&#10005;</button>
-        </div>
-        <div class="dsp-body">
-          <div class="dsp-field">
-            <label class="dsp-label">Seconds per pick</label>
-            <div class="dsp-timer-row">
-              <input class="dsp-timer-input" type="number" id="dsp-timer-input" min="0" max="300" step="5">
-              <span class="dsp-timer-hint">0 = no timer</span>
-            </div>
-          </div>
-          <div class="dsp-field">
-            <label class="dsp-label">Draft Order</label>
-            <div id="dsp-order-editor"></div>
-          </div>
-        </div>
-        <div class="dsp-footer">
-          <button class="dsp-save-btn" onclick="saveDraftSettings()">Save Settings</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- TAB: Vote -->
   <div class="tab-content" id="tab-vote">
     <h2 class="section-title">Captain Vote</h2>
 
     <div class="vote-card" id="vote-form-card">
-      <h3>Vote for two captains</h3>
+      <h3>Who should be Team Captain?</h3>
       <div id="vote-form-inner">
         <select class="vote-select" id="vote-voter-select">
           <option value="">Select your name...</option>
         </select>
-        <div class="vote-pick-status" id="vote-pick-status">Tap two players below to vote</div>
-        <div class="vote-player-grid" id="vote-player-grid"></div>
+        <select class="vote-select" id="vote-nominee-select">
+          <option value="">Vote for captain...</option>
+        </select>
         <button class="vote-submit-btn" id="vote-submit-btn" disabled>Cast Vote</button>
       </div>
     </div>
 
     <div class="vote-card">
-      <div class="vote-results-title"><span id="vote-total-count">0</span> votes cast</div>
+      <div class="vote-results-title">Live Results &mdash; <span id="vote-total-count">0</span> votes cast</div>
       <div id="vote-results-list"></div>
       <div class="vote-status-msg" id="vote-status-msg">Loading votes...</div>
     </div>
   </div>
 
-  <!-- TAB: Commissioner's Note (hidden unless #commissioner) -->
-  <div class="tab-content" id="tab-commissioner">
-    <div class="comm-masthead">
-      <div class="comm-eyebrow">Annapolis Ryder Cup 2026 &mdash; Commissioner's Note</div>
-      <div class="comm-title">The Hype Is Real.</div>
-      <div class="comm-subtitle">Monday Briefing &mdash; Everything You Need to Know</div>
+  <!-- TAB: Results -->
+  <div class="tab-content" id="tab-results">
+    <div class="final-banner">
+      <div class="final-banner-label">Final Score &mdash; Golf Trip 2026</div>
+      <div class="final-scoreboard">
+        <div class="final-team-block">
+          <div class="final-team-pts">6</div>
+          <div class="final-team-name">Team Red</div>
+        </div>
+        <div class="final-sep">&ndash;</div>
+        <div class="final-team-block">
+          <div class="final-team-pts">8</div>
+          <div class="final-team-name">Team Blue</div>
+        </div>
+      </div>
+      <div class="final-winner-tag">Team Blue Wins</div>
     </div>
-    <div class="comm-body">
-      <div class="comm-intro">
-        Welcome to the first ever Annapolis Ryder Cup Commissioner&rsquo;s Note &mdash; your official pre-tournament briefing on everything that matters heading into Friday. This one&rsquo;s going to be special.<br><br>
-        Four rounds.<br>
-        18 holes at Timbers at Troy &mdash; fun track, tricky greens. Perfect scramble course.<br>
-        36 holes at Queenstown Harbor &mdash; a beautiful course and brutally unforgiving.<br>
-        18 holes at Renditions &mdash; famous hole replicas that will test your nerves, your game, and your patience.<br><br>
-        This is not your weekend scramble. This is not for the faint of heart. Get ready.
+
+    <div class="result-rosters">
+      <div class="roster-card blue">
+        <div class="roster-label">Team Blue</div>
+        <div class="roster-names">Dan M &middot; Dan C &middot; Jon &middot; Ant &middot; Chris &middot; Garret</div>
       </div>
-
-      <div class="comm-section-head">Storylines</div>
-
-      <div class="comm-player">
-        <div class="comm-player-header">
-          <span class="comm-player-name">Captain Nik vs. Captain Dan</span>
-          <span class="comm-player-tag">&#127942; The Rivalry</span>
-        </div>
-        <div class="comm-player-body">
-          Dan has Nik&rsquo;s number. 3-0 in head-to-head matchups &mdash; a streak that doesn&rsquo;t lie. But streaks are fragile things. Is this a dynasty in the making, or a straw house one good round away from collapse? Nik has had enough. Expect him to come out swinging. The real question isn&rsquo;t who&rsquo;s better &mdash; it&rsquo;s whether Dan&rsquo;s edge holds when the stakes are highest.
-        </div>
-      </div>
-
-      <div class="comm-player">
-        <div class="comm-player-header">
-          <span class="comm-player-name">Dan M</span>
-          <span class="comm-player-tag">&#128081; Clear No. 1 Pick</span>
-        </div>
-        <div class="comm-player-body">
-          The consensus top pick in this draft. Posting consistent rounds, his game looks built for tournament conditions. But consistency in casual rounds is one thing &mdash; carrying a team under real pressure is another. Can he deliver when it counts? And what&rsquo;s the deal with the 110 handicap? Trying to dodge the draft? Whatever the play is, no one&rsquo;s buying it.
-        </div>
-      </div>
-
-      <div class="comm-player">
-        <div class="comm-player-header">
-          <span class="comm-player-name">Shane</span>
-          <span class="comm-player-tag">&#128293; Comeback Story?</span>
-        </div>
-        <div class="comm-player-body">
-          The word &ldquo;chaotic&rdquo; doesn&rsquo;t do it justice. Shane looked to be rounding into form before an absolute bomb of a 105 hit the card. Latest intel, however, shows a steadier 92 &mdash; maybe he&rsquo;s stopped the bleeding. The other concern: last-minute equipment failure. His pitching wedge is out of commission. How do you fill that gap at Queenstown Harbor? Captains, take note.
-        </div>
-      </div>
-
-      <div class="comm-player">
-        <div class="comm-player-header">
-          <span class="comm-player-name">Jon</span>
-          <span class="comm-player-tag">&#128200; Meteoric Rise</span>
-        </div>
-        <div class="comm-player-body">
-          Rags to riches. From breaking driver heads to breaking 90 on the regular &mdash; Jon&rsquo;s two-year transformation is the feel-good story of this tournament. He&rsquo;s playing a boring, disciplined brand of golf now, which is exactly what tournament conditions demand. The question: a lot of guys still remember the old Jon. Will his new game hold up when the pressure hits and the cameras are on?
-        </div>
-      </div>
-
-      <div class="comm-player">
-        <div class="comm-player-header">
-          <span class="comm-player-name">Hadley</span>
-          <span class="comm-player-tag">&#127918; True Wild Card</span>
-        </div>
-        <div class="comm-player-body">
-          Could be a stick. Could be the biggest bust of the draft. As a 3-stroke guy, his performance will heavily tilt the scales for whichever team lands him. There is no in-between with Hadley &mdash; that&rsquo;s either the most exciting or most nerve-wracking asset a captain can have. If he&rsquo;s locked in? Watch out. If not? You&rsquo;ll know quickly.
-        </div>
-      </div>
-
-      <div class="comm-player">
-        <div class="comm-player-header">
-          <span class="comm-player-name">Chris</span>
-          <span class="comm-player-tag">&#128170; The Grinder</span>
-        </div>
-        <div class="comm-player-body">
-          He is putting in the work &mdash; grinding practice rounds, trying to get the game back to peak form. The problem is finding consistency. There seems to be a pretty clear floor right now (somewhere around a million rounds at 103). But floors can be broken. Is competition the thing that finally unlocks it? There&rsquo;s a dog lurking in there. Will it come out this weekend?
-        </div>
-      </div>
-
-      <div class="comm-player">
-        <div class="comm-player-header">
-          <span class="comm-player-name">Ryan</span>
-          <span class="comm-player-tag">&#128640; Power Rankings Rising</span>
-        </div>
-        <div class="comm-player-body">
-          Round after round he keeps impressing. A guy who came into camp thinking he might be the last pick has been quietly climbing the power rankings all spring. Consistent, determined, putting in the reps. All signs point to a Ryan vs. Chris Sunday matchup. If that happens, it&rsquo;s going to be electric. Don&rsquo;t sleep on this one.
-        </div>
-      </div>
-
-      <div class="comm-player">
-        <div class="comm-player-header">
-          <span class="comm-player-name">Ant</span>
-          <span class="comm-player-tag">&#127992; Tee Box Mystery</span>
-        </div>
-        <div class="comm-player-body">
-          Where to begin. Not often do you see an 11 on a scorecard alongside five steady bogeys and a par. The story is the tee box. If Ant can find a way to make peace with a ball on a tee &mdash; already playing the most &ldquo;friendly&rdquo; tees available &mdash; the rest of his game is genuinely good enough to be in the 90s. The pieces are there. The mental hurdle is real. This is must-watch golf.
-        </div>
-      </div>
-
-      <div class="comm-player">
-        <div class="comm-player-header">
-          <span class="comm-player-name">Dylan</span>
-          <span class="comm-player-tag">&#128565; Mr. Mystery</span>
-        </div>
-        <div class="comm-player-body">
-          No rounds posted. No public range sessions. Officially &ldquo;just looking to have fun.&rdquo; But anyone who knows Dylan knows that the moment the cards are dealt, the competitor comes out. He generally thrives in team formats, which makes him potentially great value &mdash; if only anyone knew where his game was. The mystery is part of the brand. Don&rsquo;t be surprised if he surprises everyone.
-        </div>
-      </div>
-
-      <div class="comm-player">
-        <div class="comm-player-header">
-          <span class="comm-player-name">Sam</span>
-          <span class="comm-player-tag">&#129504; Mental Toughness</span>
-        </div>
-        <div class="comm-player-body">
-          Sam &ldquo;Mental Toughness&rdquo; Sloop. The best Sloop golfer of the early 2020s has had a slow and steady fall from the top &mdash; but he&rsquo;s back and he wants the crown. Range sessions, par-3 courses, YouTube breakdowns, practice rounds. He&rsquo;s doing everything right. The process is there. The only question left is whether it shows up when it matters Friday through Sunday.
-        </div>
-      </div>
-
-      <div class="comm-player">
-        <div class="comm-player-header">
-          <span class="comm-player-name">Garret</span>
-          <span class="comm-player-tag">&#127917; Total Unknown</span>
-        </div>
-        <div class="comm-player-body">
-          No rounds in Birdies. No handicap estimate. No range sessions, no intel, nothing. We could be looking at a true degenerate golfer showing up on vibes alone &mdash; or a guy who has been grinding in complete silence. Either way, there is zero question that Garret will be a good time in whatever group he lands in. Sometimes that&rsquo;s worth more than a 90 on the card.
-        </div>
-      </div>
-
-      <div class="comm-closing">
-        <div class="comm-closing-head">&#9997;&#65039; Final Word</div>
-        <div class="comm-closing-text">
-          This is it. Final call. You have until Friday morning &mdash; use it. Every rep on the range matters now. Every chip, every putt, even just a slow mental walkthrough of your swing. The players who put in one more session this week are the players who feel confident on the first tee. Don&rsquo;t show up Friday wishing you had. The window is closing fast.<br><br>
-          Get out there. Lock it in. See you on the first tee at 3:39.
-        </div>
-        <div class="comm-sig">— The Commissioner</div>
+      <div class="roster-card red">
+        <div class="roster-label">Team Red</div>
+        <div class="roster-names">Nik &middot; Sam &middot; Shane &middot; Hadley &middot; Dylan &middot; Ryan</div>
       </div>
     </div>
+
+    <div id="results-list"></div>
   </div>
 
 </div>
@@ -2737,6 +1456,10 @@
     <span class="nav-icon">&#128197;</span>
     <span class="nav-label">Schedule</span>
   </button>
+  <button class="nav-tab" data-tab="results">
+    <span class="nav-icon">&#127942;</span>
+    <span class="nav-label">Results</span>
+  </button>
   <button class="nav-tab" data-tab="rounds">
     <span class="nav-icon">&#9971;</span>
     <span class="nav-label">Rounds</span>
@@ -2745,15 +1468,7 @@
     <span class="nav-icon">&#128200;</span>
     <span class="nav-label">Scouting</span>
   </button>
-  <button class="nav-tab" data-tab="draft" id="draft-nav-tab" style="display:none;">
-    <span class="nav-icon">&#127944;</span>
-    <span class="nav-label">Draft</span>
-  </button>
-  <button class="nav-tab" data-tab="commissioner" id="commissioner-nav-tab">
-    <span class="nav-icon">&#128240;</span>
-    <span class="nav-label">Commish</span>
-  </button>
-  <button class="nav-tab nav-tab-disabled" data-tab="vote" id="vote-nav-tab" disabled>
+  <button class="nav-tab" data-tab="vote" id="vote-nav-tab" style="display:none">
     <span class="nav-icon">&#127937;</span>
     <span class="nav-label">Vote</span>
   </button>
@@ -2762,110 +1477,108 @@
 <script>
 const TOTAL_POINTS = 14;
 const WIN_POINTS = 7.5;
-const RESULTS_REVEAL_DATE = new Date('2026-05-22T19:30:00Z'); // 3:30 PM Eastern
-const IS_LOCAL_PREVIEW = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:';
-const PILL_SPEED = 25; // nominee pill bounce speed (px/sec)
-let currentVoteCount = 0;
 
-const RUNOFF_VOTER_KEY = 'captain_runoff_voter_2026';
-const RUNOFF_NOMINEE_KEY = 'captain_runoff_nominee_2026';
-let runoffActive = false;
-const RUNOFF2_VOTER_KEY = 'captain_runoff2_voter_2026';
-const RUNOFF2_NOMINEE_KEY = 'captain_runoff2_nominee_2026';
-let runoff2Active = false;
+let teamRedPoints = 6;
+let teamBluePoints = 8;
 
-function showVoteTabForRunoff() {
-  document.getElementById('tab-vote').style.display = '';
-  document.getElementById('vote-nav-tab').style.display = '';
-}
-function hideVoteTab() {
-  document.getElementById('tab-vote').style.display = 'none';
-  document.getElementById('vote-nav-tab').style.display = 'none';
-}
-
-// Show draft tab only when URL contains #draft-live
-if (location.hash === '#draft-live') {
-  document.getElementById('draft-nav-tab').style.display = '';
-  // Auto-navigate to draft tab so it gets the active class (and dark full-screen overlay)
-  document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-  document.getElementById('tab-draft').classList.add('active');
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('draft-nav-tab').classList.add('active');
-}
-
-
-// Hide vote tab once voting window is over
-if (IS_LOCAL_PREVIEW || new Date() >= RESULTS_REVEAL_DATE) {
-  hideVoteTab();
-}
-
-let teamRedPoints = 0;
-let teamBluePoints = 0;
-
-const draftRound1 = ["Dan M", "Hadley", "Shane", "Nik", "Jon", "Dan", "Chris", "Sam", "Ryan", "Garret", "Ant", "Dylan"];
-const draftRound2 = [];
+const draftRound1 = ["Dan M", "Hadley", "Shane", "Nik", "Jon", "Dan", "Sam", "Garret", "Ant", "Dylan \ud83e\udd1e"];
+const draftRound2 = ["Chris", "Ryan"];
 
 const players = [
   { name: "Dan M", handicap: 9.9, strokes: 0, scores: [
+    { gross: 81, net: 71, par: 70 },
+    { gross: 34, net: 29, par: 35 },
+    { gross: 43, net: 38, par: 36 },
+    { gross: 83, net: 73, par: 72 },
+    { gross: 85, net: 75, par: 72 },
+    { gross: 86, net: 76, par: 70 },
+    { gross: 81, net: 71, par: 72 },
+    { gross: 81, net: 71, par: 72 },
     { gross: 88, net: 79, par: 72 },
     { gross: 86, net: 77, par: 71 },
     { gross: 85, net: 75, par: 72 },
     { gross: 83, net: 75, par: 72 },
     { gross: 82, net: 71, par: 71 },
-    { gross: 80, net: 70, par: 71 },
-    { gross: 76, net: 67, par: 72 },
-    { gross: 84, net: 75, par: 71 }
+    { gross: 80, net: 70, par: 71 }
   ], scouting: { driving: { range: "8-9", avg: 8.5 }, irons: { range: "8-9", avg: 8.5 }, chipping: { range: "7-8", avg: 7.5 }, putting: { range: "7-8", avg: 7.5 }, mental: { range: "8-9", avg: 8.5 }, total: "38-43", avg: 40.5, avgAdj: 40.5 }},
   { name: "Hadley", handicap: 12.8, strokes: 3, scores: [
+    { gross: 83, net: 70, par: 72 },
+    { gross: 77, net: 64, par: 70 },
+    { gross: 89, net: 76, par: 72 },
+    { gross: 90, net: 77, par: 72 },
+    { gross: 88, net: 75, par: 69 },
+    { gross: 80, net: 67, par: 70 },
+    { gross: 88, net: 75, par: 70 },
     { gross: 94, net: 85, par: 72 }
-  ], scouting: { driving: { range: "7-9", avg: 8 }, irons: { range: "5-7", avg: 6 }, chipping: { range: "7-9", avg: 8 }, putting: { range: "5-7", avg: 5 }, mental: { range: "7-9", avg: 7 }, total: "31-41", avg: 36, avgAdj: 34 }},
+  ], scouting: null },
   { name: "Shane", handicap: 13.2, strokes: 3, scores: [
+    { gross: 87, net: 74, par: 72 },
+    { gross: 94, net: 81, par: 72 },
+    { gross: 83, net: 70, par: 72 },
+    { gross: 83, net: 70, par: 72 },
     { gross: 97, net: 84, par: 72 },
     { gross: 93, net: 78, par: 72 },
     { gross: 94, net: 81, par: 72 },
-    { gross: 91, net: 77, par: 72 },
-    { gross: 42, net: 34, par: 36 },
-    { gross: 105, net: 89, par: 72 }
+    { gross: 91, net: 77, par: 72 }
   ], scouting: { driving: { range: "5-10", avg: 7 }, irons: { range: "7-9", avg: 8 }, chipping: { range: "6-9", avg: 7.5 }, putting: { range: "7-9", avg: 8 }, mental: { range: "7-9", avg: 8 }, total: "32-46", avg: 39, avgAdj: 38.5 }},
   { name: "Jon", handicap: 13.3, strokes: 3, scores: [
+    { gross: 41, net: 34, par: 36 },
+    { gross: 91, net: 78, par: 72 },
+    { gross: 90, net: 77, par: 72 },
+    { gross: 41, net: 34, par: 36 },
+    { gross: 81, net: 68, par: 72 },
+    { gross: 72, net: 59, par: 72 },
+    { gross: 79, net: 66, par: 71 },
     { gross: 44, net: 38, par: 36 },
-    { gross: 87, net: 76, par: 71 },
-    { gross: 88, net: 74, par: 72 },
-    { gross: 91, net: 77, par: 72 }
+    { gross: 87, net: 76, par: 71 }
   ], scouting: { driving: { range: "6-9", avg: 7 }, irons: { range: "7-8", avg: 7.5 }, chipping: { range: "6-9", avg: 7.5 }, putting: { range: "6-8", avg: 7 }, mental: { range: "7-8", avg: 7.5 }, total: "32-42", avg: 37, avgAdj: 36.5 }},
   { name: "Nik", handicap: 16.1, strokes: 6, scores: [
+    { gross: 81, net: 65, par: 70 },
+    { gross: 44, net: 36, par: 35 },
+    { gross: 82, net: 66, par: 72 },
+    { gross: 100, net: 84, par: 72 },
     { gross: 103, net: 91, par: 72 },
     { gross: 99, net: 85, par: 71 },
-    { gross: 94, net: 77, par: 72 },
-    { gross: 91, net: 76, par: 71 }
+    { gross: 94, net: 77, par: 72 }
   ], scouting: { driving: { range: "5-9", avg: 7 }, irons: { range: "4-7", avg: 6 }, chipping: { range: "6-8", avg: 7.5 }, putting: { range: "7-9", avg: 8 }, mental: { range: "7-8", avg: 7.5 }, total: "29-41", avg: 35, avgAdj: 36 }},
-  { name: "Dan", handicap: 21.6, strokes: 6, scores: [
+  { name: "Dan", handicap: 21.6, strokes: 12, scores: [
+    { gross: 91, net: 69, par: 71 },
+    { gross: 94, net: 72, par: 72 },
+    { gross: 89, net: 67, par: 70 },
     { gross: 94, net: 75, par: 72 },
-    { gross: 96, net: 76, par: 71 },
-    { gross: 47, net: 36, par: 35 }
+    { gross: 96, net: 76, par: 71 }
   ], scouting: { driving: { range: "6-8", avg: 7 }, irons: { range: "6-8", avg: 7 }, chipping: { range: "3-7", avg: 6 }, putting: { range: "4-8", avg: 6 }, mental: { range: "5-8", avg: 7 }, total: "24-39", avg: 31.5, avgAdj: 33 }},
   { name: "Chris", handicap: 21.8, strokes: 12, scores: [
+    { gross: 99, net: 77, par: 70 },
+    { gross: 89, net: 67, par: 71 },
+    { gross: 53, net: 42, par: 36 },
+    { gross: 102, net: 80, par: 72 },
     { gross: 104, net: 80, par: 72 },
     { gross: 103, net: 79, par: 72 },
     { gross: 109, net: 87, par: 72 },
-    { gross: 103, net: 79, par: 70 },
-    { gross: 103, net: 80, par: 72 }
+    { gross: 103, net: 79, par: 70 }
   ], scouting: { driving: { range: "4-8", avg: 6 }, irons: { range: "5-7", avg: 6 }, chipping: { range: "5-7", avg: 6 }, putting: { range: "5-6", avg: 5.5 }, mental: { range: "7-8", avg: 7.5 }, total: "26-36", avg: 31, avgAdj: 31 }},
-  { name: "Sam", handicap: 25.8, strokes: 18, scores: [
-    { gross: 49, net: 37, par: 34 },
-    { gross: 50, net: 38, par: 35 },
-    { gross: 116, net: 91, par: 71 }
+  { name: "Sam", handicap: 25.8, strokes: 15, scores: [
+    { gross: 80, net: 54, par: 72 },
+    { gross: 115, net: 89, par: 72 },
+    { gross: 49, net: 37, par: 34 }
   ], scouting: { driving: { range: "2-7", avg: 5 }, irons: { range: "4-7", avg: 6 }, chipping: { range: "5-7", avg: 6 }, putting: { range: "6-7", avg: 6.5 }, mental: { range: "5-8", avg: 7 }, total: "22-36", avg: 29, avgAdj: 30.5 }},
-  { name: "Ryan", handicap: 26.8, strokes: 15, scores: [
+  { name: "Ryan", handicap: 26.8, strokes: 18, scores: [
+    { gross: 101, net: 74, par: 67 },
+    { gross: 101, net: 74, par: 71 },
     { gross: 99, net: 72, par: 72 },
     { gross: 113, net: 84, par: 72 },
-    { gross: 102, net: 79, par: 67 },
-    { gross: 104, net: 72, par: 71 }
+    { gross: 102, net: 79, par: 67 }
   ], scouting: { driving: { range: "1-7", avg: 4 }, irons: { range: "5-7", avg: 6 }, chipping: { range: "4-7", avg: 5.5 }, putting: { range: "5-6", avg: 5.5 }, mental: { range: "6-8", avg: 7 }, total: "21-35", avg: 28, avgAdj: 28 }},
-  { name: "Dylan", handicap: 26.8, strokes: 12, scores: [],
+  { name: "Dylan", handicap: 26.8, strokes: 18, scores: [],
     scouting: { driving: { range: "2-9", avg: 5 }, irons: { range: "5-8", avg: 7 }, chipping: { range: "5-7", avg: 6 }, putting: { range: "5-7", avg: 7 }, mental: { range: "5-8", avg: 7 }, total: "22-39", avg: 30.5, avgAdj: 32 }},
-  { name: "Ant", handicap: 26.9, strokes: 15, scores: [
-    { gross: 48, net: 35, par: 35 }
+  { name: "Ant", handicap: 26.9, strokes: 18, scores: [
+    { gross: 100, net: 73, par: 72 },
+    { gross: 97, net: 70, par: 71 },
+    { gross: 98, net: 71, par: 72 },
+    { gross: 93, net: 66, par: 72 },
+    { gross: 50, net: 37, par: 35 },
+    { gross: 48, net: 35, par: 36 }
   ], scouting: { driving: { range: "1-6", avg: 4 }, irons: { range: "4-8", avg: 6 }, chipping: { range: "5-8", avg: 6.5 }, putting: { range: "6-8", avg: 7 }, mental: { range: "5-8", avg: 7 }, total: "21-38", avg: 29.5, avgAdj: 30.5 }},
   { name: "Garret", handicap: 27.3, strokes: 18, scores: [],
     scouting: { driving: { range: "5-8", avg: 6 }, irons: { range: "3-7", avg: 5 }, chipping: { range: "2-6", avg: 4 }, putting: { range: "1-10", avg: 5 }, mental: { range: "6-8", avg: 7 }, total: "17-39", avg: 28, avgAdj: 27 }},
@@ -2888,11 +1601,23 @@ const playerBios = {
 
 const schedule = [
   {
+    date: new Date(2026, 4, 17),
+    dateLabel: "May 17",
+    timeLabel: "",
+    name: "Team Captains Vote",
+    format: "Vote",
+    points: null,
+    cost: null,
+    tee: null,
+    note: null,
+    draft: null
+  },
+  {
     date: new Date(2026, 4, 29, 14, 0),
     dateLabel: "May 29",
     timeLabel: "2:00 PM",
-    name: "The Draft",
-    format: "All players",
+    name: "Draft (Rounds 1-4)",
+    format: "Arriving for Friday round",
     points: null,
     cost: null,
     tee: null,
@@ -2902,20 +1627,32 @@ const schedule = [
   {
     date: new Date(2026, 4, 29, 15, 30),
     dateLabel: "Fri 5/29",
-    timeLabel: "3:39 PM",
+    timeLabel: "3:30 PM",
     name: "Timber At Troy",
-    format: "Scramble",
+    format: "Shamble",
     points: 2,
     cost: "$60",
-    tee: "3:39 / 3:48 / 3:57 PM",
+    tee: "3:30 / 3:39 PM",
     note: null,
     draft: null
+  },
+  {
+    date: new Date(2026, 4, 29, 21, 0),
+    dateLabel: "May 29",
+    timeLabel: "9:00 PM",
+    name: "Draft (Round 5)",
+    format: "Arriving later Friday",
+    points: null,
+    cost: null,
+    tee: null,
+    note: null,
+    draft: 2
   },
   {
     date: new Date(2026, 4, 30, 8, 30),
     dateLabel: "Sat 5/30 AM",
     timeLabel: "8:30 AM",
-    name: "Queenstown Harbor (River)",
+    name: "Queenstown Harbor (Lake)",
     format: "Best Ball",
     points: 3,
     cost: "$196",
@@ -2927,8 +1664,8 @@ const schedule = [
     date: new Date(2026, 4, 30, 14, 20),
     dateLabel: "Sat 5/30 PM",
     timeLabel: "2:20 PM",
-    name: "Queenstown Harbor (Lake)",
-    format: "Shamble",
+    name: "Queenstown Harbor (River)",
+    format: "Scramble",
     points: 3,
     cost: null,
     tee: "2:20 / 2:30 / 2:40",
@@ -2986,41 +1723,107 @@ function renderRyderBar() {
 
 renderRyderBar();
 
+// --- Tournament Results ---
+const tournamentDays = [
+  {
+    label: "Day 1 — Timber at Troy",
+    format: "Shamble",
+    totalPts: 2,
+    blueDay: 1, redDay: 1,
+    matches: [
+      { blue: ["Dan M", "Dan"], red: ["Nik", "Sam"], result: "blue", margin: "3&2" },
+      { blue: ["Jon", "Ant"], red: ["Shane", "Hadley"], result: "red", margin: "4&3" }
+    ]
+  },
+  {
+    label: "Day 2 AM — Queenstown (Lake)",
+    format: "Best Ball",
+    totalPts: 3,
+    blueDay: 2, redDay: 1,
+    matches: [
+      { blue: ["Ant", "Dan"], red: ["Hadley", "Sam"], result: "red", margin: "1&0" },
+      { blue: ["Jon", "Dan M"], red: ["Nik", "Shane"], result: "blue", margin: "2&1" },
+      { blue: ["Chris", "Garret"], red: ["Dylan", "Ryan"], result: "blue", margin: "1&0" }
+    ]
+  },
+  {
+    label: "Day 2 PM — Queenstown (River)",
+    format: "Scramble",
+    totalPts: 3,
+    blueDay: 2, redDay: 1,
+    matches: [
+      { blue: ["Jon", "Garret"], red: ["Shane", "Sam"], result: "red", margin: "5&4" },
+      { blue: ["Chris", "Dan"], red: ["Nik", "Ryan"], result: "blue", margin: "3&1" },
+      { blue: ["Dan M", "Ant"], red: ["Hadley", "Dylan"], result: "blue", margin: "1&0" }
+    ]
+  },
+  {
+    label: "Day 3 — Renditions",
+    format: "Singles Matchplay",
+    totalPts: 6,
+    blueDay: 3, redDay: 3,
+    matches: [
+      { blue: ["Jon"], red: ["Hadley"], result: "tie", margin: "Tied" },
+      { blue: ["Ant"], red: ["Ryan"], result: "blue", margin: "7&5" },
+      { blue: ["Dan"], red: ["Nik"], result: "red", margin: "3&2" },
+      { blue: ["Chris"], red: ["Dylan"], result: "blue", margin: "5&4" },
+      { blue: ["Dan M"], red: ["Shane"], result: "tie", margin: "Tied" },
+      { blue: ["Garret"], red: ["Sam"], result: "red", margin: "6&5" }
+    ]
+  }
+];
+
+function playerDisplay(name) {
+  return name === "Dan" ? "Dan C" : name;
+}
+
+function renderResults() {
+  const list = document.getElementById('results-list');
+  if (!list) return;
+  list.innerHTML = '';
+  tournamentDays.forEach(day => {
+    const dayEl = document.createElement('div');
+    dayEl.className = 'result-day';
+    const matchesHtml = day.matches.map(m => {
+      const blueNames = m.blue.map(playerDisplay).join(' & ');
+      const redNames = m.red.map(playerDisplay).join(' & ');
+      const cls = m.result === 'blue' ? 'blue-win' : m.result === 'red' ? 'red-win' : 'tie';
+      const label = m.result === 'blue' ? 'Blue wins' : m.result === 'red' ? 'Red wins' : 'Tied';
+      const wCls = m.result === 'blue' ? 'rw-blue' : m.result === 'red' ? 'rw-red' : 'rw-tie';
+      return `<div class="result-match ${cls}">
+        <div class="result-teams">
+          <span class="result-names rn-blue">${blueNames}</span>
+          <span class="result-vs">vs</span>
+          <span class="result-names rn-red">${redNames}</span>
+        </div>
+        <div class="result-outcome">
+          <span class="result-winner ${wCls}">${label}</span>
+          <span class="result-margin">${m.margin}</span>
+        </div>
+      </div>`;
+    }).join('');
+    dayEl.innerHTML = `
+      <div class="result-day-header">
+        <div class="result-day-title">${day.label}</div>
+        <div class="result-day-meta">${day.format} &middot; ${day.totalPts} pts</div>
+      </div>
+      <div class="result-day-tally">
+        <span class="rdt-blue">Blue ${day.blueDay}</span>
+        <span class="rdt-sep">&ndash;</span>
+        <span class="rdt-red">Red ${day.redDay}</span>
+      </div>
+      ${matchesHtml}`;
+    list.appendChild(dayEl);
+  });
+}
+
+renderResults();
+
 // --- Countdown ---
 function updateCountdown() {
   const now = new Date();
-  const revealReady = IS_LOCAL_PREVIEW || now >= RESULTS_REVEAL_DATE;
-
-  // Don't overwrite the banner if it's been locked (post-reveal) or showing vote results
-  if (window._bannerLocked) return;
-  if (revealReady && window._captainRevealData) return;
-  if (runoffActive && window._runoffData) return;
-  if (runoff2Active && window._runoff2Data) return;
-
-  // During voting window show captain vote status instead of next event
-  if (now < RESULTS_REVEAL_DATE && !IS_LOCAL_PREVIEW) {
-    document.getElementById('countdown-event').textContent = 'Team Captains Vote';
-    const total = draftRound1.length + draftRound2.length;
-    const pct = total > 0 ? (currentVoteCount / total) * 100 : 0;
-    const diff = RESULTS_REVEAL_DATE - now;
-    const days = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const mins = Math.floor((diff % 3600000) / 60000);
-    const secs = Math.floor((diff % 60000) / 1000);
-    const timeStr = days > 0 ? `${days}d ${hours}h ${mins}m` : `${hours}h ${mins}m ${secs}s`;
-    document.getElementById('countdown-units').innerHTML = `
-      <div class="cvp-wrap">
-        <div class="cvp-bar-track"><div class="cvp-bar-fill" id="cvp-bar" style="width:${pct}%"></div></div>
-        <div class="cvp-stats">
-          <span>${currentVoteCount} / ${total} voted</span>
-          <span>Results in ${timeStr}</span>
-        </div>
-      </div>
-    `;
-    return;
-  }
-
   const upcoming = schedule.filter(e => e.date > now);
+
   if (upcoming.length === 0) {
     document.getElementById('countdown-event').textContent = "Trip Complete!";
     document.getElementById('countdown-units').innerHTML = '';
@@ -3047,75 +1850,6 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-// --- Player Roster helpers (used in schedule cards + countdown) ---
-const ROSTER_SKILLS = ['driving','irons','chipping','putting','mental'];
-const ROSTER_SKILL_LABELS = { driving:'Drive', irons:'Irons', chipping:'Chip', putting:'Putt', mental:'Mental' };
-
-function buildRosterDetailHtml(p) {
-  let html = '';
-  if (p.scores.length > 0) {
-    html += `<table class="roster-round-table">
-      <thead><tr><th>Rd</th><th>Gross(Net)</th><th>Par</th><th>vs Par</th></tr></thead>
-      <tbody>${p.scores.map((s,i) => {
-        const vp = getVsPar(s);
-        return `<tr><td>R${i+1}</td><td><strong>${s.gross}(${s.net})</strong></td><td>${s.par}</td><td class="${getDiffTextClass(vp)}">${formatVsPar(vp)}</td></tr>`;
-      }).join('')}</tbody></table>`;
-  } else {
-    html += '<div style="font-size:0.73rem;color:rgba(255,255,255,0.35);padding:0.4rem 0;">No rounds on file</div>';
-  }
-  if (p.scouting) {
-    html += '<div class="roster-scout-section">';
-    ROSTER_SKILLS.forEach(cat => {
-      const d = p.scouting[cat];
-      const parts = d.range.split('-');
-      const fl = parseFloat(parts[0]), ce = parseFloat(parts[1]);
-      html += `<div class="roster-scout-row">
-        <span class="roster-scout-label">${ROSTER_SKILL_LABELS[cat]}</span>
-        <div class="roster-scout-bar">
-          <div class="roster-scout-fill" style="left:${(fl/10)*100}%;width:${((ce-fl)/10)*100}%"></div>
-          <div class="roster-scout-marker" style="left:${(d.avg/10)*100}%"></div>
-        </div>
-        <span class="roster-scout-val">${d.avg}</span>
-      </div>`;
-    });
-    html += '</div>';
-  }
-  return html;
-}
-
-function buildRosterHtml(names) {
-  const rows = names.map(name => {
-    const p = players.find(pl => pl.name === name);
-    if (!p) return '';
-    const vsParArr = p.scores.map(s => getVsPar(s));
-    const avgVsPar = vsParArr.length > 0 ? Math.round(vsParArr.reduce((a,b)=>a+b,0)/vsParArr.length) : null;
-    const avgChip = avgVsPar !== null
-      ? `<span class="roster-chip ${getDiffTextClass(avgVsPar)}">Avg ${formatVsPar(avgVsPar)}</span>`
-      : `<span class="roster-chip" style="opacity:0.45">No rounds</span>`;
-    const scoutAvg = p.scouting
-      ? (ROSTER_SKILLS.reduce((s,c)=>s+p.scouting[c].avg,0)/ROSTER_SKILLS.length).toFixed(1)
-      : null;
-    const scoutChip = scoutAvg ? `<span class="roster-chip">Scout ${scoutAvg}</span>` : '';
-    return `<div class="roster-player-row" data-roster-name="${name}">
-      <div class="roster-row-main">
-        <span class="roster-player-name">${name}</span>
-        <span class="roster-chip">HCP ${p.handicap}</span>
-        <span class="roster-chip">${p.strokes > 0 ? p.strokes+' str' : 'scratch'}</span>
-        ${avgChip}${scoutChip}
-        <span class="roster-chevron">&#9658;</span>
-      </div>
-      <div class="roster-row-detail">${buildRosterDetailHtml(p)}</div>
-    </div>`;
-  }).join('');
-  return `<div class="draft-roster">${rows}</div>`;
-}
-
-function attachRosterListeners(container) {
-  container.querySelectorAll('.roster-player-row').forEach(row => {
-    row.addEventListener('click', () => row.classList.toggle('expanded'));
-  });
-}
-
 // --- Schedule ---
 function renderSchedule() {
   const now = new Date();
@@ -3128,12 +1862,7 @@ function renderSchedule() {
     const isNext = evt === nextEvent;
 
     const card = document.createElement('div');
-    const isVoteCard = evt.format === 'Vote';
-    if (isVoteCard) {
-      card.className = new Date() < RESULTS_REVEAL_DATE ? 'schedule-card next' : 'schedule-card past';
-    } else {
-      card.className = 'schedule-card' + (isPast ? ' past' : '') + (isNext ? ' next' : '');
-    }
+    card.className = 'schedule-card' + (isPast ? ' past' : '') + (isNext ? ' next' : '');
 
     let formatChip = '';
     if (evt.format && evt.format !== "Vote" && !evt.draft) {
@@ -3146,9 +1875,9 @@ function renderSchedule() {
 
     let draftHtml = '';
     if (evt.draft === 1) {
-      draftHtml = '<div class="draft-players">' + draftRound1.map(n => `<span class="draft-pill round1" data-draft-name="${n}">${n}</span>`).join('') + '</div>';
+      draftHtml = '<div class="draft-players">' + draftRound1.map(n => `<span class="draft-pill round1">${n}</span>`).join('') + '</div>';
     } else if (evt.draft === 2) {
-      draftHtml = '<div class="draft-players">' + draftRound2.map(n => `<span class="draft-pill round2" data-draft-name="${n}">${n}</span>`).join('') + '</div>';
+      draftHtml = '<div class="draft-players">' + draftRound2.map(n => `<span class="draft-pill round2">${n}</span>`).join('') + '</div>';
     }
 
     card.innerHTML = `
@@ -3164,7 +1893,6 @@ function renderSchedule() {
       </div>
       ${draftHtml}
     `;
-
     grid.appendChild(card);
   });
 }
@@ -3845,149 +2573,68 @@ function renderScoutSection() {
 
 renderScoutSection();
 
+// --- Vote Tab Visibility ---
+// Access the vote tab at yoursite.com/#vote (hidden from others until launch)
+if (location.hash === '#vote') {
+  document.body.classList.add('vote-unlocked');
+  const voteNavTab = document.getElementById('vote-nav-tab');
+  if (voteNavTab) voteNavTab.style.display = '';
+}
+
 // --- Captain Vote (Supabase) ---
 // Fill in your Supabase project URL and anon key after creating your project:
 const SUPABASE_URL = 'https://fvogpbastdtmiawkljmh.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2b2dwYmFzdGR0bWlhd2tsam1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE5MjgsImV4cCI6MjA5NDYyNzkyOH0.NsonIaYSZsofL3_AXE0qJkwwxSX0KdX-FjK8gVWqkf4';
 
 const VOTE_VOTER_KEY = 'captain_vote_voter_2026';
-const VOTE_NOMINEE1_KEY = 'captain_vote_nominee1_2026';
-const VOTE_NOMINEE2_KEY = 'captain_vote_nominee2_2026';
-
+const VOTE_NOMINEE_KEY = 'captain_vote_nominee_2026';
 
 const supabaseConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
 
 let supabaseClient = null;
-let votePicks = [];
-
-function renderVotePlayerCards(voterName) {
-  const grid = document.getElementById('vote-player-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  votePicks = [];
-
-  const sorted = [...players].sort((a, b) => {
-    const aScore = a.scouting ? computeOverall(a.scouting, new Set(allSkills)).avg : -1;
-    const bScore = b.scouting ? computeOverall(b.scouting, new Set(allSkills)).avg : -1;
-    return bScore - aScore;
-  });
-
-  sorted.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'vote-player-card' + (p.name === voterName ? ' vpc-self' : '');
-    card.dataset.name = p.name;
-
-    let overallHtml = '';
-    if (p.scouting) {
-      const ov = computeOverall(p.scouting, new Set(allSkills));
-      const left = (ov.floor / 10) * 100;
-      const width = ((ov.ceiling - ov.floor) / 10) * 100;
-      const marker = (ov.avg / 10) * 100;
-      const grad = computeBarGradient(ov.floor, ov.ceiling);
-      overallHtml = `
-        <div class="vpc-overall-row">
-          <div class="vpc-overall-track">
-            <div class="vpc-overall-fill" style="left:${left}%;width:${width}%;background:${grad}"></div>
-            <div class="vpc-overall-marker" style="left:${marker}%"></div>
-          </div>
-          <span class="vpc-overall-val">${ov.avg.toFixed(1)}</span>
-        </div>`;
-    } else {
-      overallHtml = '<div class="vpc-no-scout">No scouting data</div>';
-    }
-
-    card.innerHTML = `
-      <div class="vpc-badge"></div>
-      <div class="vpc-header">
-        <span class="vpc-name">${p.name}</span>
-        <span class="vpc-hdcp">HCP ${p.handicap}</span>
-      </div>
-      <div class="vpc-strokes">${p.strokes} strokes</div>
-      ${overallHtml}
-    `;
-
-    if (p.name !== voterName) {
-      card.addEventListener('click', () => handleVoteCardClick(p.name));
-    }
-    grid.appendChild(card);
-  });
-}
-
-function handleVoteCardClick(name) {
-  const idx = votePicks.indexOf(name);
-  if (idx !== -1) {
-    votePicks.splice(idx, 1);
-  } else if (votePicks.length < 2) {
-    votePicks.push(name);
-  } else {
-    votePicks[1] = name;
-  }
-  updateVoteCardSelection();
-}
-
-function updateVoteCardSelection() {
-  document.querySelectorAll('.vote-player-card').forEach(card => {
-    const name = card.dataset.name;
-    card.classList.remove('vpc-pick1', 'vpc-pick2');
-    const badge = card.querySelector('.vpc-badge');
-    badge.textContent = '';
-    const i = votePicks.indexOf(name);
-    if (i === 0) { card.classList.add('vpc-pick1'); badge.textContent = 'Pick 1'; }
-    if (i === 1) { card.classList.add('vpc-pick2'); badge.textContent = 'Pick 2'; }
-  });
-
-  const statusEl = document.getElementById('vote-pick-status');
-  const submitBtn = document.getElementById('vote-submit-btn');
-  if (!statusEl || !submitBtn) return;
-
-  const voterName = document.getElementById('vote-voter-select')?.value;
-
-  if (votePicks.length === 0) {
-    statusEl.textContent = 'Tap two players below to vote';
-    statusEl.className = 'vote-pick-status';
-  } else if (votePicks.length === 1) {
-    statusEl.textContent = `${votePicks[0]} — tap one more`;
-    statusEl.className = 'vote-pick-status';
-  } else {
-    statusEl.textContent = `${votePicks[0]} & ${votePicks[1]}`;
-    statusEl.className = 'vote-pick-status ready';
-  }
-
-  submitBtn.disabled = votePicks.length < 2 || !voterName || !supabaseConfigured;
-}
 
 function initVoteTab() {
   const voterSelect = document.getElementById('vote-voter-select');
+  const nomineeSelect = document.getElementById('vote-nominee-select');
   const submitBtn = document.getElementById('vote-submit-btn');
+  const formCard = document.getElementById('vote-form-card');
 
   const allVoters = [...draftRound1, ...draftRound2].map(n => n.replace(/\s*[^\x00-\x7F]+/g, '').trim());
+  const captainCandidates = players.map(p => p.name);
 
   allVoters.forEach(name => {
     const opt = document.createElement('option');
-    opt.value = name; opt.textContent = name;
+    opt.value = name;
+    opt.textContent = name;
     voterSelect.appendChild(opt);
   });
 
-  const savedVoter = localStorage.getItem(VOTE_VOTER_KEY);
-  const savedNominee1 = localStorage.getItem(VOTE_NOMINEE1_KEY);
-  const savedNominee2 = localStorage.getItem(VOTE_NOMINEE2_KEY);
+  captainCandidates.forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    nomineeSelect.appendChild(opt);
+  });
 
-  if (savedVoter && savedNominee1 && savedNominee2) {
-    showAlreadyVoted(savedVoter, savedNominee1, savedNominee2);
-    return;
+  const savedVoter = localStorage.getItem(VOTE_VOTER_KEY);
+  const savedNominee = localStorage.getItem(VOTE_NOMINEE_KEY);
+
+  if (savedVoter && savedNominee) {
+    showAlreadyVoted(savedVoter, savedNominee, formCard);
   }
 
-  renderVotePlayerCards('');
+  voterSelect.addEventListener('change', updateSubmitState);
+  nomineeSelect.addEventListener('change', updateSubmitState);
 
-  voterSelect.addEventListener('change', () => {
-    renderVotePlayerCards(voterSelect.value);
-    updateVoteCardSelection();
-  });
+  function updateSubmitState() {
+    const canSubmit = voterSelect.value && nomineeSelect.value && voterSelect.value !== nomineeSelect.value;
+    submitBtn.disabled = !canSubmit || !supabaseConfigured;
+  }
 
   submitBtn.addEventListener('click', async () => {
     const voter = voterSelect.value;
-    const [nominee1, nominee2] = votePicks;
-    if (!voter || !nominee1 || !nominee2) return;
+    const nominee = nomineeSelect.value;
+    if (!voter || !nominee) return;
 
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
@@ -3995,14 +2642,13 @@ function initVoteTab() {
     try {
       const { error } = await supabaseClient
         .from('captain_votes')
-        .upsert({ voter, nominee1, nominee2 }, { onConflict: 'voter' });
+        .upsert({ voter, nominee }, { onConflict: 'voter' });
 
       if (error) throw error;
 
       localStorage.setItem(VOTE_VOTER_KEY, voter);
-      localStorage.setItem(VOTE_NOMINEE1_KEY, nominee1);
-      localStorage.setItem(VOTE_NOMINEE2_KEY, nominee2);
-      showAlreadyVoted(voter, nominee1, nominee2);
+      localStorage.setItem(VOTE_NOMINEE_KEY, nominee);
+      showAlreadyVoted(voter, nominee, formCard);
     } catch (err) {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Cast Vote';
@@ -4012,148 +2658,33 @@ function initVoteTab() {
   });
 }
 
-function showAlreadyVoted(voter, nominee1, nominee2) {
+function showAlreadyVoted(voter, nominee, formCard) {
   const inner = document.getElementById('vote-form-inner');
   inner.innerHTML = `
     <div class="vote-already">
-      <div class="va-label">Your picks</div>
-      <div class="va-name">${nominee1} &amp; ${nominee2}</div>
+      <div class="va-label">Your vote</div>
+      <div class="va-name">${nominee}</div>
     </div>
     <button class="vote-change-btn" id="vote-change-btn">Change vote</button>
   `;
 
   document.getElementById('vote-change-btn').addEventListener('click', () => {
     localStorage.removeItem(VOTE_VOTER_KEY);
-    localStorage.removeItem(VOTE_NOMINEE1_KEY);
-    localStorage.removeItem(VOTE_NOMINEE2_KEY);
+    localStorage.removeItem(VOTE_NOMINEE_KEY);
     inner.innerHTML = `
-      <select class="vote-select" id="vote-voter-select"><option value="">Select your name...</option></select>
-      <div class="vote-pick-status" id="vote-pick-status">Tap two players below to vote</div>
-      <div class="vote-player-grid" id="vote-player-grid"></div>
+      <select class="vote-select" id="vote-voter-select">
+        <option value="">Select your name...</option>
+      </select>
+      <select class="vote-select" id="vote-nominee-select">
+        <option value="">Vote for captain...</option>
+      </select>
       <button class="vote-submit-btn" id="vote-submit-btn" disabled>Cast Vote</button>
     `;
     initVoteTab();
   });
 }
 
-function renderRunoffForm() {
-  const data = window._runoffData;
-  if (!data) return;
-
-  const inner = document.getElementById('vote-form-inner');
-  if (!inner) return;
-
-  // Check if already voted in runoff
-  const savedVoter = localStorage.getItem(RUNOFF_VOTER_KEY);
-  const savedNominee = localStorage.getItem(RUNOFF_NOMINEE_KEY);
-  if (savedVoter && savedNominee) {
-    showAlreadyVotedRunoff(savedVoter, savedNominee);
-    return;
-  }
-
-  const allVoters = [...draftRound1, ...draftRound2].map(n => n.replace(/\s*[^\x00-\x7F]+/g, '').trim());
-  const excluded = [data.confirmedCaptain, ...data.tiedCandidates];
-  const eligibleVoters = allVoters.filter(n => !excluded.includes(n));
-
-  inner.innerHTML = `
-    <div class="runoff-confirmed">
-      <div class="rc-label">Team Red Captain (Confirmed)</div>
-      <div class="rc-name">🔴 ${data.confirmedCaptain}</div>
-    </div>
-    <div class="runoff-tied-label">Tied for Team Blue Captain</div>
-    <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
-      ${data.tiedCandidates.map((name, i) => `<span class="nominee-pill" style="position:static;animation:none;">${name}</span>${i < data.tiedCandidates.length - 1 ? '<span class="runoff-banner-vs">vs</span>' : ''}`).join('')}
-    </div>
-    <select class="vote-select" id="runoff-voter-select"><option value="">Select your name...</option></select>
-    <div class="runoff-tied-label" style="margin-top:0.75rem;color:rgba(255,255,255,0.5);font-size:0.75rem;">Pick one candidate for Blue Captain</div>
-    <div class="runoff-candidate-grid" id="runoff-candidate-grid">
-      ${data.tiedCandidates.map(name => `<div class="runoff-candidate-card" data-candidate="${name}">${name}</div>`).join('')}
-    </div>
-    <button class="vote-submit-btn" id="runoff-submit-btn" disabled>Cast Runoff Vote</button>
-  `;
-
-  // Populate voter dropdown
-  const voterSelect = document.getElementById('runoff-voter-select');
-  eligibleVoters.forEach(name => {
-    const opt = document.createElement('option');
-    opt.value = name; opt.textContent = name;
-    voterSelect.appendChild(opt);
-  });
-
-  // Candidate card selection
-  let selectedCandidate = null;
-  const cards = document.querySelectorAll('.runoff-candidate-card');
-  cards.forEach(card => {
-    card.addEventListener('click', () => {
-      cards.forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      selectedCandidate = card.dataset.candidate;
-      updateRunoffSubmitState();
-    });
-  });
-
-  const submitBtn = document.getElementById('runoff-submit-btn');
-
-  function updateRunoffSubmitState() {
-    submitBtn.disabled = !voterSelect.value || !selectedCandidate;
-  }
-
-  voterSelect.addEventListener('change', updateRunoffSubmitState);
-
-  submitBtn.addEventListener('click', async () => {
-    const voter = voterSelect.value;
-    if (!voter || !selectedCandidate) return;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-
-    try {
-      if (supabaseConfigured && supabaseClient) {
-        const { error } = await supabaseClient
-          .from('captain_runoff_votes')
-          .upsert({ voter, nominee: selectedCandidate }, { onConflict: 'voter' });
-        if (error) throw error;
-      }
-
-      localStorage.setItem(RUNOFF_VOTER_KEY, voter);
-      localStorage.setItem(RUNOFF_NOMINEE_KEY, selectedCandidate);
-      showAlreadyVotedRunoff(voter, selectedCandidate);
-      // Reload to update tally
-      loadRunoffVotes();
-    } catch (err) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Cast Runoff Vote';
-      alert('Error submitting runoff vote. Please try again.');
-      console.error(err);
-    }
-  });
-}
-
-function showAlreadyVotedRunoff(voter, nominee) {
-  const inner = document.getElementById('vote-form-inner');
-  if (!inner) return;
-  const data = window._runoffData;
-
-  inner.innerHTML = `
-    <div class="runoff-confirmed">
-      <div class="rc-label">Team Red Captain (Confirmed)</div>
-      <div class="rc-name">🔴 ${data ? data.confirmedCaptain : '?'}</div>
-    </div>
-    <div class="vote-already">
-      <div class="va-label">Your runoff pick</div>
-      <div class="va-name">${nominee}</div>
-    </div>
-    <button class="vote-change-btn" id="runoff-change-btn">Change runoff vote</button>
-    <div id="runoff-tally-container"></div>
-  `;
-
-  document.getElementById('runoff-change-btn').addEventListener('click', () => {
-    localStorage.removeItem(RUNOFF_VOTER_KEY);
-    localStorage.removeItem(RUNOFF_NOMINEE_KEY);
-    renderRunoffForm();
-  });
-}
-
-function renderVoteResults(votes, forceReveal) {
+function renderVoteResults(votes) {
   const list = document.getElementById('vote-results-list');
   const statusMsg = document.getElementById('vote-status-msg');
   const totalEl = document.getElementById('vote-total-count');
@@ -4161,232 +2692,40 @@ function renderVoteResults(votes, forceReveal) {
   if (!votes || votes.length === 0) {
     list.innerHTML = '';
     totalEl.textContent = '0';
-    currentVoteCount = 0;
     statusMsg.textContent = 'No votes yet — be the first!';
     return;
   }
 
   statusMsg.textContent = '';
   totalEl.textContent = votes.length;
-  currentVoteCount = votes.length;
 
-  const voterNames = votes.map(v => v.voter).sort().join(', ');
-  const resultsHidden = !forceReveal && new Date() < RESULTS_REVEAL_DATE;
-
-  // Compute nominees for sneak peek (needed in both hidden and revealed states)
-  const sneakTally = {};
-  votes.forEach(v => {
-    [v.nominee1, v.nominee2].forEach(name => {
-      sneakTally[name] = (sneakTally[name] || 0) + 1;
-    });
-  });
-  const sneakNomineeNames = Object.keys(sneakTally).sort();
-
-  if (resultsHidden) {
-    list.innerHTML = `
-      <div class="vote-voters-label">Voted so far</div>
-      <div class="vote-voters-list">${voterNames}</div>
-      <div class="vote-hidden-msg">Results revealed Friday May 22</div>
-    `;
-    initBannerNomineePills(sneakNomineeNames);
-    return;
-  }
-
-  // Tally total mentions (nominee1 + nominee2)
   const tally = {};
-  // Tally first-pick mentions only (for tiebreaking)
-  const nominee1Tally = {};
   votes.forEach(v => {
-    [v.nominee1, v.nominee2].forEach(name => {
-      if (!tally[name]) tally[name] = 0;
-      tally[name]++;
-    });
-    if (!nominee1Tally[v.nominee1]) nominee1Tally[v.nominee1] = 0;
-    nominee1Tally[v.nominee1]++;
+    tally[v.nominee] = (tally[v.nominee] || { count: 0, voters: [] });
+    tally[v.nominee].count++;
+    tally[v.nominee].voters.push(v.voter);
   });
 
-  const sorted = Object.entries(tally).sort((a, b) => b[1] - a[1]);
-  const topCount = sorted[0] ? sorted[0][1] : 0;
-  const secondCount = sorted.length > 1 ? sorted[1][1] : 0;
+  const sorted = Object.entries(tally).sort((a, b) => b[1].count - a[1].count);
+  const maxVotes = sorted[0][1].count;
 
-  const tiedForFirst = sorted.filter(([, count]) => count === topCount);
-  const tiedForSecond = sorted.filter(([, count]) => count === secondCount && count < topCount);
-
-  let captain1, captain2, needsRunoff = false, runoffCandidates = [];
-
-  if (tiedForFirst.length >= 2) {
-    // Two+ players tied for first — both become captains, nominee1 tiebreak for Red/Blue
-    const sortedTied = tiedForFirst.sort((a, b) => (nominee1Tally[b[0]] || 0) - (nominee1Tally[a[0]] || 0));
-    captain1 = sortedTied[0]; // Red (more nominee1 votes)
-    captain2 = sortedTied[1]; // Blue
-  } else if (tiedForSecond.length >= 2) {
-    // Clear first place, tie for second — runoff needed
-    captain1 = sorted[0]; // Confirmed Red captain
-    needsRunoff = true;
-    runoffCandidates = tiedForSecond.map(([name]) => name);
-  } else {
-    // Normal: clear 1st and 2nd
-    captain1 = sorted[0];
-    captain2 = sorted[1];
-  }
-
-  // Show nominees as animated pills (alphabetical, no counts) so it doesn't spoil the reveal
-  const nomineeNames = Object.keys(tally).sort();
-
-  list.innerHTML = `
-    <div class="vote-voters-label">Who voted</div>
-    <div class="vote-voters-list">${voterNames}</div>
-    <div class="vote-voters-label" style="margin-top: 0.75rem;">Nominees</div>
-    <div class="nominee-grid" id="vote-nominee-grid">
-      ${nomineeNames.map((name, i) => `<span class="nominee-pill" style="animation-delay: ${i * 0.1}s;">${name} <span class="np-q">?</span></span>`).join('')}
-    </div>
-  `;
-  startNomineeDrift(document.getElementById('vote-nominee-grid'));
-
-  if (needsRunoff) {
-    // --- Runoff path ---
-    runoffActive = true;
-    window._runoffData = {
-      confirmedCaptain: captain1[0],
-      confirmedCaptainEntry: captain1,
-      tiedCandidates: runoffCandidates,
-      tiedVoteCount: secondCount,
-      nominee1Tally,
-      nomineeNames,
-      totalVotes: votes.length
-    };
-    window._captainRevealData = null;
-
-    // Show a REVEAL button — the tie reveal animation will handle the rest
-    const revealBtn = document.createElement('button');
-    revealBtn.className = 'reveal-trigger-btn';
-    revealBtn.textContent = 'REVEAL CAPTAINS';
-    revealBtn.addEventListener('click', () => startTieReveal());
-    list.appendChild(revealBtn);
-
-    // Update the schedule banner to tease the reveal
-    renderScheduleBannerReveal_Tie();
-    return;
-  }
-
-  // --- Normal path (no runoff) ---
-  window._runoffData = null;
-  runoffActive = false;
-
-  if (captain1 && captain2) {
-    window._captainRevealData = { captain1, captain2, totalVotes: votes.length, nomineeNames };
-
-    const revealBtn = document.createElement('button');
-    revealBtn.className = 'reveal-trigger-btn';
-    revealBtn.textContent = 'REVEAL CAPTAINS';
-    revealBtn.addEventListener('click', () => startCaptainReveal(captain1, captain2, votes.length));
-    list.appendChild(revealBtn);
-
-    renderScheduleBannerReveal();
-  }
-}
-
-function renderScheduleBannerReveal() {
-  const data = window._captainRevealData;
-  if (!data) return;
-  const banner = document.getElementById('countdown-banner');
-  if (!banner) return;
-
-  const labelEl = banner.querySelector('.label');
-  const eventEl = document.getElementById('countdown-event');
-  const unitsEl = document.getElementById('countdown-units');
-  if (!labelEl || !eventEl || !unitsEl) return;
-
-  labelEl.textContent = 'Captain Vote';
-  eventEl.textContent = 'Results Are In';
-
-  unitsEl.innerHTML = `
-    <div style="width:100%;">
-      <div class="nominee-grid" id="banner-nominee-grid">
-        ${data.nomineeNames.map((name, i) => `<span class="nominee-pill banner-pill" style="animation-delay: ${0.3 + i * 0.1}s;">${name} <span class="np-q">?</span></span>`).join('')}
+  list.innerHTML = sorted.map(([name, data], i) => {
+    const pct = maxVotes > 0 ? (data.count / maxVotes) * 100 : 0;
+    const crown = i === 0 ? '<span class="vrr-crown">&#128081;</span>' : '';
+    return `
+      <div class="vote-result-row">
+        <span class="vrr-name">${name}${crown}</span>
+        <div class="vrr-bar-track">
+          <div class="vrr-bar-fill" style="width:${pct}%"></div>
+        </div>
+        <span class="vrr-count">${data.count}</span>
       </div>
-      <button class="reveal-trigger-btn banner-btn" id="banner-reveal-btn">REVEAL CAPTAINS</button>
-    </div>
-  `;
-  startNomineeDrift(document.getElementById('banner-nominee-grid'));
-
-  document.getElementById('banner-reveal-btn')?.addEventListener('click', () => {
-    startCaptainReveal(data.captain1, data.captain2, data.totalVotes);
-  });
+      <div class="vote-voters-list">${data.voters.join(', ')}</div>
+    `;
+  }).join('');
 }
-
-function renderScheduleBannerRunoff() {
-  const data = window._runoffData;
-  if (!data) return;
-  const banner = document.getElementById('countdown-banner');
-  if (!banner) return;
-
-  const labelEl = banner.querySelector('.label');
-  const eventEl = document.getElementById('countdown-event');
-  const unitsEl = document.getElementById('countdown-units');
-  if (!labelEl || !eventEl || !unitsEl) return;
-
-  labelEl.textContent = 'Captain Vote';
-  eventEl.textContent = 'Runoff Needed';
-
-  unitsEl.innerHTML = `
-    <div style="width:100%;text-align:center;">
-      <div style="font-size:0.8rem;margin-bottom:0.5rem;">
-        <span style="color:#e74c3c;font-weight:700;">🔴 ${data.confirmedCaptain}</span>
-        <span style="color:rgba(255,255,255,0.4);font-size:0.7rem;margin:0 0.25rem;">confirmed Red</span>
-      </div>
-      <div style="display:flex;justify-content:center;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem;">
-        ${data.tiedCandidates.map((name, i) => `<span class="nominee-pill banner-pill" style="position:static;animation:none;">${name}</span>${i < data.tiedCandidates.length - 1 ? '<span class="runoff-banner-vs">vs</span>' : ''}`).join('')}
-      </div>
-      <div style="font-size:0.75rem;color:rgba(255,255,255,0.55);">Cast your runoff vote on the Vote tab</div>
-    </div>
-  `;
-}
-
-// Mock vote data for local preview (localhost only)
-// Dan M: 8 first-picks + some second-picks = clear 1st
-// Shane: 5 total mentions, Jon: 5 total mentions = tied for 2nd → triggers runoff
-const MOCK_VOTES = [
-  { voter: "Nik", nominee1: "Dan M", nominee2: "Shane" },
-  { voter: "Dan", nominee1: "Dan M", nominee2: "Jon" },
-  { voter: "Sam", nominee1: "Dan M", nominee2: "Shane" },
-  { voter: "Hadley", nominee1: "Dan M", nominee2: "Jon" },
-  { voter: "Chris", nominee1: "Dan M", nominee2: "Shane" },
-  { voter: "Dylan", nominee1: "Dan M", nominee2: "Jon" },
-  { voter: "Ryan", nominee1: "Dan M", nominee2: "Shane" },
-  { voter: "Garret", nominee1: "Dan M", nominee2: "Jon" },
-  { voter: "Ant", nominee1: "Shane", nominee2: "Jon" },
-  { voter: "Jon", nominee1: "Shane", nominee2: "Nik" },
-  { voter: "Shane", nominee1: "Jon", nominee2: "Nik" },
-  { voter: "Dan M", nominee1: "Jon", nominee2: "Shane" },
-];
-
-// Mock runoff votes — empty to test the full flow (tie reveal → runoff form)
-// Uncomment entries to test resolved state (Shane wins 5-3 → second REVEAL CAPTAINS)
-const MOCK_RUNOFF_VOTES = [
-  // { voter: "Nik", nominee: "Shane" },
-  // { voter: "Dan", nominee: "Shane" },
-  // { voter: "Sam", nominee: "Jon" },
-  // { voter: "Hadley", nominee: "Shane" },
-  // { voter: "Chris", nominee: "Jon" },
-  // { voter: "Dylan", nominee: "Shane" },
-  // { voter: "Ryan", nominee: "Jon" },
-  // { voter: "Ant", nominee: "Shane" },
-];
-
-// Mock second runoff votes (only used if first runoff ties)
-const MOCK_RUNOFF2_VOTES = [
-  // { voter: "Nik", nominee: "Shane" },
-  // { voter: "Dan", nominee: "Jon" },
-];
 
 async function loadVotes() {
-  // On localhost, use mock data to preview results
-  if (IS_LOCAL_PREVIEW) {
-    renderVoteResults(MOCK_VOTES, true);
-    return;
-  }
-
   if (!supabaseConfigured) {
     document.getElementById('vote-status-msg').textContent = 'Supabase not configured yet.';
     return;
@@ -4394,7 +2733,7 @@ async function loadVotes() {
 
   const { data, error } = await supabaseClient
     .from('captain_votes')
-    .select('voter, nominee1, nominee2');
+    .select('voter, nominee');
 
   if (error) {
     document.getElementById('vote-status-msg').textContent = 'Could not load votes.';
@@ -4416,413 +2755,6 @@ function subscribeToVotes() {
     .subscribe();
 }
 
-async function loadRunoffVotes() {
-  if (!runoffActive || !window._runoffData) return;
-
-  if (IS_LOCAL_PREVIEW) {
-    renderRunoffResults(MOCK_RUNOFF_VOTES);
-    return;
-  }
-
-  if (!supabaseConfigured || !supabaseClient) return;
-
-  const { data, error } = await supabaseClient
-    .from('captain_runoff_votes')
-    .select('voter, nominee');
-
-  if (error) {
-    console.error('Runoff load error:', error);
-    return;
-  }
-
-  renderRunoffResults(data || []);
-}
-
-function subscribeToRunoffVotes() {
-  if (!supabaseConfigured || !supabaseClient) return;
-
-  supabaseClient
-    .channel('captain_runoff_votes_changes')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'captain_runoff_votes' }, () => {
-      loadRunoffVotes();
-    })
-    .subscribe();
-}
-
-function activateRunoff2Phase() {
-  showVoteTabForRunoff();
-  renderRunoff2Form();
-  loadRunoff2Votes();
-  subscribeToRunoff2Votes();
-  renderScheduleBannerRunoff2();
-
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelector('[data-tab="vote"]')?.classList.add('active');
-  document.getElementById('tab-vote')?.classList.add('active');
-}
-
-function renderRunoff2Form() {
-  const data = window._runoff2Data;
-  if (!data) return;
-
-  const inner = document.getElementById('vote-form-inner');
-  if (!inner) return;
-
-  const savedVoter = localStorage.getItem(RUNOFF2_VOTER_KEY);
-  const savedNominee = localStorage.getItem(RUNOFF2_NOMINEE_KEY);
-  if (savedVoter && savedNominee) {
-    showAlreadyVotedRunoff2(savedVoter, savedNominee);
-    return;
-  }
-
-  const allVoters = [...draftRound1, ...draftRound2].map(n => n.replace(/\s*[^\x00-\x7F]+/g, '').trim());
-  const excluded = [data.confirmedCaptain, ...data.tiedCandidates];
-  const eligibleVoters = allVoters.filter(n => !excluded.includes(n));
-
-  inner.innerHTML = `
-    <div class="runoff-confirmed">
-      <div class="rc-label">Team Red Captain (Confirmed)</div>
-      <div class="rc-name">\u{1F534} ${data.confirmedCaptain}</div>
-    </div>
-    <div class="runoff-tied-label">Second Runoff — Team Blue Captain</div>
-    <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
-      ${data.tiedCandidates.map((name, i) => `<span class="nominee-pill" style="position:static;animation:none;">${name}</span>${i < data.tiedCandidates.length - 1 ? '<span class="runoff-banner-vs">vs</span>' : ''}`).join('')}
-    </div>
-    <select class="vote-select" id="runoff2-voter-select"><option value="">Select your name...</option></select>
-    <div class="runoff-tied-label" style="margin-top:0.75rem;color:rgba(255,255,255,0.5);font-size:0.75rem;">Pick one for Blue Captain (second runoff)</div>
-    <div class="runoff-candidate-grid" id="runoff2-candidate-grid">
-      ${data.tiedCandidates.map(name => `<div class="runoff-candidate-card" data-candidate="${name}">${name}</div>`).join('')}
-    </div>
-    <button class="vote-submit-btn" id="runoff2-submit-btn" disabled>Cast Second Runoff Vote</button>
-  `;
-
-  const voterSelect = document.getElementById('runoff2-voter-select');
-  eligibleVoters.forEach(name => {
-    const opt = document.createElement('option');
-    opt.value = name; opt.textContent = name;
-    voterSelect.appendChild(opt);
-  });
-
-  let selectedCandidate = null;
-  const cards = document.querySelectorAll('#runoff2-candidate-grid .runoff-candidate-card');
-  cards.forEach(card => {
-    card.addEventListener('click', () => {
-      cards.forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      selectedCandidate = card.dataset.candidate;
-      updateRunoff2SubmitState();
-    });
-  });
-
-  const submitBtn = document.getElementById('runoff2-submit-btn');
-  function updateRunoff2SubmitState() {
-    submitBtn.disabled = !voterSelect.value || !selectedCandidate;
-  }
-  voterSelect.addEventListener('change', updateRunoff2SubmitState);
-
-  submitBtn.addEventListener('click', async () => {
-    const voter = voterSelect.value;
-    if (!voter || !selectedCandidate) return;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-
-    try {
-      if (supabaseConfigured && supabaseClient) {
-        const { error } = await supabaseClient
-          .from('captain_runoff2_votes')
-          .upsert({ voter, nominee: selectedCandidate }, { onConflict: 'voter' });
-        if (error) throw error;
-      }
-      localStorage.setItem(RUNOFF2_VOTER_KEY, voter);
-      localStorage.setItem(RUNOFF2_NOMINEE_KEY, selectedCandidate);
-      showAlreadyVotedRunoff2(voter, selectedCandidate);
-      loadRunoff2Votes();
-    } catch (err) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Cast Second Runoff Vote';
-      alert('Error submitting second runoff vote. Please try again.');
-      console.error(err);
-    }
-  });
-}
-
-function showAlreadyVotedRunoff2(voter, nominee) {
-  const inner = document.getElementById('vote-form-inner');
-  if (!inner) return;
-  const data = window._runoff2Data;
-
-  inner.innerHTML = `
-    <div class="runoff-confirmed">
-      <div class="rc-label">Team Red Captain (Confirmed)</div>
-      <div class="rc-name">\u{1F534} ${data ? data.confirmedCaptain : '?'}</div>
-    </div>
-    <div class="vote-already">
-      <div class="va-label">Your second runoff pick</div>
-      <div class="va-name">${nominee}</div>
-    </div>
-    <button class="vote-change-btn" id="runoff2-change-btn">Change second runoff vote</button>
-    <div id="runoff2-tally-container"></div>
-  `;
-
-  document.getElementById('runoff2-change-btn').addEventListener('click', () => {
-    localStorage.removeItem(RUNOFF2_VOTER_KEY);
-    localStorage.removeItem(RUNOFF2_NOMINEE_KEY);
-    renderRunoff2Form();
-  });
-
-  loadRunoff2Votes();
-}
-
-function renderRunoff2Results(runoffVotes) {
-  const data = window._runoff2Data;
-  if (!data) return;
-
-  const container = document.getElementById('runoff2-tally-container');
-  if (!container) return;
-
-  if (!runoffVotes || runoffVotes.length === 0) {
-    container.innerHTML = '<div style="text-align:center;font-size:0.8rem;color:rgba(255,255,255,0.4);margin-top:0.75rem;">No second runoff votes yet</div>';
-    return;
-  }
-
-  const runoffTally = {};
-  data.tiedCandidates.forEach(name => { runoffTally[name] = 0; });
-  runoffVotes.forEach(v => {
-    if (runoffTally[v.nominee] !== undefined) runoffTally[v.nominee]++;
-  });
-
-  const totalRunoffVotes = runoffVotes.length;
-  const candidates = Object.entries(runoffTally).sort((a, b) => b[1] - a[1]);
-
-  let barHtml = '<div class="runoff-progress"><div class="runoff-tally-bar">';
-  candidates.forEach(([name, count], i) => {
-    const pct = totalRunoffVotes > 0 ? (count / totalRunoffVotes) * 100 : 0;
-    barHtml += `<div class="runoff-tally-segment seg-${i}" style="width:${pct}%;">${count > 0 ? name + ' ' + count : ''}</div>`;
-  });
-  barHtml += '</div><div class="runoff-tally-labels">';
-  candidates.forEach(([name, count]) => {
-    barHtml += `<span>${name}: ${count}</span>`;
-  });
-  barHtml += '</div></div>';
-
-  const allVoters = [...draftRound1, ...draftRound2].map(n => n.replace(/\s*[^\x00-\x7F]+/g, '').trim());
-  const excluded = [data.confirmedCaptain, ...data.tiedCandidates];
-  const eligibleCount = allVoters.filter(n => !excluded.includes(n)).length;
-
-  const maxVotes = candidates[0][1];
-  const topCandidates = candidates.filter(([, count]) => count === maxVotes);
-  let winnerEntry = null;
-  let winnerMsg = '';
-
-  if (totalRunoffVotes >= eligibleCount && topCandidates.length === 1 && maxVotes > 0) {
-    winnerEntry = [topCandidates[0][0], topCandidates[0][1]];
-    winnerMsg = `${winnerEntry[0]} wins the second runoff!`;
-  } else if (totalRunoffVotes >= eligibleCount && topCandidates.length > 1) {
-    // Absolute final tiebreaker — use original nominee1 tallyfrom the first vote
-    const sorted = topCandidates.sort((a, b) => (data.nominee1Tally[b[0]] || 0) - (data.nominee1Tally[a[0]] || 0));
-    winnerEntry = [sorted[0][0], sorted[0][1]];
-    winnerMsg = `${winnerEntry[0]} wins by first-pick tiebreaker!`;
-  }
-
-  if (winnerEntry) {
-    barHtml += `<div class="runoff-winner-msg">${winnerMsg}</div>`;
-  } else if (totalRunoffVotes < eligibleCount) {
-    const remaining = eligibleCount - totalRunoffVotes;
-    barHtml += `<div style="text-align:center;font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.5rem;">${totalRunoffVotes} / ${eligibleCount} voted &mdash; ${remaining} more needed to reveal</div>`;
-  }
-
-  container.innerHTML = barHtml;
-
-  if (winnerEntry) {
-    const captain2 = [winnerEntry[0], winnerEntry[1]];
-    window._captainRevealData = {
-      captain1: data.confirmedCaptainEntry,
-      captain2,
-      totalVotes: data.totalVotes,
-      nomineeNames: data.nomineeNames,
-      runoff2Tally: candidates
-    };
-
-    if (!container.querySelector('.reveal-trigger-btn')) {
-      const revealBtn = document.createElement('button');
-      revealBtn.className = 'reveal-trigger-btn';
-      revealBtn.textContent = 'REVEAL CAPTAINS';
-      revealBtn.style.marginTop = '0.75rem';
-      revealBtn.addEventListener('click', () => startCaptainReveal(data.confirmedCaptainEntry, captain2, data.totalVotes));
-      container.appendChild(revealBtn);
-    }
-
-    runoff2Active = false;
-    hideVoteTab();
-    renderScheduleBannerReveal();
-  }
-}
-
-async function loadRunoff2Votes() {
-  if (!runoff2Active || !window._runoff2Data) return;
-
-  if (IS_LOCAL_PREVIEW) {
-    renderRunoff2Results(MOCK_RUNOFF2_VOTES);
-    return;
-  }
-
-  if (!supabaseConfigured || !supabaseClient) return;
-
-  const { data, error } = await supabaseClient
-    .from('captain_runoff2_votes')
-    .select('voter, nominee');
-
-  if (error) {
-    console.error('Runoff2 load error:', error);
-    return;
-  }
-
-  renderRunoff2Results(data || []);
-}
-
-function subscribeToRunoff2Votes() {
-  if (!supabaseConfigured || !supabaseClient) return;
-
-  supabaseClient
-    .channel('captain_runoff2_votes_changes')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'captain_runoff2_votes' }, () => {
-      loadRunoff2Votes();
-    })
-    .subscribe();
-}
-
-function renderScheduleBannerRunoff2() {
-  const data = window._runoff2Data;
-  if (!data) return;
-  const banner = document.getElementById('countdown-banner');
-  if (!banner) return;
-
-  const labelEl = banner.querySelector('.label');
-  const eventEl = document.getElementById('countdown-event');
-  const unitsEl = document.getElementById('countdown-units');
-  if (!labelEl || !eventEl || !unitsEl) return;
-
-  labelEl.textContent = 'Captain Vote';
-  eventEl.textContent = 'Second Runoff';
-
-  unitsEl.innerHTML = `
-    <div style="width:100%;text-align:center;">
-      <div style="font-size:0.8rem;margin-bottom:0.5rem;">
-        <span style="color:#e74c3c;font-weight:700;">\u{1F534} ${data.confirmedCaptain}</span>
-        <span style="color:rgba(255,255,255,0.4);font-size:0.7rem;margin:0 0.25rem;">confirmed Red</span>
-      </div>
-      <div style="display:flex;justify-content:center;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem;">
-        ${data.tiedCandidates.map((name, i) => `<span class="nominee-pill banner-pill" style="position:static;animation:none;">${name}</span>${i < data.tiedCandidates.length - 1 ? '<span class="runoff-banner-vs">vs</span>' : ''}`).join('')}
-      </div>
-      <div style="font-size:0.75rem;color:rgba(255,255,255,0.55);">Cast your second runoff vote on the Vote tab</div>
-    </div>
-  `;
-}
-
-function renderRunoffResults(runoffVotes) {
-  const data = window._runoffData;
-  if (!data) return;
-
-  const container = document.getElementById('runoff-tally-container');
-  if (!container) return;
-
-  if (!runoffVotes || runoffVotes.length === 0) {
-    container.innerHTML = '<div style="text-align:center;font-size:0.8rem;color:rgba(255,255,255,0.4);margin-top:0.75rem;">No runoff votes yet</div>';
-    return;
-  }
-
-  // Tally runoff votes per candidate
-  const runoffTally = {};
-  data.tiedCandidates.forEach(name => { runoffTally[name] = 0; });
-  runoffVotes.forEach(v => {
-    if (runoffTally[v.nominee] !== undefined) runoffTally[v.nominee]++;
-  });
-
-  const totalRunoffVotes = runoffVotes.length;
-  const candidates = Object.entries(runoffTally).sort((a, b) => b[1] - a[1]);
-
-  // Build progress bar
-  let barHtml = '<div class="runoff-progress"><div class="runoff-tally-bar">';
-  candidates.forEach(([name, count], i) => {
-    const pct = totalRunoffVotes > 0 ? (count / totalRunoffVotes) * 100 : 0;
-    barHtml += `<div class="runoff-tally-segment seg-${i}" style="width:${pct}%;">${count > 0 ? name + ' ' + count : ''}</div>`;
-  });
-  barHtml += '</div><div class="runoff-tally-labels">';
-  candidates.forEach(([name, count]) => {
-    barHtml += `<span>${name}: ${count}</span>`;
-  });
-  barHtml += '</div></div>';
-
-  // Check for winner
-  const allVoters = [...draftRound1, ...draftRound2].map(n => n.replace(/\s*[^\x00-\x7F]+/g, '').trim());
-  const excluded = [data.confirmedCaptain, ...data.tiedCandidates];
-  const eligibleCount = allVoters.filter(n => !excluded.includes(n)).length;
-
-  const maxVotes = candidates[0][1];
-  const topCandidates = candidates.filter(([, count]) => count === maxVotes);
-  let winnerEntry = null;
-  let winnerMsg = '';
-
-  if (totalRunoffVotes >= eligibleCount && topCandidates.length === 1 && maxVotes > 0) {
-    // All eligible voters voted, clear winner
-    winnerEntry = [topCandidates[0][0], topCandidates[0][1]];
-    winnerMsg = `${winnerEntry[0]} wins the runoff!`;
-  } else if (totalRunoffVotes >= eligibleCount && topCandidates.length > 1) {
-    // Runoff still tied after all votes — trigger a second runoff between these 2
-    const tied2Names = topCandidates.map(([name]) => name);
-    runoff2Active = true;
-    window._runoff2Data = {
-      confirmedCaptain: data.confirmedCaptain,
-      confirmedCaptainEntry: data.confirmedCaptainEntry,
-      tiedCandidates: tied2Names,
-      nominee1Tally: data.nominee1Tally,
-      nomineeNames: data.nomineeNames,
-      totalVotes: data.totalVotes,
-      firstRunoffResults: candidates
-    };
-    runoffActive = false;
-    window._captainRevealData = null;
-    container.innerHTML = barHtml + '<div class="runoff-winner-msg" style="color:#f39c12;">Still tied — a second runoff is needed!</div>';
-    setTimeout(activateRunoff2Phase, 2000);
-    return;
-  }
-
-  if (winnerEntry) {
-    barHtml += `<div class="runoff-winner-msg">${winnerMsg}</div>`;
-  } else if (totalRunoffVotes < eligibleCount) {
-    const remaining = eligibleCount - totalRunoffVotes;
-    barHtml += `<div style="text-align:center;font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.5rem;">${totalRunoffVotes} / ${eligibleCount} voted &mdash; ${remaining} more needed to reveal</div>`;
-  }
-
-  container.innerHTML = barHtml;
-
-  // If resolved, show reveal button and update banner
-  if (winnerEntry) {
-    const captain2 = [winnerEntry[0], winnerEntry[1]];
-    window._captainRevealData = {
-      captain1: data.confirmedCaptainEntry,
-      captain2,
-      totalVotes: data.totalVotes,
-      nomineeNames: data.nomineeNames
-    };
-
-    // Only add the reveal button once
-    if (!container.querySelector('.reveal-trigger-btn')) {
-      const revealBtn = document.createElement('button');
-      revealBtn.className = 'reveal-trigger-btn';
-      revealBtn.textContent = 'REVEAL CAPTAINS';
-      revealBtn.style.marginTop = '0.75rem';
-      revealBtn.addEventListener('click', () => startCaptainReveal(data.confirmedCaptainEntry, captain2, data.totalVotes));
-      container.appendChild(revealBtn);
-    }
-
-    runoffActive = false;
-    hideVoteTab();
-    renderScheduleBannerReveal();
-  }
-}
-
 if (supabaseConfigured) {
   supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
@@ -4830,1632 +2762,6 @@ if (supabaseConfigured) {
 initVoteTab();
 loadVotes();
 subscribeToVotes();
-
-// Captains are confirmed — apply immediately on every page load
-applyCaptainReveals('Nik', 'Dan');
-
-// --- Nominee bouncing screensaver ---
-let bannerPillsInitialized = false;
-
-function initBannerNomineePills(names) {
-  if (bannerPillsInitialized || !names || names.length === 0) return;
-  if (new Date() >= RESULTS_REVEAL_DATE) return;
-  const banner = document.getElementById('countdown-banner');
-  if (!banner) return;
-
-  const grid = document.createElement('div');
-  grid.className = 'nominee-grid';
-  grid.id = 'banner-nominee-grid';
-  grid.style.marginTop = '0.5rem';
-  grid.style.marginBottom = '0';
-
-  names.forEach((name, i) => {
-    const pill = document.createElement('span');
-    pill.className = 'nominee-pill banner-pill';
-    pill.style.animationDelay = `${0.3 + i * 0.1}s`;
-    pill.innerHTML = `${name} <span class="np-q">?</span>`;
-    grid.appendChild(pill);
-  });
-
-  banner.appendChild(grid);
-  startNomineeDrift(grid);
-  bannerPillsInitialized = true;
-}
-
-function startNomineeDrift(grid) {
-  if (!grid) return;
-  const pills = Array.from(grid.querySelectorAll('.nominee-pill'));
-  const gridW = grid.offsetWidth || 280;
-  const gridH = grid.offsetHeight || 90;
-  const count = pills.length;
-
-  // Spread pills out initially
-  const cols = Math.ceil(Math.sqrt(count * (gridW / gridH)));
-  const rows = Math.ceil(count / cols);
-  const zoneW = gridW / cols;
-  const zoneH = gridH / rows;
-
-  const pillData = pills.map((pill, i) => {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-    const x = col * zoneW + Math.random() * Math.max(0, zoneW - 75);
-    const y = row * zoneH + Math.random() * Math.max(0, zoneH - 28);
-    pill.style.left = x + 'px';
-    pill.style.top = y + 'px';
-    pill.style.transition = 'none';
-
-    // Random angle for initial direction
-    const angle = Math.random() * Math.PI * 2;
-    return { el: pill, x, y, vx: Math.cos(angle) * PILL_SPEED, vy: Math.sin(angle) * PILL_SPEED, ready: false };
-  });
-
-  // After pop-in, mark as ready for bouncing
-  pillData.forEach(pd => {
-    const popDelay = parseFloat(pd.el.style.animationDelay || 0) * 1000;
-    setTimeout(() => {
-      pd.el.style.opacity = '1';
-      pd.el.style.animation = 'none';
-      pd.el.style.transform = 'scale(1)';
-      pd.ready = true;
-    }, popDelay + 450);
-  });
-
-  let lastTime = performance.now();
-  function tick(now) {
-    const dt = Math.min((now - lastTime) / 1000, 0.05); // cap delta to avoid jumps
-    lastTime = now;
-    const gw = grid.offsetWidth || 280;
-    const gh = grid.offsetHeight || 90;
-
-    pillData.forEach(pd => {
-      if (!pd.ready) return;
-      const pw = pd.el.offsetWidth || 70;
-      const ph = pd.el.offsetHeight || 28;
-
-      pd.x += pd.vx * dt;
-      pd.y += pd.vy * dt;
-
-      // Bounce off edges
-      if (pd.x <= 0) { pd.x = 0; pd.vx = Math.abs(pd.vx); }
-      if (pd.x >= gw - pw) { pd.x = gw - pw; pd.vx = -Math.abs(pd.vx); }
-      if (pd.y <= 0) { pd.y = 0; pd.vy = Math.abs(pd.vy); }
-      if (pd.y >= gh - ph) { pd.y = gh - ph; pd.vy = -Math.abs(pd.vy); }
-
-      pd.el.style.left = pd.x + 'px';
-      pd.el.style.top = pd.y + 'px';
-    });
-
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-}
-
-// --- Captain Reveal Animation ---
-function createParticles(container, count, colors) {
-  for (let i = 0; i < count; i++) {
-    const p = document.createElement('div');
-    p.className = 'reveal-particle';
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const angle = Math.random() * Math.PI * 2;
-    const distance = 80 + Math.random() * 200;
-    const dx = Math.cos(angle) * distance;
-    const dy = Math.sin(angle) * distance;
-    const size = 3 + Math.random() * 6;
-    p.style.cssText = `
-      left: 50%; top: 50%;
-      width: ${size}px; height: ${size}px;
-      background: ${color};
-      box-shadow: 0 0 ${size * 2}px ${color};
-      animation: particleBurst${i} ${0.6 + Math.random() * 0.8}s ease-out ${Math.random() * 0.2}s forwards;
-    `;
-    const keyframes = `@keyframes particleBurst${i} {
-      0% { opacity: 1; transform: translate(-50%, -50%) scale(0); }
-      20% { opacity: 1; }
-      100% { opacity: 0; transform: translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(1); }
-    }`;
-    const style = document.createElement('style');
-    style.textContent = keyframes;
-    document.head.appendChild(style);
-    container.appendChild(p);
-  }
-}
-
-function startTieReveal() {
-  const data = window._runoffData;
-  if (!data) return;
-
-  document.querySelector('.reveal-overlay')?.remove();
-
-  const overlay = document.createElement('div');
-  overlay.className = 'reveal-overlay';
-
-  const redCaptain = data.confirmedCaptainEntry;
-  const tied = data.tiedCandidates;
-
-  overlay.innerHTML = `
-    <!-- Stage 1: Red Captain (confirmed 1st place) -->
-    <div class="reveal-stage" id="reveal-stage-1">
-      <div class="reveal-spotlight" style="background: radial-gradient(circle, rgba(192,57,43,0.2) 0%, transparent 70%);"></div>
-      <div class="reveal-particles" id="particles-1"></div>
-      <div class="reveal-label" style="animation-delay: 0.3s; color: var(--red-light);">TEAM RED CAPTAIN</div>
-      <div class="reveal-captain-name" style="animation-delay: 0.8s; text-shadow: 0 0 40px rgba(192,57,43,0.5), 0 0 80px rgba(192,57,43,0.2);">
-        <span class="emoji" style="filter: drop-shadow(0 0 20px rgba(192,57,43,0.6));">🔴</span>
-        ${redCaptain[0]}
-      </div>
-      <div class="reveal-votes-badge">${redCaptain[1]} votes</div>
-    </div>
-
-    <!-- Stage 2: TIE for Blue Captain -->
-    <div class="reveal-stage" id="reveal-stage-2">
-      <div class="reveal-spotlight" style="background: radial-gradient(circle, rgba(241,196,15,0.25) 0%, transparent 70%);"></div>
-      <div class="reveal-particles" id="particles-2"></div>
-      <div class="reveal-label" style="animation-delay: 0.3s; color: #f1c40f;">TEAM BLUE CAPTAIN</div>
-      <div class="reveal-captain-name" style="animation-delay: 0.8s; color: #f1c40f; text-shadow: 0 0 40px rgba(241,196,15,0.5), 0 0 80px rgba(241,196,15,0.3);">
-        IT'S A TIE
-      </div>
-      <div class="reveal-votes-badge" style="background: rgba(241,196,15,0.15); color: #f1c40f; border-color: rgba(241,196,15,0.3);">
-        ${tied.join(' & ')} — ${data.tiedVoteCount} votes each
-      </div>
-    </div>
-
-    <!-- Stage 3: Runoff announcement -->
-    <div class="reveal-stage" id="reveal-stage-3">
-      <div class="faceoff-stage">
-        <div class="faceoff-bg" style="background: linear-gradient(135deg, rgba(241,196,15,0.08), rgba(93,173,226,0.08));"></div>
-        ${tied.length === 2 ? `
-          <div class="faceoff-slash" style="background: linear-gradient(180deg, transparent, rgba(241,196,15,0.4), transparent);"></div>
-          <div class="faceoff-side left">
-            <div class="faceoff-team-label" style="color: rgba(241,196,15,0.7);">TIED</div>
-            <div class="faceoff-emoji" style="font-size: 2.5rem;">\u{1F7E1}</div>
-            <div class="faceoff-name">${tied[0]}</div>
-          </div>
-          <div class="faceoff-side right">
-            <div class="faceoff-team-label" style="color: rgba(241,196,15,0.7);">TIED</div>
-            <div class="faceoff-emoji" style="font-size: 2.5rem;">\u{1F7E1}</div>
-            <div class="faceoff-name">${tied[1]}</div>
-          </div>
-          <div class="faceoff-vs"><span>VS</span></div>
-        ` : `
-          <div class="faceoff-multi">
-            ${tied.map((name, i) => `
-              <div class="faceoff-card" style="animation-delay:${0.5 + i * 0.12}s;">
-                <div class="faceoff-team-label" style="color:rgba(241,196,15,0.7);">TIED</div>
-                <div class="faceoff-emoji" style="font-size:2rem;">\u{1F7E1}</div>
-                <div class="faceoff-name" style="font-size:1.2rem;">${name}</div>
-              </div>
-              ${i < tied.length - 1 ? '<div class="faceoff-vs-sm">VS</div>' : ''}
-            `).join('')}
-          </div>
-        `}
-        <div class="faceoff-subtitle"><span>RUNOFF VOTE</span></div>
-      </div>
-      <button class="reveal-close-btn" id="reveal-close-btn">CAST YOUR RUNOFF VOTE</button>
-    </div>
-  `;
-
-  document.body.appendChild(overlay);
-  requestAnimationFrame(() => overlay.classList.add('active'));
-
-  const redColors = ['#c0392b', '#e74c3c', '#f1948a', '#fadbd8', '#fff'];
-  const yellowColors = ['#f1c40f', '#f39c12', '#e67e22', '#fdebd0', '#fff'];
-
-  // Stage 1: Red captain
-  setTimeout(() => {
-    document.getElementById('reveal-stage-1').classList.add('visible');
-    setTimeout(() => createParticles(document.getElementById('particles-1'), 60, redColors), 800);
-  }, 400);
-
-  // Stage 2: IT'S A TIE
-  setTimeout(() => {
-    document.getElementById('reveal-stage-1').classList.remove('visible');
-    document.getElementById('reveal-stage-2').classList.add('visible');
-    setTimeout(() => createParticles(document.getElementById('particles-2'), 60, yellowColors), 800);
-  }, 3800);
-
-  // Stage 3: Runoff face-off
-  setTimeout(() => {
-    document.getElementById('reveal-stage-2').classList.remove('visible');
-    document.getElementById('reveal-stage-3').classList.add('visible');
-  }, 7200);
-
-  // Close button → activate runoff phase
-  setTimeout(() => {
-    document.getElementById('reveal-close-btn')?.addEventListener('click', () => {
-      overlay.classList.remove('active');
-      setTimeout(() => overlay.remove(), 600);
-      activateRunoffPhase();
-    });
-  }, 7400);
-}
-
-function activateRunoffPhase() {
-  showVoteTabForRunoff();
-  renderRunoffForm();
-  loadRunoffVotes();
-  subscribeToRunoffVotes();
-  renderScheduleBannerRunoff();
-
-  // Auto-switch to the Vote tab
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelector('[data-tab="vote"]')?.classList.add('active');
-  document.getElementById('tab-vote')?.classList.add('active');
-}
-
-function renderScheduleBannerReveal_Tie() {
-  const data = window._runoffData;
-  if (!data) return;
-  const banner = document.getElementById('countdown-banner');
-  if (!banner) return;
-
-  const labelEl = banner.querySelector('.label');
-  const eventEl = document.getElementById('countdown-event');
-  const unitsEl = document.getElementById('countdown-units');
-  if (!labelEl || !eventEl || !unitsEl) return;
-
-  labelEl.textContent = 'Captain Vote';
-  eventEl.textContent = 'Results Are In';
-
-  unitsEl.innerHTML = `
-    <div style="width:100%;">
-      <div class="nominee-grid" id="banner-nominee-grid">
-        ${data.nomineeNames.map((name, i) => `<span class="nominee-pill banner-pill" style="animation-delay: ${0.3 + i * 0.1}s;">${name} <span class="np-q">?</span></span>`).join('')}
-      </div>
-      <button class="reveal-trigger-btn banner-btn" id="banner-reveal-btn">REVEAL CAPTAINS</button>
-    </div>
-  `;
-  startNomineeDrift(document.getElementById('banner-nominee-grid'));
-
-  document.getElementById('banner-reveal-btn')?.addEventListener('click', () => {
-    startTieReveal();
-  });
-}
-
-function startCaptainReveal(captain1, captain2, totalVotes) {
-  // Remove any existing overlay
-  document.querySelector('.reveal-overlay')?.remove();
-
-  const overlay = document.createElement('div');
-  overlay.className = 'reveal-overlay';
-
-  const runoff2Tally = window._captainRevealData?.runoff2Tally || null;
-  const stageOffset = runoff2Tally ? 1 : 0;
-
-  overlay.innerHTML = `
-    ${runoff2Tally ? `
-    <!-- Stage 1: Runoff results -->
-    <div class="reveal-stage" id="reveal-stage-1">
-      <div class="reveal-spotlight" style="background: radial-gradient(circle, rgba(241,196,15,0.15) 0%, transparent 70%);"></div>
-      <div class="reveal-particles" id="particles-0"></div>
-      <div class="reveal-label" style="animation-delay: 0.3s; color: #f1c40f;">RUNOFF RESULTS</div>
-      <div style="display:flex;gap:2.5rem;justify-content:center;align-items:flex-start;margin-top:1.5rem;flex-wrap:wrap;">
-        ${runoff2Tally.map(([name, count], i) => `
-          <div style="text-align:center;animation:revealFadeIn 0.6s ease-out ${0.8 + i * 0.35}s both;">
-            <div style="font-size:0.75rem;letter-spacing:0.12em;color:rgba(255,255,255,0.5);margin-bottom:0.4rem;">${i === 0 ? 'WINNER' : 'RUNNER UP'}</div>
-            <div class="reveal-captain-name" style="font-size:2rem;animation:none;">${name}</div>
-            <div class="reveal-votes-badge" style="margin-top:0.4rem;">${count} vote${count !== 1 ? 's' : ''}</div>
-          </div>
-          ${i === 0 ? `<div style="font-size:1.25rem;color:rgba(255,255,255,0.25);align-self:center;padding-top:1.5rem;">vs</div>` : ''}
-        `).join('')}
-      </div>
-    </div>
-    ` : ''}
-
-    <!-- Stage ${stageOffset + 1}: Captain 2 / Team Blue (runner up) -->
-    <div class="reveal-stage" id="reveal-stage-${stageOffset + 1}">
-      <div class="reveal-spotlight" style="background: radial-gradient(circle, rgba(36,113,163,0.2) 0%, transparent 70%);"></div>
-      <div class="reveal-particles" id="particles-1"></div>
-      <div class="reveal-label" style="animation-delay: 0.3s; color: var(--blue-light);">TEAM BLUE CAPTAIN</div>
-      <div class="reveal-captain-name" style="animation-delay: 0.8s; text-shadow: 0 0 40px rgba(36,113,163,0.5), 0 0 80px rgba(36,113,163,0.2);">
-        <span class="emoji" style="filter: drop-shadow(0 0 20px rgba(36,113,163,0.6));">🔵</span>
-        ${captain2[0]}
-      </div>
-      <div class="reveal-votes-badge">${captain2[1]} votes</div>
-    </div>
-
-    <!-- Stage ${stageOffset + 2}: Captain 1 / Team Red (leader) -->
-    <div class="reveal-stage" id="reveal-stage-${stageOffset + 2}">
-      <div class="reveal-spotlight" style="background: radial-gradient(circle, rgba(192,57,43,0.2) 0%, transparent 70%);"></div>
-      <div class="reveal-particles" id="particles-2"></div>
-      <div class="reveal-label" style="animation-delay: 0.3s; color: var(--red-light);">TEAM RED CAPTAIN</div>
-      <div class="reveal-captain-name" style="animation-delay: 0.8s; text-shadow: 0 0 40px rgba(192,57,43,0.5), 0 0 80px rgba(192,57,43,0.2);">
-        <span class="emoji" style="filter: drop-shadow(0 0 20px rgba(192,57,43,0.6));">🔴</span>
-        ${captain1[0]}
-      </div>
-      <div class="reveal-votes-badge">${captain1[1]} votes</div>
-    </div>
-
-    <!-- Stage ${stageOffset + 3}: Face-off -->
-    <div class="reveal-stage" id="reveal-stage-${stageOffset + 3}">
-      <div class="faceoff-stage">
-        <div class="faceoff-bg"></div>
-        <div class="faceoff-slash"></div>
-        <div class="faceoff-side left">
-          <div class="faceoff-team-label">TEAM RED</div>
-          <div class="faceoff-emoji">🔴</div>
-          <div class="faceoff-name">${captain1[0]}</div>
-          <div class="faceoff-votes">${captain1[1]} votes</div>
-        </div>
-        <div class="faceoff-side right">
-          <div class="faceoff-team-label">TEAM BLUE</div>
-          <div class="faceoff-emoji">🔵</div>
-          <div class="faceoff-name">${captain2[0]}</div>
-          <div class="faceoff-votes">${captain2[1]} votes</div>
-        </div>
-        <div class="faceoff-vs"><span>VS</span></div>
-        <div class="faceoff-subtitle"><span>THE DRAFT BEGINS</span></div>
-      </div>
-      <button class="reveal-close-btn" id="reveal-close-btn">TAP TO CLOSE</button>
-    </div>
-  `;
-
-  document.body.appendChild(overlay);
-
-  // Activate overlay
-  requestAnimationFrame(() => {
-    overlay.classList.add('active');
-  });
-
-  const blueColors = ['#2471a3', '#3498db', '#85c1e9', '#d4e6f1', '#fff'];
-  const redColors = ['#c0392b', '#e74c3c', '#f1948a', '#fadbd8', '#fff'];
-  const yellowColors = ['#f1c40f', '#f39c12', '#fdebd0', '#fff'];
-  const t = stageOffset * 3400; // extra time when runoff stage is prepended
-
-  if (runoff2Tally) {
-    // Stage 1: Runoff results
-    setTimeout(() => {
-      document.getElementById('reveal-stage-1').classList.add('visible');
-      setTimeout(() => createParticles(document.getElementById('particles-0'), 40, yellowColors), 800);
-    }, 400);
-  }
-
-  // Stage (offset+1): Captain 2 (Team Blue) reveal
-  setTimeout(() => {
-    if (runoff2Tally) document.getElementById('reveal-stage-1').classList.remove('visible');
-    document.getElementById(`reveal-stage-${stageOffset + 1}`).classList.add('visible');
-    setTimeout(() => createParticles(document.getElementById('particles-1'), 40, blueColors), 800);
-  }, 400 + t);
-
-  // Stage (offset+2): Captain 1 (Team Red) reveal
-  setTimeout(() => {
-    document.getElementById(`reveal-stage-${stageOffset + 1}`).classList.remove('visible');
-    document.getElementById(`reveal-stage-${stageOffset + 2}`).classList.add('visible');
-    setTimeout(() => createParticles(document.getElementById('particles-2'), 60, redColors), 800);
-  }, 3800 + t);
-
-  // Stage (offset+3): Face-off
-  setTimeout(() => {
-    document.getElementById(`reveal-stage-${stageOffset + 2}`).classList.remove('visible');
-    document.getElementById(`reveal-stage-${stageOffset + 3}`).classList.add('visible');
-  }, 7200 + t);
-
-  // Close button — after close, update the ryder bar and draft pills
-  setTimeout(() => {
-    document.getElementById('reveal-close-btn')?.addEventListener('click', () => {
-      overlay.classList.remove('active');
-      setTimeout(() => overlay.remove(), 600);
-      applyCaptainReveals(captain1[0], captain2[0]);
-    });
-  }, 7400 + t);
-}
-
-function applyCaptainReveals(redCaptain, blueCaptain) {
-  // Update ryder bar header with captain names
-  const redLabel = document.querySelector('.ryder-header .team-red');
-  const blueLabel = document.querySelector('.ryder-header .team-blue');
-  if (redLabel) redLabel.innerHTML = `Team Red<br><span style="font-size:0.75rem;font-weight:600;opacity:0.85;">Capt. ${redCaptain}</span>`;
-  if (blueLabel) blueLabel.innerHTML = `Team Blue<br><span style="font-size:0.75rem;font-weight:600;opacity:0.85;">Capt. ${blueCaptain}</span>`;
-
-  // Restructure each draft-players section: captains on top, players below
-  document.querySelectorAll('.draft-players').forEach(container => {
-    const redPill = container.querySelector(`[data-draft-name="${redCaptain}"]`);
-    const bluePill = container.querySelector(`[data-draft-name="${blueCaptain}"]`);
-    if (!redPill && !bluePill) return;
-
-    const captainRow = document.createElement('div');
-    captainRow.className = 'draft-captains-row';
-
-    if (redPill) {
-      redPill.remove();
-      captainRow.innerHTML += `<span class="draft-captain-pill red">${redCaptain} <span class="captain-badge">C</span></span>`;
-    }
-    if (bluePill) {
-      bluePill.remove();
-      captainRow.innerHTML += `<span class="draft-captain-pill blue">${blueCaptain} <span class="captain-badge">C</span></span>`;
-    }
-
-    container.parentNode.insertBefore(captainRow, container);
-  });
-
-  // Switch countdown banner to show the Draft with a live countdown
-  const banner = document.getElementById('countdown-banner');
-  if (banner) {
-    banner.querySelector('.label').textContent = 'Next Up';
-    document.getElementById('countdown-event').textContent = 'The Draft';
-
-    // Find the draft event date
-    const draftEvt = schedule.find(e => e.draft === 1);
-    const draftDate = draftEvt ? draftEvt.date : new Date(2026, 4, 29, 14, 0);
-
-    const otherPlayers = draftRound1.filter(n => n !== redCaptain && n !== blueCaptain);
-    const playersHtml = `<div class="draft-players" style="justify-content:center;margin-top:0.4rem;">
-      ${otherPlayers.map(n => `<span class="draft-pill round1" style="background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.25);">${n}</span>`).join('')}
-    </div>`;
-
-    function updateDraftCountdown() {
-      const now = new Date();
-      const diff = draftDate - now;
-      const countdownEl = document.getElementById('countdown-units');
-      if (diff <= 0) {
-        countdownEl.innerHTML = `
-          <div style="width:100%; text-align:center;">
-            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;">Draft is LIVE!</div>
-            <div class="draft-captains-row" style="margin-bottom:0.3rem;">
-              <span class="draft-captain-pill red">${redCaptain} <span class="captain-badge">C</span></span>
-              <span style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;">VS</span>
-              <span class="draft-captain-pill blue">${blueCaptain} <span class="captain-badge">C</span></span>
-            </div>
-            ${playersHtml}
-          </div>
-        `;
-        return;
-      }
-      const days = Math.floor(diff / 86400000);
-      const hours = Math.floor((diff % 86400000) / 3600000);
-      const minutes = Math.floor((diff % 3600000) / 60000);
-      const seconds = Math.floor((diff % 60000) / 1000);
-
-      countdownEl.innerHTML = `
-        <div style="width:100%; text-align:center;">
-          <div class="countdown-units" style="display:flex;justify-content:center;gap:1.25rem;margin-bottom:0.5rem;">
-            <div class="countdown-unit"><span class="number">${days}</span><span class="unit-label">Days</span></div>
-            <div class="countdown-unit"><span class="number">${hours}</span><span class="unit-label">Hrs</span></div>
-            <div class="countdown-unit"><span class="number">${minutes}</span><span class="unit-label">Min</span></div>
-            <div class="countdown-unit"><span class="number">${seconds}</span><span class="unit-label">Sec</span></div>
-          </div>
-          <div class="draft-captains-row" style="margin-bottom:0.3rem;">
-            <span class="draft-captain-pill red">${redCaptain} <span class="captain-badge">C</span></span>
-            <span style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;">VS</span>
-            <span class="draft-captain-pill blue">${blueCaptain} <span class="captain-badge">C</span></span>
-          </div>
-          ${playersHtml}
-        </div>
-      `;
-    }
-    updateDraftCountdown();
-    setInterval(updateDraftCountdown, 1000);
-
-    // Prevent updateCountdown from overwriting
-    window._captainRevealData = null;
-    window._bannerLocked = true;
-  }
-
-  // Hide the draft schedule card since the banner now covers it
-  document.querySelectorAll('.schedule-card').forEach(card => {
-    if (card.querySelector('.sched-name')?.textContent === 'The Draft') {
-      card.style.display = 'none';
-    }
-  });
-}
-
-// ---- Live Draft ----
-
-const DRAFT_ORDER_DEFAULT = ['red','blue','blue','red','red','blue','blue','red','red','blue'];
-const DRAFT_SETTINGS_KEY = 'draft_settings_2026';
-
-function loadDraftSettings() {
-  try {
-    const raw = localStorage.getItem(DRAFT_SETTINGS_KEY);
-    if (raw) {
-      const s = JSON.parse(raw);
-      return {
-        timerSeconds: typeof s.timerSeconds === 'number' ? Math.max(0, s.timerSeconds) : 60,
-        draftOrder: Array.isArray(s.draftOrder) && s.draftOrder.length === DRAFT_ORDER_DEFAULT.length
-          ? s.draftOrder : [...DRAFT_ORDER_DEFAULT]
-      };
-    }
-  } catch(e) {}
-  return { timerSeconds: 60, draftOrder: [...DRAFT_ORDER_DEFAULT] };
-}
-
-let draftSettings = loadDraftSettings();
-function getDraftOrder() { return draftSettings.draftOrder; }
-
-// Walk-up songs — paste audio file URLs here before the draft
-const PLAYER_WALKUP_SONGS = {
-  'Dan M':  '',
-  'Hadley': '',
-  'Shane':  '',
-  'Jon':    'hype-enter-sandman.m4a',
-  'Sam':    '',
-  'Garret': '',
-  'Ant':    'hype-split-only-u.m4a',
-  'Dylan':  '',
-  'Chris':  'hype-higher.m4a',
-  'Ryan':   '',
-};
-
-// Hype songs — shuffled, no repeats until all have played
-const HYPE_SONGS = [
-  'hype-eye-of-the-tiger.m4a',
-  'hype-till-i-collapse.m4a',
-  'hype-lose-yourself.m4a',
-  'hype-we-will-rock-you.m4a',
-  'hype-power.m4a',
-  'hype-stronger.m4a',
-  'hype-remember-the-name.m4a',
-  'hype-through-the-fire.m4a',
-  'hype-blue.m4a',
-  'hype-drop-the-world.m4a',
-  'hype-real-slim-shady.m4a',
-  'hype-we-didnt-start-the-fire.m4a',
-  'hype-mercy.m4a',
-  'hype-in-paris.m4a',
-  'hype-thunderstruck.m4a',
-];
-let hypeShuffled = [];
-function getNextHypeSong() {
-  if (hypeShuffled.length === 0) {
-    hypeShuffled = [...HYPE_SONGS];
-    for (let i = hypeShuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [hypeShuffled[i], hypeShuffled[j]] = [hypeShuffled[j], hypeShuffled[i]];
-    }
-  }
-  return hypeShuffled.pop();
-}
-
-const DRAFT_MODE_KEY = 'draft_mode_2026';
-let draftChannel = null;
-let draftStateChannel = null;
-let draftLastPickCount = 0;
-
-// Audio unlock — browsers block programmatic audio until a user gesture occurs.
-// We pre-load the chime and play a silent snippet on first click to unlock it.
-let draftAudioCtx = null;
-function unlockDraftAudio() {
-  if (draftAudioCtx) return;
-  try {
-    draftAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    draftAudioCtx.resume();
-    // Play a tiny silent buffer to fully unlock HTMLAudioElement playback
-    const buf = draftAudioCtx.createBuffer(1, 1, 22050);
-    const src = draftAudioCtx.createBufferSource();
-    src.buffer = buf;
-    src.connect(draftAudioCtx.destination);
-    src.start();
-  } catch(e) {}
-}
-
-// Timer state — deadline-based, synced via draft_state table
-let draftStarted = false;
-let draftTimerDeadline = null;  // Date object (UTC)
-let draftTimerTotalSecs = 0;
-let draftTimerInterval = null;
-
-function getDraftTimerRemaining() {
-  if (!draftTimerDeadline) return 0;
-  return Math.max(0, Math.ceil((draftTimerDeadline.getTime() - Date.now()) / 1000));
-}
-
-function updateAllTimerDisplays() {
-  updateTimerDisplay();
-  updateCaptainTimerDisplay();
-}
-
-function startDraftTimerFromDeadline(deadlineISO, totalSecs) {
-  stopDraftTimerInterval();
-  if (!deadlineISO) return;
-  draftTimerDeadline = new Date(deadlineISO);
-  draftTimerTotalSecs = totalSecs || 60;
-  updateAllTimerDisplays();
-  draftTimerInterval = setInterval(() => {
-    updateAllTimerDisplays();
-    if (getDraftTimerRemaining() <= 0) stopDraftTimerInterval();
-  }, 250);
-}
-
-function stopDraftTimerInterval() {
-  if (draftTimerInterval) { clearInterval(draftTimerInterval); draftTimerInterval = null; }
-}
-
-function timerHtml() {
-  const remaining = getDraftTimerRemaining();
-  const isLow = remaining > 0 && remaining <= 10;
-  const pct = draftTimerTotalSecs > 0 ? (remaining / draftTimerTotalSecs) * 100 : 0;
-  const m = Math.floor(remaining / 60);
-  const s = (remaining % 60).toString().padStart(2, '0');
-  return `<div class="draft-timer-wrap">
-    <div class="draft-timer-count${isLow ? ' low' : ''}">${m}:${s}</div>
-    <div class="draft-timer-bar-wrap"><div class="draft-timer-bar${isLow ? ' low' : ''}" style="width:${pct}%;"></div></div>
-  </div>`;
-}
-function updateTimerDisplay() {
-  const el = document.getElementById('draft-timer-display');
-  if (el) el.innerHTML = timerHtml();
-}
-function updateCaptainTimerDisplay() {
-  const el = document.getElementById('captain-timer-display');
-  if (el) el.innerHTML = timerHtml();
-}
-
-let preCountdownAudio = null;
-let preCountdownInterval = null;
-
-// --- First-pick spinner ---
-function showFirstPickSpinner() {
-  return new Promise(resolve => {
-    const overlay = document.createElement('div');
-    overlay.className = 'spinner-overlay';
-    overlay.innerHTML = `
-      <div class="spinner-title">Who Picks First?</div>
-      <div style="position:relative;display:inline-block;">
-        <div class="spinner-pointer"></div>
-        <div class="spinner-wheel">
-          <span class="spinner-label spinner-label-nik">Nik</span>
-          <span class="spinner-label spinner-label-dan">Dan</span>
-          <div class="spinner-center-dot"></div>
-        </div>
-      </div>
-      <div class="spinner-result" id="spinner-result"></div>
-      <div class="spinner-hint">Press any key to spin</div>`;
-
-    const fsTarget = document.fullscreenElement || document.body;
-    fsTarget.appendChild(overlay);
-    requestAnimationFrame(() => overlay.classList.add('active'));
-
-    const wheel = overlay.querySelector('.spinner-wheel');
-    const resultEl = overlay.querySelector('#spinner-result');
-    const hintEl = overlay.querySelector('.spinner-hint');
-    let spun = false;
-
-    // Pointer is at top (0deg / 360deg).
-    // Wheel layout: red (Nik) = 0-180deg, blue (Dan) = 180-360deg
-    // After rotation, the sector under the pointer determines winner.
-    // Final angle mod 360: 0-180 = Nik (red), 180-360 = Dan (blue)
-    // We spin multiple full rotations + land in the target zone.
-
-    function spin(winner) {
-      if (spun) return;
-      spun = true;
-      hintEl.style.display = 'none';
-
-      const fullSpins = 5 + Math.floor(Math.random() * 3); // 5-7 full rotations
-      let targetAngle;
-      if (winner === 'nik') {
-        // Land pointer in red zone (0-180). Pick random spot in 20-160 range (avoiding edges)
-        targetAngle = 20 + Math.random() * 140;
-      } else if (winner === 'dan') {
-        // Land pointer in blue zone (180-360). Pick random spot in 200-340 range
-        targetAngle = 200 + Math.random() * 140;
-      } else {
-        // Truly random
-        targetAngle = Math.random() * 360;
-      }
-
-      const totalRotation = fullSpins * 360 + (360 - targetAngle);
-      wheel.style.transform = `rotate(${totalRotation}deg)`;
-
-      // Determine actual winner from targetAngle
-      const actualWinner = targetAngle < 180 ? 'nik' : 'dan';
-      const winnerName = actualWinner === 'nik' ? 'Nik' : 'Dan';
-      const winnerColor = actualWinner === 'nik' ? 'var(--red-light)' : 'var(--blue-light)';
-      const winnerTeam = actualWinner === 'nik' ? 'red' : 'blue';
-
-      setTimeout(() => {
-        resultEl.innerHTML = `<span style="color:${winnerColor};">${winnerName} picks first!</span>`;
-        resultEl.classList.add('visible');
-
-        // Set draft order based on spinner winner
-        // Default order has red first — if blue won, swap all entries; if red won, reset to default
-        const defaultFirst = DRAFT_ORDER_DEFAULT[0];
-        if (winnerTeam !== defaultFirst) {
-          draftSettings.draftOrder = DRAFT_ORDER_DEFAULT.map(t => t === 'red' ? 'blue' : 'red');
-        } else {
-          draftSettings.draftOrder = [...DRAFT_ORDER_DEFAULT];
-        }
-        localStorage.setItem(DRAFT_SETTINGS_KEY, JSON.stringify(draftSettings));
-
-        // Auto-dismiss after 3s
-        setTimeout(() => {
-          overlay.classList.remove('active');
-          setTimeout(() => { overlay.remove(); resolve(); }, 400);
-        }, 3000);
-      }, 4200); // slightly after the CSS transition ends (4s)
-    }
-
-    function keyHandler(e) {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      if (spun) return;
-      e.preventDefault();
-
-      if (e.key === 'n' || e.key === 'N') {
-        spin('nik');
-      } else if (e.key === 'd' || e.key === 'D') {
-        spin('dan');
-      } else {
-        spin(null); // random
-      }
-      document.removeEventListener('keydown', keyHandler);
-    }
-    document.addEventListener('keydown', keyHandler);
-  });
-}
-
-let draftSpinnerDone = false;
-
-async function startDraftFromButton() {
-  const secs = draftSettings.timerSeconds;
-  if (secs <= 0) return;
-  const startArea = document.getElementById('draft-start-area');
-  if (startArea) startArea.style.display = 'none';
-
-  // Show first-pick spinner before the countdown
-  await showFirstPickSpinner();
-  draftSpinnerDone = true;
-
-  // Re-render board after potential order swap
-  const picks = await dbLoadDraftPicks();
-  renderDisplayBoard(picks);
-
-  // Show 90s pre-draft countdown with "The Final Countdown"
-  const PRE_DRAFT_SECS = 90;
-  const clockInfo = document.getElementById('draft-clock-info');
-
-  // Play Final Countdown
-  preCountdownAudio = new Audio('hype-final-countdown.m4a');
-  preCountdownAudio.volume = 0.9;
-  preCountdownAudio.play().catch(() => {});
-
-  let remaining = PRE_DRAFT_SECS;
-  function updatePreCountdown() {
-    const m = Math.floor(remaining / 60);
-    const s = remaining % 60;
-    clockInfo.innerHTML = `
-      <div class="draft-clock-label">Draft Starting In</div>
-      <div class="draft-clock-team" style="color:#f1c40f;font-size:2.5rem;letter-spacing:0.05em;">${m}:${s.toString().padStart(2, '0')}</div>`;
-  }
-  updatePreCountdown();
-
-  function finishPreCountdown() {
-    clearInterval(preCountdownInterval);
-    preCountdownInterval = null;
-    document.removeEventListener('keydown', skipHandler);
-    // Keep Final Countdown playing — stops when first pick's walk-up starts
-    dbStartDraft(secs);
-  }
-
-  // Secret spacebar skip for dev
-  function skipHandler(e) { if (e.code === 'Space') { e.preventDefault(); finishPreCountdown(); } }
-  document.addEventListener('keydown', skipHandler);
-
-  preCountdownInterval = setInterval(() => {
-    remaining--;
-    if (remaining <= 0) {
-      finishPreCountdown();
-      return;
-    }
-    updatePreCountdown();
-  }, 1000);
-}
-
-function openDraftSettings() {
-  draftSettings = loadDraftSettings();
-  document.getElementById('dsp-timer-input').value = draftSettings.timerSeconds;
-
-  const editor = document.getElementById('dsp-order-editor');
-  const grid = document.createElement('div');
-  grid.className = 'dsp-order-grid';
-  draftSettings.draftOrder.forEach((team, i) => {
-    const cell = document.createElement('div');
-    cell.className = 'dsp-order-pick';
-    const btn = document.createElement('button');
-    btn.className = `dsp-order-btn ${team}`;
-    btn.dataset.index = i;
-    btn.textContent = team === 'red' ? 'R' : 'B';
-    btn.addEventListener('click', function() {
-      const next = this.classList.contains('red') ? 'blue' : 'red';
-      this.className = `dsp-order-btn ${next}`;
-      this.textContent = next === 'red' ? 'R' : 'B';
-    });
-    const num = document.createElement('span');
-    num.className = 'dsp-order-num';
-    num.textContent = `Pick ${i + 1}`;
-    cell.appendChild(num);
-    cell.appendChild(btn);
-    grid.appendChild(cell);
-  });
-
-  editor.innerHTML = '';
-  editor.appendChild(grid);
-  const hint = document.createElement('div');
-  hint.className = 'dsp-order-hint';
-  hint.textContent = 'Tap a pick to toggle Red ↔ Blue';
-  editor.appendChild(hint);
-
-  document.getElementById('draft-settings-panel').style.display = 'flex';
-}
-
-function closeDraftSettings() {
-  document.getElementById('draft-settings-panel').style.display = 'none';
-}
-
-function saveDraftSettings() {
-  const timerSeconds = Math.max(0, parseInt(document.getElementById('dsp-timer-input').value, 10) || 0);
-  const orderBtns = document.querySelectorAll('#dsp-order-editor .dsp-order-btn');
-  const draftOrder = Array.from(orderBtns).map(b => b.classList.contains('red') ? 'red' : 'blue');
-  draftSettings = { timerSeconds, draftOrder };
-  localStorage.setItem(DRAFT_SETTINGS_KEY, JSON.stringify(draftSettings));
-  closeDraftSettings();
-}
-
-function getDraftablePlayers() {
-  return [...draftRound1, ...draftRound2]
-    .map(n => n.replace(/\s*[^\x00-\x7F]+/g, '').trim())
-    .filter(n => n !== 'Nik' && n !== 'Dan');
-}
-
-// --- Supabase draft data ---
-
-async function dbLoadDraftPicks() {
-  if (!supabaseConfigured || !supabaseClient) return [];
-  const { data, error } = await supabaseClient
-    .from('draft_picks')
-    .select('pick_number, team, player')
-    .order('pick_number', { ascending: true });
-  if (error) { console.error('Draft load error:', error); return []; }
-  return data || [];
-}
-
-async function dbInsertDraftPick(pickNumber, team, player) {
-  const { error } = await supabaseClient
-    .from('draft_picks')
-    .insert({ pick_number: pickNumber, team, player });
-  if (error) throw error;
-}
-
-async function dbDeleteLastDraftPick(pickNumber) {
-  const { error } = await supabaseClient
-    .from('draft_picks')
-    .delete()
-    .eq('pick_number', pickNumber);
-  if (error) throw error;
-}
-
-async function dbResetDraft() {
-  const { error } = await supabaseClient
-    .from('draft_picks')
-    .delete()
-    .gte('pick_number', 0);
-  if (error) throw error;
-}
-
-// --- draft_state DB helpers (shared timer/state via Supabase) ---
-
-async function dbLoadDraftState() {
-  const { data, error } = await supabaseClient
-    .from('draft_state')
-    .select('*')
-    .eq('id', 1)
-    .single();
-  if (error) throw error;
-  return data;
-}
-
-async function dbStartDraft(timerSeconds) {
-  const deadline = new Date(Date.now() + timerSeconds * 1000).toISOString();
-  const { error } = await supabaseClient
-    .from('draft_state')
-    .update({ started: true, timer_deadline: deadline, timer_seconds: timerSeconds, updated_at: new Date().toISOString() })
-    .eq('id', 1);
-  if (error) throw error;
-}
-
-async function dbResetTimerDeadline(timerSeconds) {
-  const deadline = new Date(Date.now() + timerSeconds * 1000).toISOString();
-  const { error } = await supabaseClient
-    .from('draft_state')
-    .update({ timer_deadline: deadline, timer_seconds: timerSeconds, updated_at: new Date().toISOString() })
-    .eq('id', 1);
-  if (error) throw error;
-}
-
-async function dbStopTimer() {
-  const { error } = await supabaseClient
-    .from('draft_state')
-    .update({ timer_deadline: null, updated_at: new Date().toISOString() })
-    .eq('id', 1);
-  if (error) throw error;
-}
-
-async function dbResetDraftState() {
-  const { error } = await supabaseClient
-    .from('draft_state')
-    .update({ started: false, timer_deadline: null, updated_at: new Date().toISOString() })
-    .eq('id', 1);
-  if (error) throw error;
-}
-
-function subscribeToDraftState(callback) {
-  if (!supabaseConfigured || !supabaseClient) return;
-  if (draftStateChannel) draftStateChannel.unsubscribe();
-  draftStateChannel = supabaseClient
-    .channel('draft_state_rt')
-    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'draft_state' }, callback)
-    .subscribe();
-}
-
-function subscribeToDraftPicks(callback) {
-  if (!supabaseConfigured || !supabaseClient) return;
-  if (draftChannel) draftChannel.unsubscribe();
-  draftChannel = supabaseClient
-    .channel('draft_picks_rt')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'draft_picks' }, callback)
-    .subscribe();
-}
-
-// --- Walk-up animation (shared across modes) ---
-
-let activeWalkupDismiss = null;
-let pickCooldownUntil = 0; // timestamp (ms) — pick buttons disabled until this time
-
-function showWalkUpAnimation(name, team, onDismiss) {
-  // Dismiss any currently playing animation + audio
-  if (activeWalkupDismiss) activeWalkupDismiss();
-  // Stop pre-draft Final Countdown if still playing
-  if (preCountdownAudio) { preCountdownAudio.pause(); preCountdownAudio = null; }
-  document.querySelector('.walkup-overlay')?.remove();
-
-  const pd = players.find(p => p.name === name);
-  const sc = pd?.scouting;
-  const strokes = pd?.strokes != null ? pd.strokes : null;
-  const spotlightColor = team === 'red' ? 'rgba(192,57,43,0.28)' : 'rgba(36,113,163,0.28)';
-  const teamLabel = team === 'red' ? '\u{1F534} Team Red' : '\u{1F535} Team Blue';
-  const teamName = team === 'red' ? 'Team Red' : 'Team Blue';
-
-  // Build scouting stats HTML
-  let statsHtml = '';
-  if (sc || strokes != null) {
-    const statItems = [];
-    if (sc) {
-      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.driving.avg}</div><div class="walkup-stat-label">Driving</div></div>`);
-      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.irons.avg}</div><div class="walkup-stat-label">Irons</div></div>`);
-      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.chipping.avg}</div><div class="walkup-stat-label">Chipping</div></div>`);
-      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.putting.avg}</div><div class="walkup-stat-label">Putting</div></div>`);
-      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val">${sc.mental.avg}</div><div class="walkup-stat-label">Mental</div></div>`);
-      const overallPct = Math.round(sc.avgAdj / 50 * 100);
-      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val" style="color:#f1c40f;">${overallPct}</div><div class="walkup-stat-label">Overall</div></div>`);
-    }
-    if (strokes != null) {
-      statItems.push(`<div class="walkup-stat"><div class="walkup-stat-val" style="color:#2ecc71;">+${strokes}</div><div class="walkup-stat-label">Strokes</div></div>`);
-    }
-    statsHtml = `<div class="walkup-stats">${statItems.join('')}</div>`;
-  }
-
-  const overlay = document.createElement('div');
-  overlay.className = 'walkup-overlay';
-  overlay.innerHTML = `
-    <div class="walkup-spotlight" style="background:radial-gradient(ellipse at 50% 40%,${spotlightColor} 0%,transparent 65%);"></div>
-    <div class="walkup-intro">
-      <div class="walkup-intro-text">The Pick Is In</div>
-      <div class="walkup-intro-team ${team}">${teamName}</div>
-    </div>
-    <div class="walkup-reveal">
-      <div class="walkup-drafted-label">Drafted By</div>
-      <div class="walkup-team-label ${team}">${teamLabel}</div>
-      <div class="walkup-name">${name}</div>
-      ${statsHtml}
-    </div>`;
-
-  // Append to fullscreen element if active, else body
-  const fsTarget = document.fullscreenElement || document.body;
-  fsTarget.appendChild(overlay);
-  requestAnimationFrame(() => overlay.classList.add('active'));
-
-  // Play draft chime immediately with "The Pick Is In"
-  const chime = new Audio('nfl-draft-chime.mp3');
-  chime.volume = 0.9;
-  chime.play().catch(() => {});
-
-  // Pick a hype song (shuffled, no repeats)
-  const hypeSrc = PLAYER_WALKUP_SONGS[name] || getNextHypeSong();
-  let hypeAudio = null;
-
-  const HYPE_START = 1500;   // hype song starts 1.5s after chime
-  const REVEAL_DELAY = 20000; // 20s of hype buildup before reveal
-
-  // Start hype song while "Pick Is In" is still showing
-  setTimeout(() => {
-    if (hypeSrc) {
-      const SONG_START_OFFSETS = { 'hype-higher.m4a': 15 };
-      hypeAudio = new Audio(hypeSrc);
-      hypeAudio.volume = 0.85;
-      if (SONG_START_OFFSETS[hypeSrc]) hypeAudio.currentTime = SONG_START_OFFSETS[hypeSrc];
-      hypeAudio.play().catch(() => {});
-    }
-  }, HYPE_START);
-
-  // Reveal player — hype song keeps playing until next pick
-  setTimeout(() => {
-    overlay.querySelector('.walkup-intro').classList.add('fade-out');
-    overlay.querySelector('.walkup-reveal').classList.add('visible');
-  }, REVEAL_DELAY);
-
-  // Auto-dismiss overlay after 40s (20s hype + 20s stats) — stops music and fires onDismiss
-  const OVERLAY_DURATION = 40000;
-  setTimeout(() => {
-    if (!overlay._dismissed) dismiss();
-  }, OVERLAY_DURATION);
-
-  function dismiss() {
-    if (overlay._dismissed) return;
-    overlay._dismissed = true;
-    activeWalkupDismiss = null;
-    if (hypeAudio) { hypeAudio.pause(); hypeAudio.currentTime = 0; }
-    chime.pause(); chime.currentTime = 0;
-    overlay.classList.remove('active');
-    setTimeout(() => { overlay.remove(); if (onDismiss) onDismiss(); }, 380);
-  }
-  activeWalkupDismiss = dismiss;
-}
-
-// Global spacebar skip — dismisses any active overlay/cooldown for faster testing
-document.addEventListener('keydown', (e) => {
-  if (e.code !== 'Space') return;
-  // Don't intercept if typing in an input
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-  // Don't intercept if first-pick spinner is active
-  if (document.querySelector('.spinner-overlay.active')) return;
-  e.preventDefault();
-
-  // Skip walk-up animation
-  if (activeWalkupDismiss) { activeWalkupDismiss(); }
-  // Skip pick cooldown
-  if (pickCooldownUntil > Date.now()) { pickCooldownUntil = 0; }
-  // Skip end-of-draft overlay
-  const finalClose = document.getElementById('draft-final-close-btn');
-  if (finalClose) { finalClose.click(); }
-});
-
-let draftFinalShown = false;
-
-function showDraftFinalAnimation(picks) {
-  if (draftFinalShown) return;
-  draftFinalShown = true;
-
-  // Play a random hype song
-  const finalSong = new Audio(getNextHypeSong());
-  finalSong.volume = 0.85;
-  finalSong.play().catch(() => {});
-
-  const redPicks = picks.filter(p => p.team === 'red');
-  const bluePicks = picks.filter(p => p.team === 'blue');
-  const redWithCaptain = [{ player: 'Nik', team: 'red' }, ...redPicks];
-  const blueWithCaptain = [{ player: 'Dan', team: 'blue' }, ...bluePicks];
-  const rs = getTeamStats(redWithCaptain);
-  const bs = getTeamStats(blueWithCaptain);
-
-  let favoriteHtml = '';
-  if (rs.avgOverall !== bs.avgOverall) {
-    const fav = rs.avgOverall > bs.avgOverall ? 'red' : 'blue';
-    const favName = fav === 'red' ? 'Team Red' : 'Team Blue';
-    const favColor = fav === 'red' ? 'var(--red-light)' : 'var(--blue-light)';
-    favoriteHtml = `<div class="draft-final-favorite" style="color:${favColor};">\u{2B50} Favorite: ${favName} \u{2B50}</div>`;
-  } else {
-    favoriteHtml = `<div class="draft-final-favorite" style="color:#f1c40f;">DEAD EVEN</div>`;
-  }
-
-  const overlay = document.createElement('div');
-  overlay.className = 'draft-final-overlay';
-  overlay.innerHTML = `
-    <div class="draft-final-title">Draft Complete</div>
-    <div class="draft-final-vs">
-      <div class="draft-final-team red">
-        <div class="draft-final-team-name">\u{1F534} Team Red</div>
-        <div class="draft-final-team-name" style="font-size:0.7rem;opacity:0.6;margin-bottom:0.5rem;">Nik</div>
-        <div class="draft-final-rating">${rs.avgOverall}</div>
-        <div style="font-size:0.55rem;color:rgba(255,255,255,0.35);margin-top:0.1rem;">TEAM RATING</div>
-        <div class="draft-final-strokes">+${rs.totalStrokes} strokes</div>
-        <div class="draft-final-players"><span style="color:#f1c40f;">C — Nik</span><br>${redPicks.map(p => p.player).join('<br>')}</div>
-      </div>
-      <div class="draft-final-vs-text">VS</div>
-      <div class="draft-final-team blue">
-        <div class="draft-final-team-name">\u{1F535} Team Blue</div>
-        <div class="draft-final-team-name" style="font-size:0.7rem;opacity:0.6;margin-bottom:0.5rem;">Dan</div>
-        <div class="draft-final-rating">${bs.avgOverall}</div>
-        <div style="font-size:0.55rem;color:rgba(255,255,255,0.35);margin-top:0.1rem;">TEAM RATING</div>
-        <div class="draft-final-strokes">+${bs.totalStrokes} strokes</div>
-        <div class="draft-final-players"><span style="color:#f1c40f;">C — Dan</span><br>${bluePicks.map(p => p.player).join('<br>')}</div>
-      </div>
-    </div>
-    ${favoriteHtml}
-    <button class="draft-final-close" id="draft-final-close-btn">CLOSE</button>`;
-
-  const fsTarget = document.fullscreenElement || document.body;
-  fsTarget.appendChild(overlay);
-  requestAnimationFrame(() => overlay.classList.add('active'));
-
-  document.getElementById('draft-final-close-btn').addEventListener('click', () => {
-    finalSong.pause(); finalSong.currentTime = 0;
-    overlay.classList.remove('active');
-    setTimeout(() => overlay.remove(), 400);
-  });
-}
-
-// --- Mode selector ---
-
-function showDraftModeSelector() {
-  document.body.classList.remove('draft-display-active');
-  document.getElementById('draft-mode-selector').style.display = '';
-  document.getElementById('draft-display-mode').style.display = 'none';
-  document.getElementById('draft-captain-mode').style.display = 'none';
-
-  const btns = document.getElementById('dms-btns');
-  btns.innerHTML = '';
-  [
-    { mode: 'display', icon: '&#128250;', label: 'Display Mode', sub: 'Laptop / TV' },
-    { mode: 'red',     icon: '&#128308;', label: 'Team Red',     sub: 'Nik — make picks' },
-    { mode: 'blue',    icon: '&#128309;', label: 'Team Blue',    sub: 'Dan — make picks' },
-  ].forEach(({ mode, icon, label, sub }) => {
-    const btn = document.createElement('button');
-    btn.className = `dms-btn ${mode}`;
-    btn.innerHTML = `<span class="dms-icon">${icon}</span><span><strong>${label}</strong><span>${sub}</span></span>`;
-    btn.addEventListener('click', () => {
-      localStorage.setItem(DRAFT_MODE_KEY, mode);
-      initDraftTab();
-    });
-    btns.appendChild(btn);
-  });
-}
-
-// --- Display mode ---
-
-async function initDisplayMode() {
-  stopDraftTimerInterval();
-  document.body.classList.add('draft-display-active');
-  // Unlock audio on any click/tap so subscription-triggered sounds can play
-  document.addEventListener('click', unlockDraftAudio, { once: true });
-  document.addEventListener('touchstart', unlockDraftAudio, { once: true });
-  document.getElementById('draft-mode-selector').style.display = 'none';
-  document.getElementById('draft-display-mode').style.display = '';
-  document.getElementById('draft-captain-mode').style.display = 'none';
-
-  // Load picks and draft state in parallel
-  const [picks, state] = await Promise.all([dbLoadDraftPicks(), dbLoadDraftState()]);
-  draftLastPickCount = picks.length;
-  draftStarted = state.started;
-  renderDisplayBoard(picks);
-
-  // If draft already complete on load, show final animation immediately
-  if (picks.length >= getDraftOrder().length) {
-    setTimeout(() => showDraftFinalAnimation(picks), 1500);
-  }
-
-  // If draft is started and timer is still running, sync from deadline
-  if (state.started && state.timer_deadline) {
-    const remaining = Math.ceil((new Date(state.timer_deadline).getTime() - Date.now()) / 1000);
-    if (remaining > 0) {
-      startDraftTimerFromDeadline(state.timer_deadline, state.timer_seconds);
-    }
-  }
-
-  // Subscribe to pick changes — rendering + walk-up
-  subscribeToDraftPicks(async () => {
-    const picks = await dbLoadDraftPicks();
-    const isNewPick = picks.length > draftLastPickCount;
-    const newPick = isNewPick ? picks[picks.length - 1] : null;
-    draftLastPickCount = picks.length;
-    renderDisplayBoard(picks);
-    if (newPick) {
-      const isDone = picks.length >= getDraftOrder().length;
-      showWalkUpAnimation(newPick.player, newPick.team, isDone ? () => showDraftFinalAnimation(picks) : null);
-    }
-  });
-
-  // Subscribe to draft_state changes — timer sync + walk-up fallback
-  subscribeToDraftState(async payload => {
-    const s = payload.new;
-    draftStarted = s.started;
-    if (s.timer_deadline) {
-      const remaining = Math.ceil((new Date(s.timer_deadline).getTime() - Date.now()) / 1000);
-      if (remaining > 0) {
-        startDraftTimerFromDeadline(s.timer_deadline, s.timer_seconds);
-      } else {
-        stopDraftTimerInterval();
-        draftTimerDeadline = null;
-      }
-    } else {
-      stopDraftTimerInterval();
-      draftTimerDeadline = null;
-    }
-    // Re-render and trigger walk-up if there's a new pick
-    const picks = await dbLoadDraftPicks();
-    const isNewPick = picks.length > draftLastPickCount;
-    const newPick = isNewPick ? picks[picks.length - 1] : null;
-    draftLastPickCount = picks.length;
-    renderDisplayBoard(picks);
-    if (newPick) {
-      const isDone = picks.length >= getDraftOrder().length;
-      showWalkUpAnimation(newPick.player, newPick.team, isDone ? () => showDraftFinalAnimation(picks) : null);
-    }
-  });
-
-  document.getElementById('display-mode-btn').addEventListener('click', () => {
-    localStorage.removeItem(DRAFT_MODE_KEY);
-    showDraftModeSelector();
-  });
-
-  // Full screen toggle — hides admin bar
-  document.getElementById('draft-fullscreen-btn').addEventListener('click', () => {
-    const el = document.getElementById('draft-display-mode');
-    const bar = document.getElementById('draft-admin-bar');
-    const btn = document.getElementById('draft-fullscreen-btn');
-    if (!document.fullscreenElement) {
-      el.requestFullscreen().then(() => {
-        bar.style.display = 'none';
-        btn.innerHTML = '&#x2716;';
-        btn.title = 'Exit Full Screen';
-      }).catch(() => {});
-    } else {
-      document.exitFullscreen();
-    }
-  });
-  document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement) {
-      const bar = document.getElementById('draft-admin-bar');
-      const btn = document.getElementById('draft-fullscreen-btn');
-      if (bar) bar.style.display = '';
-      if (btn) { btn.innerHTML = '&#x26F6;'; btn.title = 'Full Screen'; }
-    }
-  });
-
-  document.getElementById('display-undo-btn').addEventListener('click', async () => {
-    const picks = await dbLoadDraftPicks();
-    if (!picks.length) return;
-    await dbDeleteLastDraftPick(picks[picks.length - 1].pick_number);
-    const updated = await dbLoadDraftPicks();
-    draftLastPickCount = updated.length;
-    renderDisplayBoard(updated);
-  });
-
-  document.getElementById('display-reset-btn').addEventListener('click', async () => {
-    if (!confirm('Reset the entire draft?')) return;
-    await Promise.all([dbResetDraft(), dbResetDraftState()]);
-    draftLastPickCount = 0;
-    draftStarted = false;
-    draftSpinnerDone = false;
-    draftFinalShown = false;
-    draftTimerDeadline = null;
-    stopDraftTimerInterval();
-    renderDisplayBoard([]);
-  });
-}
-
-function getTeamStats(teamPicks) {
-  let totalStrokes = 0;
-  let totalOverall = 0;
-  let count = 0;
-  teamPicks.forEach(p => {
-    const pd = players.find(pl => pl.name === p.player);
-    if (pd) {
-      if (pd.strokes > 0) totalStrokes += pd.strokes;
-      if (pd.scouting) { totalOverall += pd.scouting.avgAdj; count++; }
-    }
-  });
-  const avgOverall = count > 0 ? Math.round(totalOverall / count / 50 * 100) : 0;
-  return { totalStrokes, avgOverall, count };
-}
-
-function pickEntryHtml(playerName, idx) {
-  const pd = players.find(p => p.name === playerName);
-  const strokes = pd?.strokes != null ? pd.strokes : null;
-  const overall = pd?.scouting ? Math.round(pd.scouting.avgAdj / 50 * 100) : null;
-  const details = [];
-  if (overall != null) details.push(`<span style="color:#f1c40f;">${overall}</span>`);
-  if (strokes != null) details.push(`<span style="color:#2ecc71;">+${strokes}</span>`);
-  const detailStr = details.length ? `<span style="margin-left:auto;font-size:0.85em;opacity:0.8;display:flex;gap:0.5rem;">${details.join('')}</span>` : '';
-  return `<span class="ddb-pick-num">${idx + 1}.</span><span>${playerName}</span>${detailStr}`;
-}
-
-function renderDisplayBoard(picks) {
-  const dOrder = getDraftOrder();
-  const allPlayers = getDraftablePlayers();
-  const drafted = picks.map(p => p.player);
-  const remaining = allPlayers.filter(n => !drafted.includes(n));
-  const idx = picks.length;
-  const isDone = idx >= dOrder.length;
-
-  // Start Draft button — visible only when timer is on, no picks yet, timer not running, spinner not done
-  const startArea = document.getElementById('draft-start-area');
-  if (startArea) {
-    startArea.style.display =
-      (!isDone && !draftStarted && !draftSpinnerDone && draftSettings.timerSeconds > 0) ? '' : 'none';
-  }
-
-  // Highlight the column that is on the clock
-  const redCol = document.querySelector('.ddb-col.ddb-red');
-  const blueCol = document.querySelector('.ddb-col.ddb-blue');
-  if (redCol) redCol.classList.remove('on-the-clock');
-  if (blueCol) blueCol.classList.remove('on-the-clock');
-  if (!isDone && draftStarted) {
-    const onClock = dOrder[idx];
-    if (onClock === 'red' && redCol) redCol.classList.add('on-the-clock');
-    if (onClock === 'blue' && blueCol) blueCol.classList.add('on-the-clock');
-  }
-
-  const clockInfo = document.getElementById('draft-clock-info');
-
-  // Skip clock update if pre-draft countdown is running (don't overwrite it)
-  if (!preCountdownInterval) {
-    const lastPick = picks.length > 0 ? picks[picks.length - 1] : null;
-    const lastPickHtml = lastPick
-      ? `<div class="draft-last-pick">Last Pick: <span class="${lastPick.team}">${lastPick.player}</span> &mdash; Team ${lastPick.team === 'red' ? 'Red' : 'Blue'}</div>`
-      : '';
-    if (isDone) {
-      stopDraftTimerInterval();
-      clockInfo.innerHTML = `<div class="draft-clock-label">Draft Complete</div><div class="draft-clock-team done">All Players Selected!</div>${lastPickHtml}`;
-    } else {
-      const t = dOrder[idx];
-      clockInfo.innerHTML = `<div class="draft-clock-label">On The Clock &mdash; Pick ${idx + 1} of ${dOrder.length}</div>
-        <div class="draft-clock-team ${t}">Team ${t === 'red' ? 'Red' : 'Blue'} &mdash; ${t === 'red' ? 'Nik' : 'Dan'}</div>${lastPickHtml}`;
-    }
-  }
-
-  const redPicks = picks.filter(p => p.team === 'red');
-  const bluePicks = picks.filter(p => p.team === 'blue');
-  // Include captains in stats
-  const redWithCaptain = [{ player: 'Nik', team: 'red' }, ...redPicks];
-  const blueWithCaptain = [{ player: 'Dan', team: 'blue' }, ...bluePicks];
-  const redStats = getTeamStats(redWithCaptain);
-  const blueStats = getTeamStats(blueWithCaptain);
-
-  // Update column headers with running totals
-  const redHeader = document.querySelector('.ddb-col.ddb-red .ddb-col-header');
-  const blueHeader = document.querySelector('.ddb-col.ddb-blue .ddb-col-header');
-  if (redHeader) {
-    const statsLine = `<div style="font-size:clamp(0.6rem,1.3vw,0.8rem);opacity:0.8;margin-top:0.25rem;letter-spacing:0;">Rating: ${redStats.avgOverall} · Strokes: +${redStats.totalStrokes}</div>`;
-    redHeader.innerHTML = `\u{1F534} Team Red &mdash; Nik${statsLine}`;
-  }
-  if (blueHeader) {
-    const statsLine = `<div style="font-size:clamp(0.6rem,1.3vw,0.8rem);opacity:0.8;margin-top:0.25rem;letter-spacing:0;">Rating: ${blueStats.avgOverall} · Strokes: +${blueStats.totalStrokes}</div>`;
-    blueHeader.innerHTML = `\u{1F535} Team Blue &mdash; Dan${statsLine}`;
-  }
-
-  const captainEntry = (name) => `<div class="ddb-pick-item" style="color:#f1c40f;"><span class="ddb-pick-num" style="color:#f1c40f;opacity:0.6;">C</span><span>${name}</span>${(() => { const pd = players.find(p => p.name === name); const o = pd?.scouting ? Math.round(pd.scouting.avgAdj/50*100) : null; const s = pd?.strokes != null ? pd.strokes : null; const d = []; if(o!=null)d.push('<span style="color:#f1c40f;">'+o+'</span>'); if(s!=null)d.push('<span style="color:#2ecc71;">+'+s+'</span>'); return d.length ? '<span style="margin-left:auto;font-size:0.85em;opacity:0.8;display:flex;gap:0.5rem;">'+d.join('')+'</span>' : ''; })()}</div>`;
-  document.getElementById('ddb-red-picks').innerHTML = captainEntry('Nik') +
-    (redPicks.length ? redPicks.map((p, i) => `<div class="ddb-pick-item">${pickEntryHtml(p.player, i)}</div>`).join('') : '');
-  document.getElementById('ddb-blue-picks').innerHTML = captainEntry('Dan') +
-    (bluePicks.length ? bluePicks.map((p, i) => `<div class="ddb-pick-item">${pickEntryHtml(p.player, i)}</div>`).join('') : '');
-  const availEl = document.getElementById('ddb-available');
-  if (remaining.length) {
-    remaining.sort((a, b) => {
-      const pa = players.find(p => p.name === a);
-      const pb = players.find(p => p.name === b);
-      const oa = pa?.scouting ? pa.scouting.avgAdj : 0;
-      const ob = pb?.scouting ? pb.scouting.avgAdj : 0;
-      return ob - oa;
-    });
-    availEl.innerHTML = remaining.map(n => {
-      const pd = players.find(p => p.name === n);
-      const overall = pd?.scouting ? Math.round(pd.scouting.avgAdj / 50 * 100) : null;
-      const stats = [];
-      if (overall != null) stats.push(`<span style="color:#f1c40f;">${overall}</span>`);
-      if (pd?.strokes != null) stats.push(`<span style="color:#2ecc71;">+${pd.strokes}</span>`);
-      const statsStr = stats.length ? `<span style="font-size:0.85em;opacity:0.8;display:flex;gap:0.5rem;">${stats.join('')}</span>` : '';
-      return `<div class="ddb-avail-item" style="display:flex;justify-content:space-between;align-items:center;">${n}${statsStr}</div>`;
-    }).join('');
-  } else {
-    availEl.innerHTML = '<div class="ddb-empty">All drafted</div>';
-  }
-
-  document.getElementById('display-undo-btn').disabled = picks.length === 0;
-}
-
-// --- Captain mode ---
-
-async function initCaptainMode(team) {
-  document.body.classList.remove('draft-display-active');
-  document.getElementById('draft-mode-selector').style.display = 'none';
-  document.getElementById('draft-display-mode').style.display = 'none';
-  document.getElementById('draft-captain-mode').style.display = '';
-
-  // Load picks and draft state in parallel
-  const [picks, state] = await Promise.all([dbLoadDraftPicks(), dbLoadDraftState()]);
-  draftStarted = state.started;
-  if (state.timer_seconds) draftTimerTotalSecs = state.timer_seconds;
-  renderCaptainView(picks, team);
-
-  // Only start timer if draft has been started and deadline is in the future
-  if (state.started && state.timer_deadline) {
-    const remaining = Math.ceil((new Date(state.timer_deadline).getTime() - Date.now()) / 1000);
-    if (remaining > 0) {
-      startDraftTimerFromDeadline(state.timer_deadline, state.timer_seconds);
-    }
-  }
-
-  // Subscribe to pick changes — rendering only, no timer logic
-  subscribeToDraftPicks(async () => {
-    const picks = await dbLoadDraftPicks();
-    renderCaptainView(picks, team);
-  });
-
-  // Subscribe to draft_state changes — handles timer sync + re-render
-  subscribeToDraftState(async payload => {
-    const s = payload.new;
-    draftStarted = s.started;
-    if (s.timer_deadline) {
-      const remaining = Math.ceil((new Date(s.timer_deadline).getTime() - Date.now()) / 1000);
-      if (remaining > 0) {
-        startDraftTimerFromDeadline(s.timer_deadline, s.timer_seconds);
-      } else {
-        stopDraftTimerInterval();
-        draftTimerDeadline = null;
-      }
-    } else {
-      stopDraftTimerInterval();
-      draftTimerDeadline = null;
-    }
-    // Re-render captain view so picks stay in sync across devices
-    const picks = await dbLoadDraftPicks();
-    // Set 60-second pick cooldown only after an actual pick (not the initial draft start)
-    if (picks.length > 0 && s.timer_deadline) {
-      pickCooldownUntil = Date.now() + 60000;
-    }
-    renderCaptainView(picks, team);
-  });
-
-  document.getElementById('captain-mode-btn').addEventListener('click', () => {
-    localStorage.removeItem(DRAFT_MODE_KEY);
-    showDraftModeSelector();
-  });
-}
-
-function renderCaptainView(picks, team) {
-  const dOrder = getDraftOrder();
-  const idx = picks.length;
-  const isDone = idx >= dOrder.length;
-  const isMyTurn = !isDone && dOrder[idx] === team;
-  const otherTeam = team === 'red' ? 'blue' : 'red';
-
-  const header = document.getElementById('draft-captain-header');
-  const body = document.getElementById('draft-captain-body');
-
-  if (isDone) {
-    header.innerHTML = `<div class="draft-on-clock-label">Draft Complete</div><div class="draft-on-clock-team" style="color:#f1c40f;">All players selected!</div>`;
-    body.innerHTML = captainTeamsHtml(picks);
-    return;
-  }
-
-  const remaining = getDraftablePlayers().filter(n => !picks.map(p => p.player).includes(n));
-
-  if (isMyTurn) {
-    const captain = team === 'red' ? 'Nik' : 'Dan';
-    header.innerHTML = `<div class="draft-on-clock-label">Your Pick — ${idx + 1} of ${dOrder.length}</div>
-      <div class="draft-on-clock-team ${team}">Team ${team === 'red' ? 'Red' : 'Blue'} — ${captain}</div>
-      <div id="captain-timer-display"></div>`;
-  } else {
-    const otherCaptain = otherTeam === 'red' ? 'Nik' : 'Dan';
-    header.innerHTML = `<div class="draft-on-clock-label">Pick ${idx + 1} of ${dOrder.length}</div>
-      <div class="draft-on-clock-team ${otherTeam}">Team ${otherTeam === 'red' ? 'Red' : 'Blue'} — ${otherCaptain} is picking…</div>
-      <div id="captain-timer-display"></div>`;
-  }
-  if (draftTimerDeadline && getDraftTimerRemaining() > 0) updateCaptainTimerDisplay();
-
-  body.innerHTML = '<div class="draft-section-label" style="display:block;">Available Players</div><div id="captain-roster"></div>' + captainTeamsHtml(picks);
-
-  const rosterContainer = document.getElementById('captain-roster');
-  rosterContainer.innerHTML = buildRosterHtml(remaining);
-  const cooldownRemaining = Math.ceil((pickCooldownUntil - Date.now()) / 1000);
-  const inCooldown = cooldownRemaining > 0;
-  const draftNotStarted = !draftStarted;
-  const locked = inCooldown || draftNotStarted;
-
-  rosterContainer.querySelectorAll('.roster-player-row').forEach(row => {
-    const name = row.dataset.rosterName;
-    if (isMyTurn) {
-      const btnDisabled = locked ? 'disabled' : '';
-      const btnLabel = locked ? (draftNotStarted ? 'Waiting for draft to start…' : `Pick locked (${cooldownRemaining}s)`) : `Pick ${name}`;
-      const btnBg = locked ? '#555' : (team==='red'?'var(--red)':'var(--blue)');
-      row.querySelector('.roster-row-detail').insertAdjacentHTML('beforeend',
-        `<button class="draft-pick-btn" ${btnDisabled} style="margin-top:0.5rem;width:100%;padding:0.5rem;background:${btnBg};color:#fff;border:none;border-radius:8px;font-size:0.9rem;font-weight:700;cursor:${locked?'not-allowed':'pointer'};opacity:${locked?'0.5':'1'};">${btnLabel}</button>`
-      );
-    }
-    row.addEventListener('click', e => {
-      if (e.target.classList.contains('draft-pick-btn')) {
-        e.target.disabled = true;
-        e.target.textContent = 'Picking…';
-        captainPick(name, team, idx + 1);
-      } else {
-        row.classList.toggle('expanded');
-      }
-    });
-  });
-
-  // If in cooldown, tick every second to update button labels
-  if (isMyTurn && inCooldown) {
-    const cooldownInterval = setInterval(() => {
-      const secsLeft = Math.ceil((pickCooldownUntil - Date.now()) / 1000);
-      if (secsLeft <= 0) {
-        clearInterval(cooldownInterval);
-        // Re-render to enable buttons
-        dbLoadDraftPicks().then(p => renderCaptainView(p, team));
-        return;
-      }
-      document.querySelectorAll('#captain-roster .draft-pick-btn').forEach(btn => {
-        btn.textContent = `Pick locked (${secsLeft}s)`;
-      });
-    }, 1000);
-  }
-}
-
-function captainTeamsHtml(picks) {
-  const red = picks.filter(p => p.team === 'red');
-  const blue = picks.filter(p => p.team === 'blue');
-  const redWithCaptain = [{ player: 'Nik', team: 'red' }, ...red];
-  const blueWithCaptain = [{ player: 'Dan', team: 'blue' }, ...blue];
-  const rs = getTeamStats(redWithCaptain);
-  const bs = getTeamStats(blueWithCaptain);
-  const redStatsLine = `<div style="font-size:0.6rem;opacity:0.6;font-weight:400;">Rating: ${rs.avgOverall} · Strokes: +${rs.totalStrokes}</div>`;
-  const blueStatsLine = `<div style="font-size:0.6rem;opacity:0.6;font-weight:400;">Rating: ${bs.avgOverall} · Strokes: +${bs.totalStrokes}</div>`;
-
-  function captainPickEntry(p, i, isCaptain) {
-    const pd = players.find(pl => pl.name === p.player);
-    const strokes = pd?.strokes != null ? pd.strokes : null;
-    const overall = pd?.scouting ? Math.round(pd.scouting.avgAdj / 50 * 100) : null;
-    const details = [];
-    if (overall != null) details.push(`<span style="color:#f1c40f;">${overall}</span>`);
-    if (strokes != null) details.push(`<span style="color:#2ecc71;">+${strokes}</span>`);
-    const detailStr = details.length ? `<span style="margin-left:auto;font-size:0.65rem;opacity:0.7;display:flex;gap:0.4rem;">${details.join('')}</span>` : '';
-    const label = isCaptain ? 'C' : `${i+1}.`;
-    const captainStyle = isCaptain ? 'color:#f1c40f;' : '';
-    return `<div class="draft-pick-entry" style="display:flex;align-items:center;${captainStyle}"><span class="dpe-num" ${isCaptain ? 'style="color:#f1c40f;opacity:0.6;"' : ''}>${label}</span><span>${p.player}</span>${detailStr}</div>`;
-  }
-
-  return `<div class="draft-section-label" style="display:block;">Teams</div>
-    <div class="draft-teams-row" style="display:grid;">
-      <div class="draft-team-col red">
-        <div class="draft-team-col-header">TEAM RED — NIK${redStatsLine}</div>
-        ${captainPickEntry({ player: 'Nik' }, 0, true)}
-        ${red.map((p, i) => captainPickEntry(p, i, false)).join('')}
-      </div>
-      <div class="draft-team-col blue">
-        <div class="draft-team-col-header">TEAM BLUE — DAN${blueStatsLine}</div>
-        ${captainPickEntry({ player: 'Dan' }, 0, true)}
-        ${blue.map((p, i) => captainPickEntry(p, i, false)).join('')}
-      </div>
-    </div>`;
-}
-
-async function captainPick(name, team, pickNumber) {
-  try {
-    // Set cooldown immediately so buttons stay disabled
-    pickCooldownUntil = Date.now() + 60000;
-    await dbInsertDraftPick(pickNumber, team, name);
-    const picks = await dbLoadDraftPicks();
-    renderCaptainView(picks, team);
-    const secs = draftTimerTotalSecs || draftSettings.timerSeconds;
-    if (secs > 0 && picks.length < getDraftOrder().length) {
-      await dbResetTimerDeadline(secs);
-    } else {
-      await dbStopTimer();
-    }
-  } catch (err) {
-    alert('Pick failed: ' + (err?.message || err?.details || JSON.stringify(err)));
-    console.error(err);
-  }
-}
-
-// --- Init ---
-
-function initDraftTab() {
-  const mode = localStorage.getItem(DRAFT_MODE_KEY);
-  if (!mode) { showDraftModeSelector(); return; }
-  if (mode === 'display') initDisplayMode();
-  else if (mode === 'red' || mode === 'blue') initCaptainMode(mode);
-  else showDraftModeSelector();
-}
-
-initDraftTab();
 </script>
 
 </body>
