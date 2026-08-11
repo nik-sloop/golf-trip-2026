@@ -1349,6 +1349,23 @@
   .tsp-label.up      { color: #145a32; }
   .tsp-label.down    { color: var(--red); }
   .tsp-label.neutral { color: var(--gray-500); }
+  .hcp-tag {
+    display: inline-block;
+    font-size: 0.58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    background: #d5f0e0;
+    color: #145a32;
+    border-radius: 4px;
+    padding: 0 0.28rem;
+    vertical-align: middle;
+    margin-left: 0.15rem;
+  }
+  .hcp-tag.off {
+    background: var(--gray-200);
+    color: var(--gray-500);
+  }
   .teams-note {
     font-size: 0.72rem;
     color: var(--gray-500);
@@ -1624,6 +1641,31 @@ const players = [
     scouting: { driving: { range: "5-8", avg: 6 }, irons: { range: "3-7", avg: 5 }, chipping: { range: "2-6", avg: 4 }, putting: { range: "1-10", avg: 5 }, mental: { range: "6-8", avg: 7 }, total: "17-39", avg: 28, avgAdj: 27 }},
 ];
 
+// --- WHS Handicap Calculation ---
+// Score Differential = (Gross - CourseRating) × (113 / Slope)
+// Approximation: CourseRating ≈ Par, Slope = 113 → Differential ≈ Gross - Par
+// 9-hole rounds (par ≤ 36) are normalized to 18-hole equivalent by doubling.
+function calcHandicapIndex(scores) {
+  if (!scores || scores.length < 3) return null;
+  const diffs = scores.map(s => {
+    const d = s.gross - s.par;
+    return s.par <= 36 ? d * 2 : d; // normalize 9-hole
+  });
+  const sorted = [...diffs].sort((a, b) => a - b);
+  const n = Math.min(sorted.length, 20);
+  // WHS 2020 table: [differentials to use] indexed by round count
+  const useCount = [0,0,0,1,1,1,2,2,2,3,3,3,4,4,5,5,6,6,7,7,8][n];
+  // Additional adjustment applied to final index for small sample sizes
+  const adj      = [0,0,0,-2,-1,0,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0][n];
+  const best = sorted.slice(0, useCount);
+  const avg  = best.reduce((a, b) => a + b, 0) / best.length;
+  const idx  = avg * 0.96 + adj;
+  return Math.max(0, Math.floor(idx * 10) / 10);
+}
+
+// Compute and attach calcHcp to each player (null if insufficient rounds)
+players.forEach(p => { p.calcHcp = calcHandicapIndex(p.scores); });
+
 const playerBios = {
   "Dan M": "The undisputed king of the group. Dan M's 9.9 handicap means he's giving zero strokes to anyone, and his recent 80 says he might shoot even lower. Consistently elite across the board with 8.5s in driving, irons, and mental — his only 'weakness' is a 7.5 short game that most guys here would kill for. Draft: Leading captain candidate. If he's not wearing the C, he's the undisputed #1 pick off the board.",
   "Hadley": "The man of mystery. One round on file — a 94 — and zero scouting data, so we're basically drafting a ghost. Could be hiding a lethal game or could be a walking double bogey. Only 3 strokes at a 12.8 handicap, so the ceiling exists somewhere. Draft: High-risk early-round pick. With no data, captains will have to trust their gut — you're either getting a steal or lighting $110 on fire.",
@@ -1863,7 +1905,7 @@ function renderTeams() {
 
   function buildSection(names, color) {
     const teamPlayers = names.map(n => players.find(p => p.name === n)).filter(Boolean)
-      .sort((a, b) => b.handicap - a.handicap);
+      .sort((a, b) => (b.calcHcp ?? b.handicap) - (a.calcHcp ?? a.handicap));
     const trends = teamPlayers.map(p => getPlayerTrend(p));
 
     const validDeltas = trends.filter(t => t && t.prior !== undefined).map(t => t.delta);
@@ -1895,7 +1937,7 @@ function renderTeams() {
         <div class="tsp-emoji">${emoji}</div>
         <div class="tsp-info">
           <span class="tsp-name">${displayName}</span>
-          <span class="tsp-hcp">Hcp ${player.handicap}</span>
+          <span class="tsp-hcp">${player.calcHcp !== null ? `Hcp ${player.calcHcp} <span class="hcp-tag">calc</span>` : `Hcp ${player.handicap} <span class="hcp-tag off">official</span>`}</span>
         </div>
         <div class="tsp-scores">${chipsHtml}</div>
         <div class="tsp-label ${arrowDir}">${trendLabel}</div>
@@ -2020,7 +2062,7 @@ function renderPlayers() {
     card.innerHTML = `
       <div class="player-header">
         <span class="player-name">${p.name}</span>
-        <span class="player-handicap">${p.handicap}</span>
+        <span class="player-handicap">${p.calcHcp ?? p.handicap}</span>
       </div>
       <div class="player-strokes">${p.strokes} strokes</div>
       <div class="player-scores">${scoresHtml}</div>
@@ -2061,7 +2103,7 @@ function selectPlayer(idx) {
     const rounds = p.scores.length;
 
     statsDiv.innerHTML = `
-      <div class="detail-stat"><div class="stat-value">${p.handicap}</div><div class="stat-label">Handicap</div></div>
+      <div class="detail-stat"><div class="stat-value">${p.calcHcp ?? p.handicap}</div><div class="stat-label">${p.calcHcp !== null ? 'Hcp (calc)' : 'Hcp (off.)'}</div></div>
       <div class="detail-stat"><div class="stat-value">${p.strokes}</div><div class="stat-label">Strokes</div></div>
       <div class="detail-stat"><div class="stat-value">${rounds}</div><div class="stat-label">Rounds</div></div>
       <div class="detail-stat"><div class="stat-value ${getDiffTextClass(bestVsPar)}">${formatVsPar(bestVsPar)}</div><div class="stat-label">Best</div></div>
@@ -2083,7 +2125,7 @@ function selectPlayer(idx) {
     document.getElementById('round-table').style.display = '';
   } else {
     statsDiv.innerHTML = `
-      <div class="detail-stat"><div class="stat-value">${p.handicap}</div><div class="stat-label">Handicap</div></div>
+      <div class="detail-stat"><div class="stat-value">${p.handicap}</div><div class="stat-label">Hcp (off.)</div></div>
       <div class="detail-stat"><div class="stat-value">${p.strokes}</div><div class="stat-label">Strokes</div></div>
       <div class="detail-stat"><div class="stat-value">--</div><div class="stat-label">No Rounds</div></div>
     `;
