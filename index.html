@@ -1862,7 +1862,8 @@ function renderTeams() {
   if (!container) return;
 
   function buildSection(names, color) {
-    const teamPlayers = names.map(n => players.find(p => p.name === n)).filter(Boolean);
+    const teamPlayers = names.map(n => players.find(p => p.name === n)).filter(Boolean)
+      .sort((a, b) => b.handicap - a.handicap);
     const trends = teamPlayers.map(p => getPlayerTrend(p));
 
     const validDeltas = trends.filter(t => t && t.prior !== undefined).map(t => t.delta);
