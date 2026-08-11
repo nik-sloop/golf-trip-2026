@@ -1998,7 +1998,7 @@ function renderTeams() {
       .sort((a, b) => (a.calcHcp ?? a.handicap) - (b.calcHcp ?? b.handicap));
     const trends = teamPlayers.map(p => getPlayerTrend(p));
 
-    const validDeltas = trends.filter(t => t && t.prior !== undefined).map(t => t.delta);
+    const validDeltas = trends.filter(t => t && t.priorAvg !== undefined).map(t => t.delta);
     const avgDelta = validDeltas.length ? validDeltas.reduce((a, b) => a + b, 0) / validDeltas.length : 0;
     const teamDir = avgDelta > 0.5 ? 'up' : avgDelta < -0.5 ? 'down' : 'neutral';
     const teamBadgeText = teamDir === 'up' ? '↑ Trending Up' : teamDir === 'down' ? '↓ Trending Down' : '→ Steady';
@@ -2013,7 +2013,7 @@ function renderTeams() {
       let arrowDir = 'neutral';
 
       if (trend) {
-        chipsHtml = trend.recentScores.map(s => {
+        chipsHtml = [...trend.recentScores].reverse().map(s => {
           const d = s.net - s.par;
           const cls = d <= 0 ? 'good' : d <= 5 ? 'ok' : 'bad';
           return `<span class="tsp-chip ${cls}">${d > 0 ? '+' + d : d === 0 ? 'E' : d}</span>`;
@@ -2156,9 +2156,14 @@ function openHandicapModal(playerName) {
       plugins: {
         legend: { display: false },
         tooltip: {
+          mode: 'index',
+          intersect: false,
           callbacks: {
             title: items => 'Round ' + (items[0].dataIndex + 1),
-            label: item => item.dataset.label + ': ' + item.raw
+            label: item => {
+              if (item.raw === null || item.raw === undefined) return null;
+              return item.dataset.label + ': ' + item.raw;
+            }
           }
         }
       },
