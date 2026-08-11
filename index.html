@@ -1231,6 +1231,14 @@
     gap: 0.5rem;
     margin-bottom: 0.75rem;
   }
+  .roster-score {
+    font-size: 2.8rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+  .roster-card.blue .roster-score { color: var(--blue); }
+  .roster-card.red  .roster-score { color: var(--red); }
   .roster-card {
     border-radius: 10px;
     padding: 0.65rem 0.75rem;
@@ -1404,28 +1412,16 @@
 
   <!-- TAB: Results -->
   <div class="tab-content active" id="tab-schedule">
-    <div class="final-banner">
-      <div class="final-banner-label">Final Score &mdash; Golf Trip 2026</div>
-      <div class="final-scoreboard">
-        <div class="final-team-block">
-          <div class="final-team-pts">6</div>
-          <div class="final-team-name">Team Red</div>
-        </div>
-        <div class="final-sep">&ndash;</div>
-        <div class="final-team-block">
-          <div class="final-team-pts">8</div>
-          <div class="final-team-name">Team Blue</div>
-        </div>
-      </div>
-      <div class="final-winner-tag">Team Blue Wins</div>
-    </div>
+    <div class="final-banner-label" style="text-align:center;font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--gray-500);margin-bottom:0.5rem;">Final Score &mdash; Golf Trip 2026</div>
 
     <div class="result-rosters">
       <div class="roster-card blue">
-        <div class="roster-label">Team Blue</div>
+        <div class="roster-score">8</div>
+        <div class="roster-label">Team Blue &#127942;</div>
         <div class="roster-names">Dan M &middot; Dan C &middot; Jon &middot; Ant &middot; Chris &middot; Garret</div>
       </div>
       <div class="roster-card red">
+        <div class="roster-score">6</div>
         <div class="roster-label">Team Red</div>
         <div class="roster-names">Nik &middot; Sam &middot; Shane &middot; Hadley &middot; Dylan &middot; Ryan</div>
       </div>
