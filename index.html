@@ -1608,6 +1608,25 @@
   </button>
 </nav>
 
+<!-- Handicap Chart Modal -->
+<div id="hcp-modal-overlay" style="display:none">
+  <div class="hcp-overlay-bg"></div>
+  <div id="hcp-modal">
+    <div id="hcp-modal-header">
+      <div id="hcp-modal-name"></div>
+      <div id="hcp-modal-hcp"></div>
+      <button id="hcp-modal-close">&times;</button>
+    </div>
+    <div class="hcp-chart-key">
+      <span><span class="hcp-key-dot" style="background:#4a90d9"></span>Counted rounds</span>
+      <span><span class="hcp-key-dot" style="background:rgba(130,170,220,0.4)"></span>Not counted</span>
+      <span><span class="hcp-key-dot" style="background:#27ae60;border-radius:50%"></span>Handicap index</span>
+    </div>
+    <div id="hcp-chart-wrap"><canvas id="hcp-chart"></canvas></div>
+    <div id="hcp-modal-legend"></div>
+  </div>
+</div>
+
 <script>
 const TOTAL_POINTS = 14;
 const WIN_POINTS = 7.5;
@@ -3092,24 +3111,6 @@ loadVotes();
 subscribeToVotes();
 </script>
 
-<!-- Handicap Chart Modal -->
-<div id="hcp-modal-overlay" style="display:none">
-  <div class="hcp-overlay-bg"></div>
-  <div id="hcp-modal">
-    <div id="hcp-modal-header">
-      <div id="hcp-modal-name"></div>
-      <div id="hcp-modal-hcp"></div>
-      <button id="hcp-modal-close">&times;</button>
-    </div>
-    <div class="hcp-chart-key">
-      <span><span class="hcp-key-dot" style="background:#4a90d9"></span>Counted rounds</span>
-      <span><span class="hcp-key-dot" style="background:rgba(130,170,220,0.4)"></span>Not counted</span>
-      <span><span class="hcp-key-dot" style="background:#27ae60;border-radius:50%"></span>Handicap index</span>
-    </div>
-    <div id="hcp-chart-wrap"><canvas id="hcp-chart"></canvas></div>
-    <div id="hcp-modal-legend"></div>
-  </div>
-</div>
 
 </body>
 </html>
