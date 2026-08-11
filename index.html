@@ -1295,6 +1295,71 @@
   .result-winner.rw-tie { color: var(--gray-500); }
   .result-margin { font-size: 0.78rem; color: var(--gray-500); }
 
+  /* ---- Teams ---- */
+  .team-trend-section {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .tts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1rem;
+  }
+  .tts-blue { background: linear-gradient(135deg, var(--blue), #1a5276); color: white; }
+  .tts-red { background: linear-gradient(135deg, var(--red), #7b241c); color: white; }
+  .tts-name { font-size: 1rem; font-weight: 800; letter-spacing: 0.3px; }
+  .tts-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.65rem;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.18);
+    white-space: nowrap;
+  }
+  .tts-players { padding: 0.2rem 0; }
+  .tsp-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 1rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .tsp-row:last-child { border-bottom: none; }
+  .tsp-info { flex: 0 0 auto; width: 80px; }
+  .tsp-name { font-size: 0.85rem; font-weight: 700; display: block; }
+  .tsp-hcp { font-size: 0.68rem; color: var(--gray-500); }
+  .tsp-scores { flex: 1; display: flex; gap: 0.25rem; flex-wrap: wrap; }
+  .tsp-chip {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.1rem 0.38rem;
+    border-radius: 5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .tsp-chip.good { background: #d5f0e0; color: #145a32; }
+  .tsp-chip.ok   { background: #fef3cd; color: #7d6608; }
+  .tsp-chip.bad  { background: #fde8e8; color: #922b21; }
+  .tsp-chip.none { background: var(--gray-200); color: var(--gray-500); }
+  .tsp-arrow { font-size: 1.1rem; font-weight: 800; width: 22px; text-align: center; flex-shrink: 0; }
+  .tsp-arrow.up      { color: #145a32; }
+  .tsp-arrow.down    { color: var(--red); }
+  .tsp-arrow.neutral { color: var(--gray-500); }
+  .tsp-label { font-size: 0.68rem; font-weight: 600; width: 58px; flex-shrink: 0; }
+  .tsp-label.up      { color: #145a32; }
+  .tsp-label.down    { color: var(--red); }
+  .tsp-label.neutral { color: var(--gray-500); }
+  .teams-note {
+    font-size: 0.72rem;
+    color: var(--gray-500);
+    text-align: center;
+    margin-bottom: 0.75rem;
+    font-style: italic;
+  }
+
   /* ---- Desktop ---- */
   @media (min-width: 768px) {
     .container { max-width: 900px; padding: 1.5rem; }
@@ -1323,31 +1388,36 @@
 
 <div class="container">
 
-  <!-- TAB: Schedule -->
+  <!-- TAB: Results -->
   <div class="tab-content active" id="tab-schedule">
-    <div class="countdown-banner" id="countdown-banner">
-      <div class="label">Next Up</div>
-      <div class="event-name" id="countdown-event"></div>
-      <div class="countdown-units" id="countdown-units"></div>
-    </div>
-
-    <div class="ryder-bar-wrap">
-      <div class="ryder-header">
-        <span class="team-red">Team Red</span>
-        <span class="vs">FINAL</span>
-        <span class="team-blue">Team Blue</span>
-      </div>
-      <div class="ryder-bar-container" id="ryder-bar">
-        <div class="ryder-bar-red" id="ryder-red" style="width:50%;">0</div>
-        <div class="ryder-bar-blue" id="ryder-blue" style="width:50%;">0</div>
-        <div class="ryder-win-line" id="ryder-line" style="left:50%;transform:translateX(-50%);">
-          <span class="ryder-win-label">7.5 to win</span>
+    <div class="final-banner">
+      <div class="final-banner-label">Final Score &mdash; Golf Trip 2026</div>
+      <div class="final-scoreboard">
+        <div class="final-team-block">
+          <div class="final-team-pts">6</div>
+          <div class="final-team-name">Team Red</div>
+        </div>
+        <div class="final-sep">&ndash;</div>
+        <div class="final-team-block">
+          <div class="final-team-pts">8</div>
+          <div class="final-team-name">Team Blue</div>
         </div>
       </div>
+      <div class="final-winner-tag">Team Blue Wins</div>
     </div>
 
-    <h2 class="section-title">Schedule</h2>
-    <div class="schedule-grid" id="schedule-grid"></div>
+    <div class="result-rosters">
+      <div class="roster-card blue">
+        <div class="roster-label">Team Blue</div>
+        <div class="roster-names">Dan M &middot; Dan C &middot; Jon &middot; Ant &middot; Chris &middot; Garret</div>
+      </div>
+      <div class="roster-card red">
+        <div class="roster-label">Team Red</div>
+        <div class="roster-names">Nik &middot; Sam &middot; Shane &middot; Hadley &middot; Dylan &middot; Ryan</div>
+      </div>
+    </div>
+
+    <div id="results-list"></div>
   </div>
 
   <!-- TAB: Rounds -->
@@ -1416,36 +1486,9 @@
     </div>
   </div>
 
-  <!-- TAB: Results -->
+  <!-- TAB: Teams -->
   <div class="tab-content" id="tab-results">
-    <div class="final-banner">
-      <div class="final-banner-label">Final Score &mdash; Golf Trip 2026</div>
-      <div class="final-scoreboard">
-        <div class="final-team-block">
-          <div class="final-team-pts">6</div>
-          <div class="final-team-name">Team Red</div>
-        </div>
-        <div class="final-sep">&ndash;</div>
-        <div class="final-team-block">
-          <div class="final-team-pts">8</div>
-          <div class="final-team-name">Team Blue</div>
-        </div>
-      </div>
-      <div class="final-winner-tag">Team Blue Wins</div>
-    </div>
-
-    <div class="result-rosters">
-      <div class="roster-card blue">
-        <div class="roster-label">Team Blue</div>
-        <div class="roster-names">Dan M &middot; Dan C &middot; Jon &middot; Ant &middot; Chris &middot; Garret</div>
-      </div>
-      <div class="roster-card red">
-        <div class="roster-label">Team Red</div>
-        <div class="roster-names">Nik &middot; Sam &middot; Shane &middot; Hadley &middot; Dylan &middot; Ryan</div>
-      </div>
-    </div>
-
-    <div id="results-list"></div>
+    <div id="teams-content"></div>
   </div>
 
 </div>
@@ -1453,12 +1496,12 @@
 <!-- Bottom Navigation (mobile only) -->
 <nav class="bottom-nav" id="bottom-nav">
   <button class="nav-tab active" data-tab="schedule">
-    <span class="nav-icon">&#128197;</span>
-    <span class="nav-label">Schedule</span>
-  </button>
-  <button class="nav-tab" data-tab="results">
     <span class="nav-icon">&#127942;</span>
     <span class="nav-label">Results</span>
+  </button>
+  <button class="nav-tab" data-tab="results">
+    <span class="nav-icon">&#128101;</span>
+    <span class="nav-label">Teams</span>
   </button>
   <button class="nav-tab" data-tab="rounds">
     <span class="nav-icon">&#9971;</span>
@@ -1699,29 +1742,6 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
 });
 
 // --- Ryder Cup Bar ---
-function renderRyderBar() {
-  const redEl = document.getElementById('ryder-red');
-  const blueEl = document.getElementById('ryder-blue');
-
-  if (teamRedPoints === 0 && teamBluePoints === 0) {
-    redEl.style.width = '50%';
-    blueEl.style.width = '50%';
-  } else {
-    const scored = teamRedPoints + teamBluePoints;
-    const redW = Math.max((teamRedPoints / scored) * 100, 8);
-    redEl.style.width = redW + '%';
-    blueEl.style.width = (100 - redW) + '%';
-  }
-
-  redEl.textContent = teamRedPoints;
-  blueEl.textContent = teamBluePoints;
-
-  const lineEl = document.getElementById('ryder-line');
-  lineEl.style.left = '50%';
-  lineEl.style.transform = 'translateX(-50%)';
-}
-
-renderRyderBar();
 
 // --- Tournament Results ---
 const tournamentDays = [
@@ -1819,41 +1839,94 @@ function renderResults() {
 
 renderResults();
 
-// --- Countdown ---
-function updateCountdown() {
-  const now = new Date();
-  const upcoming = schedule.filter(e => e.date > now);
-
-  if (upcoming.length === 0) {
-    document.getElementById('countdown-event').textContent = "Trip Complete!";
-    document.getElementById('countdown-units').innerHTML = '';
-    return;
-  }
-
-  const next = upcoming[0];
-  document.getElementById('countdown-event').textContent = next.name + (next.format !== "Vote" ? " \u2014 " + next.format : "");
-
-  const diff = next.date - now;
-  const days = Math.floor(diff / 86400000);
-  const hours = Math.floor((diff % 86400000) / 3600000);
-  const minutes = Math.floor((diff % 3600000) / 60000);
-  const seconds = Math.floor((diff % 60000) / 1000);
-
-  document.getElementById('countdown-units').innerHTML = `
-    <div class="countdown-unit"><span class="number">${days}</span><span class="unit-label">Days</span></div>
-    <div class="countdown-unit"><span class="number">${hours}</span><span class="unit-label">Hrs</span></div>
-    <div class="countdown-unit"><span class="number">${minutes}</span><span class="unit-label">Min</span></div>
-    <div class="countdown-unit"><span class="number">${seconds}</span><span class="unit-label">Sec</span></div>
-  `;
+// --- Teams ---
+function getPlayerTrend(player) {
+  const scores = player.scores;
+  if (scores.length < 2) return null;
+  const vspar = scores.map(s => s.net - s.par);
+  // recent = first 3 rounds (newest), prior = next 3
+  const recent = vspar.slice(0, Math.min(3, scores.length));
+  const prior  = vspar.slice(Math.min(3, scores.length), Math.min(6, scores.length));
+  const recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
+  if (prior.length === 0) return { direction: 'neutral', delta: 0, recentAvg, recentScores: scores.slice(0, 3) };
+  const priorAvg = prior.reduce((a, b) => a + b, 0) / prior.length;
+  const delta = priorAvg - recentAvg; // positive = improving
+  return {
+    delta,
+    recentAvg,
+    priorAvg,
+    direction: delta > 1.5 ? 'up' : delta < -1.5 ? 'down' : 'neutral',
+    recentScores: scores.slice(0, 3)
+  };
 }
 
-updateCountdown();
-setInterval(updateCountdown, 1000);
+function renderTeams() {
+  const container = document.getElementById('teams-content');
+  if (!container) return;
+
+  function buildSection(names, color) {
+    const teamPlayers = names.map(n => players.find(p => p.name === n)).filter(Boolean);
+    const trends = teamPlayers.map(p => getPlayerTrend(p));
+
+    const validDeltas = trends.filter(t => t && t.prior !== undefined).map(t => t.delta);
+    const avgDelta = validDeltas.length ? validDeltas.reduce((a, b) => a + b, 0) / validDeltas.length : 0;
+    const teamDir = avgDelta > 0.5 ? 'up' : avgDelta < -0.5 ? 'down' : 'neutral';
+    const teamBadgeText = teamDir === 'up' ? '↑ Trending Up' : teamDir === 'down' ? '↓ Trending Down' : '→ Steady';
+
+    const rows = teamPlayers.map((player, i) => {
+      const trend = trends[i];
+      const displayName = player.name === 'Dan' ? 'Dan C' : player.name;
+
+      let chipsHtml = '<span class="tsp-chip none">No data</span>';
+      let arrowDir = 'neutral';
+      let arrowIcon = '→';
+      let trendLabel = 'Steady';
+
+      if (trend) {
+        chipsHtml = trend.recentScores.map(s => {
+          const d = s.net - s.par;
+          const cls = d <= 0 ? 'good' : d <= 5 ? 'ok' : 'bad';
+          return `<span class="tsp-chip ${cls}">${d > 0 ? '+' + d : d === 0 ? 'E' : d}</span>`;
+        }).join('');
+        arrowDir = trend.direction;
+        arrowIcon = trend.direction === 'up' ? '↑' : trend.direction === 'down' ? '↓' : '→';
+        trendLabel = trend.direction === 'up' ? 'Improving' : trend.direction === 'down' ? 'Slipping' : 'Steady';
+      }
+
+      return `<div class="tsp-row">
+        <div class="tsp-info">
+          <span class="tsp-name">${displayName}</span>
+          <span class="tsp-hcp">Hcp ${player.handicap}</span>
+        </div>
+        <div class="tsp-scores">${chipsHtml}</div>
+        <div class="tsp-arrow ${arrowDir}">${arrowIcon}</div>
+        <div class="tsp-label ${arrowDir}">${trendLabel}</div>
+      </div>`;
+    }).join('');
+
+    const teamLabel = color === 'blue' ? 'Team Blue' : 'Team Red';
+    return `<div class="team-trend-section">
+      <div class="tts-header tts-${color}">
+        <div class="tts-name">${teamLabel}</div>
+        <div class="tts-badge">${teamBadgeText}</div>
+      </div>
+      <div class="tts-players">${rows}</div>
+    </div>`;
+  }
+
+  container.innerHTML = `<p class="teams-note">Chips show last 3 rounds: net vs par. Arrow reflects recent vs prior average.</p>`
+    + buildSection(["Dan M", "Dan", "Jon", "Ant", "Chris", "Garret"], 'blue')
+    + buildSection(["Nik", "Sam", "Shane", "Hadley", "Dylan", "Ryan"], 'red');
+}
+
+renderTeams();
+
 
 // --- Schedule ---
 function renderSchedule() {
   const now = new Date();
   const grid = document.getElementById('schedule-grid');
+  if (!grid) return;
   const upcoming = schedule.filter(e => e.date > now);
   const nextEvent = upcoming.length > 0 ? upcoming[0] : null;
 
