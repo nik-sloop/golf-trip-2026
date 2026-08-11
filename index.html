@@ -1427,6 +1427,21 @@
       </div>
     </div>
 
+    <div class="ryder-bar-wrap">
+      <div class="ryder-header">
+        <span class="team-red">Team Red</span>
+        <span class="vs">7.5 to win</span>
+        <span class="team-blue">Team Blue</span>
+      </div>
+      <div class="ryder-bar-container" id="ryder-bar">
+        <div class="ryder-bar-red" id="ryder-red" style="width:50%;">0</div>
+        <div class="ryder-bar-blue" id="ryder-blue" style="width:50%;">0</div>
+        <div class="ryder-win-line" id="ryder-line" style="left:50%;transform:translateX(-50%);">
+          <span class="ryder-win-label">7.5</span>
+        </div>
+      </div>
+    </div>
+
     <div id="results-list"></div>
   </div>
 
@@ -1949,6 +1964,27 @@ function renderTeams() {
     + buildSection(["Nik", "Sam", "Shane", "Hadley", "Dylan", "Ryan"], 'red');
 }
 
+// --- Ryder Cup Bar ---
+function renderRyderBar() {
+  const redEl = document.getElementById('ryder-red');
+  const blueEl = document.getElementById('ryder-blue');
+  if (!redEl || !blueEl) return;
+  const scored = teamRedPoints + teamBluePoints;
+  if (scored === 0) {
+    redEl.style.width = '50%';
+    blueEl.style.width = '50%';
+  } else {
+    const redW = Math.max((teamRedPoints / scored) * 100, 8);
+    redEl.style.width = redW + '%';
+    blueEl.style.width = (100 - redW) + '%';
+  }
+  redEl.textContent = teamRedPoints;
+  blueEl.textContent = teamBluePoints;
+  const lineEl = document.getElementById('ryder-line');
+  if (lineEl) { lineEl.style.left = '50%'; lineEl.style.transform = 'translateX(-50%)'; }
+}
+
+renderRyderBar();
 renderTeams();
 
 
