@@ -1329,7 +1329,7 @@
     border-bottom: 1px solid var(--gray-100);
   }
   .tsp-row:last-child { border-bottom: none; }
-  .tsp-info { flex: 0 0 auto; width: 80px; }
+  .tsp-info { flex: 0 0 auto; width: 72px; }
   .tsp-name { font-size: 0.85rem; font-weight: 700; display: block; }
   .tsp-hcp { font-size: 0.68rem; color: var(--gray-500); }
   .tsp-scores { flex: 1; display: flex; gap: 0.25rem; flex-wrap: wrap; }
@@ -1344,10 +1344,7 @@
   .tsp-chip.ok   { background: #fef3cd; color: #7d6608; }
   .tsp-chip.bad  { background: #fde8e8; color: #922b21; }
   .tsp-chip.none { background: var(--gray-200); color: var(--gray-500); }
-  .tsp-arrow { font-size: 1.1rem; font-weight: 800; width: 22px; text-align: center; flex-shrink: 0; }
-  .tsp-arrow.up      { color: #145a32; }
-  .tsp-arrow.down    { color: var(--red); }
-  .tsp-arrow.neutral { color: var(--gray-500); }
+  .tsp-emoji { font-size: 1.25rem; width: 26px; text-align: center; flex-shrink: 0; line-height: 1; }
   .tsp-label { font-size: 0.68rem; font-weight: 600; width: 58px; flex-shrink: 0; }
   .tsp-label.up      { color: #145a32; }
   .tsp-label.down    { color: var(--red); }
@@ -1877,10 +1874,10 @@ function renderTeams() {
       const trend = trends[i];
       const displayName = player.name === 'Dan' ? 'Dan C' : player.name;
 
-      let chipsHtml = '<span class="tsp-chip none">No data</span>';
+      let chipsHtml = '';
+      let emoji = '👻';
+      let trendLabel = 'No rounds';
       let arrowDir = 'neutral';
-      let arrowIcon = '→';
-      let trendLabel = 'Steady';
 
       if (trend) {
         chipsHtml = trend.recentScores.map(s => {
@@ -1889,17 +1886,17 @@ function renderTeams() {
           return `<span class="tsp-chip ${cls}">${d > 0 ? '+' + d : d === 0 ? 'E' : d}</span>`;
         }).join('');
         arrowDir = trend.direction;
-        arrowIcon = trend.direction === 'up' ? '↑' : trend.direction === 'down' ? '↓' : '→';
+        emoji = trend.direction === 'up' ? '🔥' : trend.direction === 'down' ? '🧊' : '→';
         trendLabel = trend.direction === 'up' ? 'Improving' : trend.direction === 'down' ? 'Slipping' : 'Steady';
       }
 
       return `<div class="tsp-row">
+        <div class="tsp-emoji">${emoji}</div>
         <div class="tsp-info">
           <span class="tsp-name">${displayName}</span>
           <span class="tsp-hcp">Hcp ${player.handicap}</span>
         </div>
         <div class="tsp-scores">${chipsHtml}</div>
-        <div class="tsp-arrow ${arrowDir}">${arrowIcon}</div>
         <div class="tsp-label ${arrowDir}">${trendLabel}</div>
       </div>`;
     }).join('');
