@@ -2149,7 +2149,7 @@ function openHandicapModal(playerName) {
     counted.has(i) ? '#4a90d9' : 'rgba(130,170,220,0.38)'
   );
 
-  document.getElementById('hcp-chart-key').style.display = '';
+  document.querySelector('.hcp-chart-key').style.display = '';
 
   const ctx = document.getElementById('hcp-chart').getContext('2d');
   hcpChart = new Chart(ctx, {
@@ -2237,7 +2237,7 @@ function openTeamModal(color) {
   document.getElementById('hcp-modal-name').textContent = color === 'blue' ? 'Team Blue' : 'Team Red';
   document.getElementById('hcp-modal-hcp').textContent = 'Avg Hcp ' + avgHcp;
   document.getElementById('hcp-modal-overlay').style.display = 'flex';
-  document.getElementById('hcp-chart-key').style.display = 'none';
+  document.querySelector('.hcp-chart-key').style.display = 'none';
 
   if (hcpChart) { hcpChart.destroy(); hcpChart = null; }
 
