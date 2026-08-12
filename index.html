@@ -514,6 +514,7 @@
     color: var(--gray-500);
   }
 
+  .round-table-wrap { overflow-x: auto; }
   .round-table {
     width: 100%;
     border-collapse: collapse;
@@ -1522,17 +1523,15 @@
         <button class="detail-close" id="detail-close">&times;</button>
       </div>
       <div class="detail-stats" id="detail-stats"></div>
-      <table class="round-table" id="round-table">
-        <thead>
-          <tr>
-            <th>Round</th>
-            <th>Gross(Net)</th>
-            <th>Par</th>
-            <th>vs Par</th>
-          </tr>
-        </thead>
+      <div class="round-table-wrap"><table class="round-table" id="round-table">
+        <thead id="round-thead"><tr>
+          <th>Round</th>
+          <th>Gross(Net)</th>
+          <th>Par</th>
+          <th>vs Par</th>
+        </tr></thead>
         <tbody id="round-tbody"></tbody>
-      </table>
+      </table></div>
     </div>
 
     <div class="player-grid" id="player-grid"></div>
@@ -1682,12 +1681,13 @@ const players = [
     { gross: 87, net: 76, par: 71 }
   ], scouting: { driving: { range: "6-9", avg: 7 }, irons: { range: "7-8", avg: 7.5 }, chipping: { range: "6-9", avg: 7.5 }, putting: { range: "6-8", avg: 7 }, mental: { range: "7-8", avg: 7.5 }, total: "32-42", avg: 37, avgAdj: 36.5 }},
   { name: "Nik", handicap: 16.1, strokes: 6, scores: [
-    { gross: 81, net: 65, par: 70 },
-    { gross: 44, net: 36, par: 35 },
-    { gross: 100, net: 84, par: 72 },
-    { gross: 103, net: 91, par: 72 },
-    { gross: 99, net: 85, par: 71 },
-    { gross: 94, net: 77, par: 72 }
+    { gross: 81, net: 64, par: 70, rating: 67.5, slope: 117, course: "Bowie", date: "8/9", fw: "4/13", gir: "7/18", putts: 31, penalties: 2 },
+    { gross: 44, net: 35, par: 35, rating: 34.1, slope: 116, course: "Bowie (9H)", date: "8/7", fw: "3/6", gir: "2/9", putts: 18, penalties: 0 },
+    { gross: 100, net: 82, par: 72, rating: 70.2, slope: 133, course: "Gettysburg", date: "7/11", fw: "4/14", gir: "3/18", putts: 41, penalties: 4 },
+    { gross: 93, net: 79, par: 72, rating: 68.2, slope: 120, course: "Bear Trap", date: "7/3", fw: "10/14", gir: "7/18", putts: 38, penalties: 1 },
+    { gross: 87, net: 73, par: 70, rating: 67.5, slope: 117, course: "Bowie", date: "6/19", fw: "5/13", gir: "3/18", putts: 33, penalties: 0 },
+    { gross: 100, net: 86, par: 72, rating: 68.6, slope: 122, course: "Renditions", date: "5/31" },
+    { gross: 88, net: 75, par: 71, rating: 68.3, slope: 116, course: "QT River", date: "5/30", fw: "6/14", gir: "7/18", putts: 36, penalties: 2 },
   ], scouting: { driving: { range: "5-9", avg: 7 }, irons: { range: "4-7", avg: 6 }, chipping: { range: "6-8", avg: 7.5 }, putting: { range: "7-9", avg: 8 }, mental: { range: "7-8", avg: 7.5 }, total: "29-41", avg: 35, avgAdj: 36 }},
   { name: "Dan", handicap: 21.6, strokes: 12, scores: [
     { gross: 91, net: 69, par: 71 },
@@ -1738,8 +1738,10 @@ const players = [
 function calcHandicapIndex(scores) {
   if (!scores || scores.length < 3) return null;
   const diffs = scores.map(s => {
-    const d = s.gross - s.par;
-    return s.par <= 36 ? d * 2 : d; // normalize 9-hole
+    const d = (s.rating !== undefined && s.slope !== undefined)
+      ? (113 / s.slope) * (s.gross - s.rating)
+      : s.gross - s.par;
+    return s.par <= 36 ? d * 2 : d;
   });
   const sorted = [...diffs].sort((a, b) => a - b);
   const n = Math.min(sorted.length, 20);
@@ -2081,7 +2083,9 @@ function getRunningHandicaps(player) {
   const WHS_ADJ   = [0,0,0,-2,-1,0,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
   const diffs = chronological.map(s => {
-    const d = s.gross - s.par;
+    const d = (s.rating !== undefined && s.slope !== undefined)
+      ? (113 / s.slope) * (s.gross - s.rating)
+      : s.gross - s.par;
     return s.par <= 36 ? d * 2 : d;
   });
 
@@ -2351,15 +2355,35 @@ function selectPlayer(idx) {
     `;
 
     const tbody = document.getElementById('round-tbody');
-    tbody.innerHTML = p.scores.map((s, i) => {
-      const vsPar = getVsPar(s);
-      return `<tr>
-        <td>R${i + 1}</td>
-        <td><strong>${s.gross}(${s.net})</strong></td>
-        <td>${s.par}</td>
-        <td class="${getDiffTextClass(vsPar)}">${formatVsPar(vsPar)}</td>
-      </tr>`;
-    }).join('');
+    const thead = document.getElementById('round-thead');
+    const hasDetail = p.scores.some(s => s.course);
+
+    if (hasDetail) {
+      thead.innerHTML = `<tr><th>Date</th><th>Course</th><th>Gross/Net</th><th>+/-</th><th>FW</th><th>GIR</th><th>Putts</th></tr>`;
+      tbody.innerHTML = p.scores.map(s => {
+        const vsPar = getVsPar(s);
+        return `<tr>
+          <td>${s.date || '--'}</td>
+          <td style="font-size:0.78em;white-space:nowrap">${s.course || '--'}</td>
+          <td><strong>${s.gross}(${s.net})</strong></td>
+          <td class="${getDiffTextClass(vsPar)}">${formatVsPar(vsPar)}</td>
+          <td>${s.fw || '--'}</td>
+          <td>${s.gir || '--'}</td>
+          <td>${s.putts !== undefined ? s.putts : '--'}</td>
+        </tr>`;
+      }).join('');
+    } else {
+      thead.innerHTML = `<tr><th>Round</th><th>Gross(Net)</th><th>Par</th><th>vs Par</th></tr>`;
+      tbody.innerHTML = p.scores.map((s, i) => {
+        const vsPar = getVsPar(s);
+        return `<tr>
+          <td>R${i + 1}</td>
+          <td><strong>${s.gross}(${s.net})</strong></td>
+          <td>${s.par}</td>
+          <td class="${getDiffTextClass(vsPar)}">${formatVsPar(vsPar)}</td>
+        </tr>`;
+      }).join('');
+    }
 
     document.getElementById('round-table').style.display = '';
   } else {
