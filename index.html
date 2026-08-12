@@ -2230,25 +2230,46 @@ function openTeamModal(color) {
     : ["Nik", "Sam", "Shane", "Hadley", "Dylan", "Ryan"];
   const teamPlayers = teamNames.map(n => players.find(p => p.name === n)).filter(Boolean);
 
-  // Build per-player running handicap arrays (chronological, oldest first)
-  const playerHcpSeries = teamPlayers.map(p => getRunningHandicaps(p).handicaps);
-  const maxRounds = Math.max(...playerHcpSeries.map(h => h.length));
-
-  // For each round slot, average each player's handicap at that point (fill-forward)
-  const labels = [];
-  const avgSeries = [];
-  for (let i = 0; i < maxRounds; i++) {
-    labels.push('R' + (i + 1));
-    const vals = playerHcpSeries.map(hcps => {
-      // Use the most recent non-null handicap up to index i
-      for (let j = Math.min(i, hcps.length - 1); j >= 0; j--) {
-        if (hcps[j] !== null) return hcps[j];
-      }
-      return null;
-    }).filter(v => v !== null);
-    avgSeries.push(vals.length > 0 ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length * 10) / 10 : null);
+  function dateNum(d) {
+    if (!d) return -1;
+    const [m, day] = d.split('/').map(Number);
+    return m * 100 + day;
+  }
+  function fmtDate(d) {
+    const months = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const [m, day] = d.split('/').map(Number);
+    return months[m] + ' ' + day;
   }
 
+  // Get running handicaps per player (chronological: oldest first)
+  const playerData = teamPlayers.map(p => {
+    const { handicaps, chronological } = getRunningHandicaps(p);
+    return { chronological, handicaps };
+  });
+
+  // Collect all unique dates across the team
+  const allDates = new Set();
+  playerData.forEach(({ chronological }) => {
+    chronological.forEach(s => { if (s.date) allDates.add(s.date); });
+  });
+  const sortedDates = [...allDates].sort((a, b) => dateNum(a) - dateNum(b));
+
+  // For each date, average each player's handicap as of that date (fill-forward)
+  const avgSeries = sortedDates.map(targetDate => {
+    const tNum = dateNum(targetDate);
+    const vals = playerData.map(({ chronological, handicaps }) => {
+      let lastHcp = null;
+      for (let i = 0; i < chronological.length; i++) {
+        if (chronological[i].date && dateNum(chronological[i].date) <= tNum && handicaps[i] !== null) {
+          lastHcp = handicaps[i];
+        }
+      }
+      return lastHcp;
+    }).filter(v => v !== null);
+    return vals.length > 0 ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length * 10) / 10 : null;
+  });
+
+  const labels = sortedDates.map(fmtDate);
   const currentAvg = avgSeries.filter(v => v !== null).slice(-1)[0]
     ?? Math.round(teamPlayers.map(p => p.calcHcp ?? p.handicap).reduce((a, b) => a + b, 0) / teamPlayers.length * 10) / 10;
 
