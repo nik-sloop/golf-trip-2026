@@ -7,6 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Golf Trip 2026</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root {
@@ -1428,12 +1430,28 @@
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
   }
-  #hcp-chart-wrap { height: 220px; margin-bottom: 0.6rem; }
+  #hcp-chart-wrap { height: 280px; margin-bottom: 0.6rem; }
+  #hcp-zoom-reset {
+    background: var(--gray-200); border: none; border-radius: 8px;
+    padding: 0 8px; height: 26px; font-size: 0.72rem; cursor: pointer;
+    color: var(--gray-600); font-weight: 600; white-space: nowrap;
+  }
   #hcp-modal-legend {
     font-size: 0.72rem;
     color: var(--gray-500);
     text-align: center;
   }
+  #hcp-modal-legend.team-legend {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 5px; padding-top: 6px;
+  }
+  .team-legend-item {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px 3px 5px; border-radius: 20px; border: 1.5px solid;
+    cursor: pointer; transition: opacity 0.15s; user-select: none;
+    font-size: 0.72rem; font-weight: 600;
+  }
+  .team-legend-item.dimmed { opacity: 0.28; }
   .hcp-chart-key {
     display: flex;
     justify-content: center;
@@ -1617,6 +1635,7 @@
     <div id="hcp-modal-header">
       <div id="hcp-modal-name"></div>
       <div id="hcp-modal-hcp"></div>
+      <button id="hcp-zoom-reset" style="display:none" onclick="if(hcpChart){hcpChart.resetZoom();this.style.display='none'}">↺ Reset</button>
       <button id="hcp-modal-close">&times;</button>
     </div>
     <div class="hcp-chart-key">
@@ -2141,6 +2160,8 @@ function openHandicapModal(playerName) {
   document.getElementById('hcp-modal-name').textContent = displayName;
   document.getElementById('hcp-modal-hcp').textContent = 'Hcp ' + currentHcp;
   document.getElementById('hcp-modal-overlay').style.display = 'flex';
+  document.getElementById('hcp-zoom-reset').style.display = 'none';
+  document.getElementById('hcp-modal-legend').className = '';
 
   if (hcpChart) { hcpChart.destroy(); hcpChart = null; }
 
@@ -2251,7 +2272,10 @@ function openTeamModal(color) {
 
   const playerData = teamPlayers.map(p => {
     const { handicaps, chronological } = getRunningHandicaps(p);
-    return { chronological, handicaps, name: p.name };
+    const firstHcp = handicaps.find(h => h !== null) ?? null;
+    const currentHcp = p.calcHcp ?? p.handicap;
+    const delta = firstHcp !== null ? Math.round((currentHcp - firstHcp) * 10) / 10 : null;
+    return { chronological, handicaps, name: p.name, firstHcp, currentHcp, delta };
   });
 
   const allDates = new Set();
@@ -2260,7 +2284,6 @@ function openTeamModal(color) {
   });
   const sortedDates = [...allDates].sort((a, b) => dateNum(a) - dateNum(b));
 
-  // Build series points with player attribution
   const seriesPoints = sortedDates.map(targetDate => {
     const tNum = dateNum(targetDate);
     const playersOnDate = playerData
@@ -2279,7 +2302,6 @@ function openTeamModal(color) {
     return { date: targetDate, avg, players: playersOnDate };
   });
 
-  // Compute delta from previous non-null point
   seriesPoints.forEach((pt, i) => {
     const prevAvg = seriesPoints.slice(0, i).reverse().find(p => p.avg !== null)?.avg ?? null;
     pt.delta = (pt.avg !== null && prevAvg !== null)
@@ -2290,12 +2312,23 @@ function openTeamModal(color) {
   const lineColor = color === 'blue' ? '#4a90d9' : '#dc3545';
   const fillColor = color === 'blue' ? 'rgba(74,144,217,0.12)' : 'rgba(220,53,69,0.12)';
 
-  const pointColors = seriesPoints.map(pt => {
-    if (pt.avg === null) return 'transparent';
-    if (pt.players.length === 1) return PLAYER_COLORS[pt.players[0]] || lineColor;
-    return lineColor;
-  });
-  const pointRadii = seriesPoints.map(pt => pt.avg === null ? 0 : 5);
+  // Compute point styles based on current selection
+  const selectedPlayers = new Set(teamPlayers.map(p => p.name));
+
+  function getPointStyles() {
+    const colors = seriesPoints.map(pt => {
+      if (pt.avg === null) return 'transparent';
+      const vis = pt.players.filter(n => selectedPlayers.has(n));
+      if (vis.length === 0) return 'transparent';
+      if (vis.length === 1) return PLAYER_COLORS[vis[0]] || lineColor;
+      return lineColor;
+    });
+    const radii = seriesPoints.map(pt => {
+      if (pt.avg === null) return 0;
+      return pt.players.some(n => selectedPlayers.has(n)) ? 5 : 0;
+    });
+    return { colors, radii };
+  }
 
   const currentAvg = seriesPoints.filter(p => p.avg !== null).slice(-1)[0]?.avg
     ?? Math.round(teamPlayers.map(p => p.calcHcp ?? p.handicap).reduce((a, b) => a + b, 0) / teamPlayers.length * 10) / 10;
@@ -2304,9 +2337,11 @@ function openTeamModal(color) {
   document.getElementById('hcp-modal-hcp').textContent = 'Avg Hcp ' + currentAvg;
   document.getElementById('hcp-modal-overlay').style.display = 'flex';
   document.querySelector('.hcp-chart-key').style.display = 'none';
+  document.getElementById('hcp-zoom-reset').style.display = 'none';
 
   if (hcpChart) { hcpChart.destroy(); hcpChart = null; }
 
+  const { colors: initColors, radii: initRadii } = getPointStyles();
   const ctx = document.getElementById('hcp-chart').getContext('2d');
   hcpChart = new Chart(ctx, {
     data: {
@@ -2318,9 +2353,9 @@ function openTeamModal(color) {
         borderColor: lineColor,
         backgroundColor: fillColor,
         borderWidth: 2.5,
-        pointRadius: pointRadii,
-        pointBackgroundColor: pointColors,
-        pointBorderColor: pointColors,
+        pointRadius: initRadii,
+        pointBackgroundColor: initColors,
+        pointBorderColor: initColors,
         tension: 0.35,
         spanGaps: true,
         fill: true,
@@ -2347,6 +2382,19 @@ function openTeamModal(color) {
               ];
             }
           }
+        },
+        zoom: {
+          zoom: {
+            wheel: { enabled: true },
+            pinch: { enabled: true },
+            mode: 'x',
+            onZoom: () => { document.getElementById('hcp-zoom-reset').style.display = ''; }
+          },
+          pan: {
+            enabled: true,
+            mode: 'x',
+            onPan: () => { document.getElementById('hcp-zoom-reset').style.display = ''; }
+          },
         }
       },
       scales: {
@@ -2359,14 +2407,38 @@ function openTeamModal(color) {
     }
   });
 
-  // Player color legend
-  const legendHtml = teamPlayers.map(p => {
-    const displayName = p.name === 'Dan' ? 'Dan C' : p.name;
-    const c = PLAYER_COLORS[p.name] || lineColor;
-    return `<span style="display:inline-flex;align-items:center;gap:3px;margin-right:8px">` +
-      `<span style="width:9px;height:9px;border-radius:50%;background:${c};display:inline-block;flex-shrink:0"></span>${displayName}</span>`;
+  // Interactive player legend with delta from first handicap
+  const legendEl = document.getElementById('hcp-modal-legend');
+  legendEl.className = 'team-legend';
+  legendEl.innerHTML = playerData.map(pd => {
+    const displayName = pd.name === 'Dan' ? 'Dan C' : pd.name;
+    const c = PLAYER_COLORS[pd.name] || lineColor;
+    const deltaStr = pd.delta !== null
+      ? ' <span style="color:' + (pd.delta < 0 ? '#27ae60' : pd.delta > 0 ? '#dc3545' : '#888') + ';font-weight:700">'
+        + (pd.delta > 0 ? '+' : '') + pd.delta.toFixed(1) + '</span>'
+      : '';
+    return `<span class="team-legend-item" data-pname="${pd.name}" style="border-color:${c};color:${c}">` +
+      `<span style="width:8px;height:8px;border-radius:50%;background:${c};flex-shrink:0;display:inline-block"></span>` +
+      `${displayName}${deltaStr}</span>`;
   }).join('');
-  document.getElementById('hcp-modal-legend').innerHTML = legendHtml;
+
+  legendEl.onclick = e => {
+    const item = e.target.closest('.team-legend-item[data-pname]');
+    if (!item) return;
+    const name = item.dataset.pname;
+    if (selectedPlayers.has(name)) {
+      selectedPlayers.delete(name);
+      item.classList.add('dimmed');
+    } else {
+      selectedPlayers.add(name);
+      item.classList.remove('dimmed');
+    }
+    const { colors, radii } = getPointStyles();
+    hcpChart.data.datasets[0].pointBackgroundColor = colors;
+    hcpChart.data.datasets[0].pointBorderColor = colors;
+    hcpChart.data.datasets[0].pointRadius = radii;
+    hcpChart.update('none');
+  };
 }
 
 function closeHandicapModal() {
