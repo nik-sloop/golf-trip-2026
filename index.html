@@ -528,6 +528,12 @@
     text-align: center;
     border-bottom: 1px solid var(--gray-200);
   }
+  .course-meta {
+    font-size: 0.68rem;
+    color: var(--gray-400);
+    margin-top: 2px;
+    white-space: nowrap;
+  }
 
   .round-table th {
     font-size: 0.65rem;
@@ -2611,13 +2617,22 @@ function selectPlayer(idx) {
     const hasCourse = p.scores.some(s => s.course);
     const hasStats  = p.scores.some(s => s.fw || s.gir || s.putts !== undefined);
 
+    function buildCourseMeta(s) {
+      const parts = [];
+      if (s.rating !== undefined && s.slope !== undefined) parts.push(`${s.rating} / ${s.slope}`);
+      else if (s.rating !== undefined) parts.push(`R: ${s.rating}`);
+      else if (s.slope !== undefined) parts.push(`S: ${s.slope}`);
+      if (s.yards !== undefined) parts.push(`${s.yards.toLocaleString()} yds`);
+      return parts.length ? `<div class="course-meta">${parts.join(' · ')}</div>` : '';
+    }
+
     if (hasCourse && hasStats) {
       thead.innerHTML = `<tr><th>Date</th><th>Course</th><th>Gross/Net</th><th>+/-</th><th>FW</th><th>GIR</th><th>Putts</th></tr>`;
       tbody.innerHTML = p.scores.map(s => {
         const vsPar = getVsPar(s);
         return `<tr>
           <td>${s.date || '--'}</td>
-          <td style="font-size:0.78em;white-space:nowrap">${s.course || '--'}</td>
+          <td style="font-size:0.78em;white-space:nowrap;text-align:left">${s.course || '--'}${buildCourseMeta(s)}</td>
           <td><strong>${s.gross}(${s.net})</strong></td>
           <td class="${getDiffTextClass(vsPar)}">${formatVsPar(vsPar)}</td>
           <td>${s.fw || '--'}</td>
@@ -2631,7 +2646,7 @@ function selectPlayer(idx) {
         const vsPar = getVsPar(s);
         return `<tr>
           <td>${s.date || '--'}</td>
-          <td style="font-size:0.78em;white-space:nowrap">${s.course || '--'}</td>
+          <td style="font-size:0.78em;white-space:nowrap;text-align:left">${s.course || '--'}${buildCourseMeta(s)}</td>
           <td><strong>${s.gross}(${s.net})</strong></td>
           <td class="${getDiffTextClass(vsPar)}">${formatVsPar(vsPar)}</td>
         </tr>`;
