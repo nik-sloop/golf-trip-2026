@@ -1690,11 +1690,14 @@ const players = [
     { gross: 88, net: 75, par: 71, rating: 68.3, slope: 116, course: "QT River", date: "5/30", fw: "6/14", gir: "7/18", putts: 36, penalties: 2 },
   ], scouting: { driving: { range: "5-9", avg: 7 }, irons: { range: "4-7", avg: 6 }, chipping: { range: "6-8", avg: 7.5 }, putting: { range: "7-9", avg: 8 }, mental: { range: "7-8", avg: 7.5 }, total: "29-41", avg: 35, avgAdj: 36 }},
   { name: "Dan", handicap: 21.6, strokes: 12, scores: [
-    { gross: 91, net: 69, par: 71 },
-    { gross: 94, net: 72, par: 72 },
-    { gross: 89, net: 67, par: 70 },
-    { gross: 94, net: 75, par: 72 },
-    { gross: 96, net: 76, par: 71 }
+    { gross: 91, net: 71, par: 72, rating: 71.2, slope: 123, course: "Middle Island", date: "7/11" },
+    { gross: 94, net: 78, par: 72, rating: 68.2, slope: 120, course: "Bear Trap", date: "7/3" },
+    { gross: 89, net: 72, par: 71, rating: 67.8, slope: 119, course: "Bay Hills", date: "6/27" },
+    { gross: 39, net: 29, par: 35, rating: 32.3, slope: 111, course: "Blue Heron (9H)", date: "6/21" },
+    { gross: 89, net: 71, par: 70, rating: 67.5, slope: 117, course: "Bowie", date: "6/19" },
+    { gross: 38, net: 30, par: 30, rating: 30.4, slope: 97, course: "Hog Neck Exec (9H)", date: "6/7" },
+    { gross: 109, net: 90, par: 72, rating: 68.6, slope: 122, course: "Renditions", date: "5/31" },
+    { gross: 101, net: 84, par: 71, rating: 68.3, slope: 116, course: "QT River", date: "5/30" },
   ], scouting: { driving: { range: "6-8", avg: 7 }, irons: { range: "6-8", avg: 7 }, chipping: { range: "3-7", avg: 6 }, putting: { range: "4-8", avg: 6 }, mental: { range: "5-8", avg: 7 }, total: "24-39", avg: 31.5, avgAdj: 33 }},
   { name: "Chris", handicap: 21.8, strokes: 12, scores: [
     { gross: 99, net: 77, par: 70 },
@@ -2356,9 +2359,10 @@ function selectPlayer(idx) {
 
     const tbody = document.getElementById('round-tbody');
     const thead = document.getElementById('round-thead');
-    const hasDetail = p.scores.some(s => s.course);
+    const hasCourse = p.scores.some(s => s.course);
+    const hasStats  = p.scores.some(s => s.fw || s.gir || s.putts !== undefined);
 
-    if (hasDetail) {
+    if (hasCourse && hasStats) {
       thead.innerHTML = `<tr><th>Date</th><th>Course</th><th>Gross/Net</th><th>+/-</th><th>FW</th><th>GIR</th><th>Putts</th></tr>`;
       tbody.innerHTML = p.scores.map(s => {
         const vsPar = getVsPar(s);
@@ -2370,6 +2374,17 @@ function selectPlayer(idx) {
           <td>${s.fw || '--'}</td>
           <td>${s.gir || '--'}</td>
           <td>${s.putts !== undefined ? s.putts : '--'}</td>
+        </tr>`;
+      }).join('');
+    } else if (hasCourse) {
+      thead.innerHTML = `<tr><th>Date</th><th>Course</th><th>Gross(Net)</th><th>vs Par</th></tr>`;
+      tbody.innerHTML = p.scores.map(s => {
+        const vsPar = getVsPar(s);
+        return `<tr>
+          <td>${s.date || '--'}</td>
+          <td style="font-size:0.78em;white-space:nowrap">${s.course || '--'}</td>
+          <td><strong>${s.gross}(${s.net})</strong></td>
+          <td class="${getDiffTextClass(vsPar)}">${formatVsPar(vsPar)}</td>
         </tr>`;
       }).join('');
     } else {
