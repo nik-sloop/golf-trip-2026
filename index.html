@@ -535,6 +535,192 @@
     white-space: nowrap;
   }
 
+  /* ===== TRIPS TAB ===== */
+  .trips-location-header {
+    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+    color: white;
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    margin-top: 0.75rem;
+  }
+  .trips-location-name { font-size: 1.2rem; font-weight: 800; }
+  .trips-location-dates { font-size: 0.82rem; opacity: 0.85; margin-top: 2px; }
+  .trips-subtitle { font-size: 0.78rem; color: var(--gray-500); margin-bottom: 0.75rem; margin-top: -0.25rem; }
+
+  .trips-package-card {
+    background: white;
+    border-radius: 12px;
+    border: 1.5px solid var(--gray-200);
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+  .trips-pkg-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.45rem 1rem;
+    color: white;
+  }
+  .pkg-premium { background: linear-gradient(90deg, #1a472a, #2d6a4f); }
+  .pkg-value { background: linear-gradient(90deg, #2471a3, #3498db); }
+
+  .trips-schedule { padding: 0.5rem 0; }
+  .trips-day { border-bottom: 1px solid var(--gray-200); padding: 0.65rem 1rem; }
+  .trips-day:last-child { border-bottom: none; }
+  .trips-day-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.3rem;
+  }
+  .trips-course-row { }
+  .trips-course-row.highlight-course .trips-course-name { color: var(--green-dark); }
+  .trips-course-name { font-size: 0.92rem; font-weight: 700; color: var(--gray-800); margin-bottom: 0.2rem; }
+  .trips-course-stars {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 0.3rem;
+    flex-wrap: wrap;
+  }
+  .star-row { font-size: 0.7rem; color: var(--gray-500); font-weight: 600; white-space: nowrap; }
+  .star-row .stars { color: var(--gold); margin-left: 2px; }
+  .trips-course-note { font-size: 0.76rem; color: var(--gray-500); line-height: 1.45; }
+  .trips-pkg-courses-summary {
+    background: var(--gray-100);
+    padding: 0.5rem 1rem;
+    font-size: 0.73rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-align: center;
+  }
+
+  /* Lodging */
+  .trips-lodging-grid { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .trips-lodging-card {
+    flex: 1; min-width: 200px;
+    background: white;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 0.85rem 0.9rem;
+  }
+  .trips-lodging-card.lodging-value { border-color: #3498db; }
+  .trips-lodging-name { font-size: 0.9rem; font-weight: 800; color: var(--gray-800); }
+  .trips-lodging-brand { font-size: 0.72rem; color: var(--gray-500); margin-bottom: 0.35rem; }
+  .trips-lodging-beds {
+    display: inline-block;
+    background: var(--gray-100);
+    border-radius: 6px;
+    padding: 2px 7px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: 0.5rem;
+  }
+  .trips-lodging-notes { list-style: none; padding: 0; margin-bottom: 0.6rem; }
+  .trips-lodging-notes li {
+    font-size: 0.74rem;
+    color: var(--gray-500);
+    padding: 2px 0;
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .trips-lodging-notes li::before {
+    content: '·';
+    position: absolute;
+    left: 2px;
+    font-weight: 900;
+  }
+  .trips-lodging-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    background: var(--green-pale);
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  .value-badge { color: #1a5276; background: #d6eaf8; }
+
+  /* Pricing grid */
+  .trips-pricing-grid {
+    background: white;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .trips-pricing-header-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    background: var(--gray-100);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .trips-pricing-header-row > div { padding: 0.5rem 0.6rem; }
+  .trips-pricing-col-head {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    text-align: center;
+    line-height: 1.3;
+  }
+  .trips-pricing-col-head span { font-weight: 400; color: var(--gray-500); font-size: 0.68rem; }
+  .trips-pricing-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .trips-pricing-row:last-child { border-bottom: none; }
+  .trips-pricing-row-label {
+    padding: 0.6rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    background: var(--gray-100);
+    border-right: 1px solid var(--gray-200);
+    line-height: 1.3;
+  }
+  .trips-pricing-row-label span { font-weight: 400; font-size: 0.68rem; color: var(--gray-500); }
+  .trips-pricing-cell {
+    padding: 0.6rem 0.6rem;
+    border-right: 1px solid var(--gray-200);
+    text-align: center;
+  }
+  .trips-pricing-cell:last-child { border-right: none; }
+  .trips-price-pp {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--gray-800);
+  }
+  .trips-price-pp span { font-size: 0.68rem; font-weight: 400; color: var(--gray-500); }
+  .trips-price-pp.best-price { color: var(--green-dark); }
+  .trips-price-total { font-size: 0.7rem; color: var(--gray-500); margin-top: 1px; }
+  .trips-price-deposit { font-size: 0.65rem; color: var(--gray-500); margin-top: 1px; }
+  .trips-best-badge {
+    display: inline-block;
+    margin-top: 4px;
+    background: var(--green-pale);
+    color: var(--green-dark);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 20px;
+  }
+  .best-value-cell { background: #f0faf4; }
+
+  .trips-deposit-notice {
+    background: #fff8e1;
+    border: 1.5px solid #ffe082;
+    border-radius: 10px;
+    padding: 0.65rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #7d5a00;
+    margin-bottom: 1.5rem;
+  }
+  /* ===== END TRIPS TAB ===== */
+
   .round-table th {
     font-size: 0.65rem;
     text-transform: uppercase;
@@ -1608,6 +1794,209 @@
     <div id="teams-content"></div>
   </div>
 
+  <!-- ===== TRIPS TAB ===== -->
+  <div class="tab-content" id="tab-trips">
+    <div class="container">
+      <div class="trips-location-header">
+        <div class="trips-location-name">&#127966; Williamsburg, VA</div>
+        <div class="trips-location-dates">Aug 4 – 8, 2027 &nbsp;·&nbsp; 16 players &nbsp;·&nbsp; 4 nights</div>
+      </div>
+
+      <!-- COURSE PACKAGE CARDS -->
+      <div class="section-title" style="margin-top:1rem">Course Packages</div>
+      <p class="trips-subtitle">Two lineup options — same Thursday opener, different Friday &amp; Saturday</p>
+
+      <!-- Package 1 -->
+      <div class="trips-package-card">
+        <div class="trips-pkg-label pkg-premium">Package A &nbsp;·&nbsp; Premium Lineup</div>
+        <div class="trips-schedule">
+          <div class="trips-day">
+            <div class="trips-day-label">Thu Aug 5</div>
+            <div class="trips-course-row">
+              <div class="trips-course-name">Williamsburg National — Yorktown</div>
+              <div class="trips-course-stars">
+                <span class="star-row" title="Quality">Q <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+                <span class="star-row" title="Difficulty">D <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+                <span class="star-row" title="Uniqueness">U <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+              </div>
+              <div class="trips-course-note">Public parkland course. 16 players across 4 consecutive tee times (12:00–12:30). Solid layout, great warm-up day for the trip.</div>
+            </div>
+          </div>
+          <div class="trips-day">
+            <div class="trips-day-label">Fri Aug 6 · AM</div>
+            <div class="trips-course-row highlight-course">
+              <div class="trips-course-name">Golden Horseshoe — Gold &#127881;</div>
+              <div class="trips-course-stars">
+                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></span>
+                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></span>
+                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></span>
+              </div>
+              <div class="trips-course-note">Robert Trent Jones Sr. masterpiece (1963). Consistently ranked Top 100 in America. Set in Colonial Williamsburg — stunning historic surroundings, tight tree-lined fairways, and the iconic 16th island green. The crown jewel of the trip.</div>
+            </div>
+          </div>
+          <div class="trips-day">
+            <div class="trips-day-label">Fri Aug 6 · PM</div>
+            <div class="trips-course-row">
+              <div class="trips-course-name">Golden Horseshoe — Green</div>
+              <div class="trips-course-stars">
+                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></span>
+                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></span>
+              </div>
+              <div class="trips-course-note">Designed by Rees Jones (son of Robert Trent Jones Sr.). More open and forgiving than Gold, but still beautiful. Afternoon round gives 36-hole Friday — big day.</div>
+            </div>
+          </div>
+          <div class="trips-day">
+            <div class="trips-day-label">Sat Aug 7</div>
+            <div class="trips-course-row highlight-course">
+              <div class="trips-course-name">Kingsmill — River Course &#127881;</div>
+              <div class="trips-course-stars">
+                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></span>
+                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></span>
+                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></span>
+              </div>
+              <div class="trips-course-note">Pete Dye design along the James River. Former PGA Tour host (Michelob Championship). Dramatic elevation changes, riverside holes, and brutal bunkering. One of the hardest and most scenic tracks in Virginia.</div>
+            </div>
+          </div>
+        </div>
+        <div class="trips-pkg-courses-summary">3 courses &nbsp;·&nbsp; 54 holes &nbsp;·&nbsp; Two Top-100 caliber rounds</div>
+      </div>
+
+      <!-- Package 2 -->
+      <div class="trips-package-card">
+        <div class="trips-pkg-label pkg-value">Package B &nbsp;·&nbsp; Value Lineup</div>
+        <div class="trips-schedule">
+          <div class="trips-day">
+            <div class="trips-day-label">Thu Aug 5</div>
+            <div class="trips-course-row">
+              <div class="trips-course-name">Williamsburg National — Yorktown</div>
+              <div class="trips-course-stars">
+                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+              </div>
+              <div class="trips-course-note">Same as Package A — solid public course, back-to-back tee times (9:05–9:35).</div>
+            </div>
+          </div>
+          <div class="trips-day">
+            <div class="trips-day-label">Fri Aug 6 · AM</div>
+            <div class="trips-course-row">
+              <div class="trips-course-name">Golden Horseshoe — Green</div>
+              <div class="trips-course-stars">
+                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></span>
+                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></span>
+              </div>
+              <div class="trips-course-note">Rees Jones design — beautiful resort course without the Gold's premium price tag.</div>
+            </div>
+          </div>
+          <div class="trips-day">
+            <div class="trips-day-label">Fri Aug 6 · PM</div>
+            <div class="trips-course-row">
+              <div class="trips-course-name">Golden Horseshoe — The Shoe</div>
+              <div class="trips-course-stars">
+                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9734;&#9734;&#9734;</span></span>
+                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></span>
+              </div>
+              <div class="trips-course-note">9-hole executive/short course on the Golden Horseshoe grounds. Fun, fast, low-pressure afternoon round. Unique in a package context — good for skins or side games.</div>
+            </div>
+          </div>
+          <div class="trips-day">
+            <div class="trips-day-label">Sat Aug 8</div>
+            <div class="trips-course-row">
+              <div class="trips-course-name">Williamsburg National — Jamestown</div>
+              <div class="trips-course-stars">
+                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9734;&#9734;&#9734;</span></span>
+                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+              </div>
+              <div class="trips-course-note">Second course at Williamsburg National. More open layout than Yorktown, friendlier for closing-day golf. Good finisher without the intimidation factor of Kingsmill.</div>
+            </div>
+          </div>
+        </div>
+        <div class="trips-pkg-courses-summary">3 courses + 9H bonus &nbsp;·&nbsp; 54 holes &nbsp;·&nbsp; Lighter on premium fees</div>
+      </div>
+
+      <!-- LODGING -->
+      <div class="section-title" style="margin-top:1.5rem">Accommodations</div>
+      <p class="trips-subtitle">Two lodging options — both are 4-bedroom units, sleep 16 across 4 units</p>
+
+      <div class="trips-lodging-grid">
+        <div class="trips-lodging-card">
+          <div class="trips-lodging-name">Powhatan Resort</div>
+          <div class="trips-lodging-brand">Hilton Vacation Club</div>
+          <div class="trips-lodging-beds">4 BR · K / K / Q / T-T</div>
+          <ul class="trips-lodging-notes">
+            <li>Full Hilton resort amenities — pools, fitness center, tennis</li>
+            <li>Spacious villa-style units with full kitchens</li>
+            <li>Twin/twin room good for players who need a separate bed</li>
+            <li>Mature, established resort with landscaped grounds</li>
+            <li>Higher nightly rate vs. Colonies</li>
+          </ul>
+          <div class="trips-lodging-badge">&#9733; More amenities</div>
+        </div>
+        <div class="trips-lodging-card lodging-value">
+          <div class="trips-lodging-name">The Colonies at Williamsburg</div>
+          <div class="trips-lodging-brand">Vacation Rental</div>
+          <div class="trips-lodging-beds">4 BR · K / K / Q / Q</div>
+          <ul class="trips-lodging-notes">
+            <li>Four queen beds instead of twin setup — better for couples</li>
+            <li>Condo-style units with full kitchen and living area</li>
+            <li>Quiet residential-feel property close to historic district</li>
+            <li>More affordable — saves ~$265/person vs. Powhatan</li>
+            <li>Fewer resort amenities but all you really need is beds</li>
+          </ul>
+          <div class="trips-lodging-badge value-badge">&#9733; Best value</div>
+        </div>
+      </div>
+
+      <!-- PRICING MATRIX -->
+      <div class="section-title" style="margin-top:1.5rem">Quote Comparison</div>
+      <p class="trips-subtitle">All quotes: Aug 4–8 · 16 players · deposit due Oct 2026</p>
+
+      <div class="trips-pricing-grid">
+        <div class="trips-pricing-header-row">
+          <div></div>
+          <div class="trips-pricing-col-head">Package A<br><span>Gold + Kingsmill</span></div>
+          <div class="trips-pricing-col-head">Package B<br><span>Green + Jamestown</span></div>
+        </div>
+        <div class="trips-pricing-row">
+          <div class="trips-pricing-row-label">Powhatan<br><span>Hilton VC</span></div>
+          <div class="trips-pricing-cell">
+            <div class="trips-price-pp">$1,014<span>/person</span></div>
+            <div class="trips-price-total">$16,230 total</div>
+            <div class="trips-price-deposit">$1,600 deposit by Oct 7</div>
+          </div>
+          <div class="trips-pricing-cell">
+            <div class="trips-price-pp">$750<span>/person</span></div>
+            <div class="trips-price-total">$11,992 total</div>
+            <div class="trips-price-deposit">$1,600 deposit by Oct 2</div>
+          </div>
+        </div>
+        <div class="trips-pricing-row best-value-row">
+          <div class="trips-pricing-row-label">Colonies<br><span>Vacation Rental</span></div>
+          <div class="trips-pricing-cell">
+            <div class="trips-price-pp">$916<span>/person</span></div>
+            <div class="trips-price-total">$14,661 total</div>
+            <div class="trips-price-deposit">$1,600 deposit by Oct 7</div>
+          </div>
+          <div class="trips-pricing-cell best-value-cell">
+            <div class="trips-price-pp best-price">$651<span>/person</span></div>
+            <div class="trips-price-total">$10,423 total</div>
+            <div class="trips-price-deposit">$1,600 deposit by Oct 7</div>
+            <div class="trips-best-badge">Best Value</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="trips-deposit-notice">
+        &#9888; Deposits of $1,600 due in early October 2026 — decision needed soon
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <!-- Bottom Navigation (mobile only) -->
@@ -1627,6 +2016,10 @@
   <button class="nav-tab" data-tab="scouting">
     <span class="nav-icon">&#128200;</span>
     <span class="nav-label">Scouting</span>
+  </button>
+  <button class="nav-tab" data-tab="trips">
+    <span class="nav-icon">&#9992;</span>
+    <span class="nav-label">Trips</span>
   </button>
   <button class="nav-tab" data-tab="vote" id="vote-nav-tab" style="display:none">
     <span class="nav-icon">&#127937;</span>
