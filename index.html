@@ -579,14 +579,29 @@
   .trips-course-row { }
   .trips-course-row.highlight-course .trips-course-name { color: var(--green-dark); }
   .trips-course-name { font-size: 0.92rem; font-weight: 700; color: var(--gray-800); margin-bottom: 0.2rem; }
-  .trips-course-stars {
+  .trips-course-scores {
     display: flex;
-    gap: 10px;
+    gap: 6px;
     margin-bottom: 0.3rem;
     flex-wrap: wrap;
   }
-  .star-row { font-size: 0.7rem; color: var(--gray-500); font-weight: 600; white-space: nowrap; }
-  .star-row .stars { color: var(--gold); margin-left: 2px; }
+  .score-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+    color: white;
+    white-space: nowrap;
+  }
+  .score-pill .score-label { opacity: 0.82; }
+  .score-pill .score-val { font-size: 0.78rem; font-weight: 800; }
+  .score-s1 { background: #c0392b; }  /* <50 */
+  .score-s2 { background: #d68910; }  /* 50–64 */
+  .score-s3 { background: #2471a3; }  /* 65–79 */
+  .score-s4 { background: #1a7a4a; }  /* 80–100 */
   .trips-course-note { font-size: 0.76rem; color: var(--gray-500); line-height: 1.45; }
   .trips-pkg-courses-summary {
     background: var(--gray-100);
@@ -1814,10 +1829,10 @@
             <div class="trips-day-label">Thu Aug 5</div>
             <div class="trips-course-row">
               <div class="trips-course-name">Williamsburg National — Yorktown</div>
-              <div class="trips-course-stars">
-                <span class="star-row" title="Quality">Q <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
-                <span class="star-row" title="Difficulty">D <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
-                <span class="star-row" title="Uniqueness">U <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+              <div class="trips-course-scores">
+                <span class="score-pill score-s2"><span class="score-label">Quality</span><span class="score-val">58</span></span>
+                <span class="score-pill score-s2"><span class="score-label">Difficulty</span><span class="score-val">54</span></span>
+                <span class="score-pill score-s1"><span class="score-label">Uniqueness</span><span class="score-val">47</span></span>
               </div>
               <div class="trips-course-note">Public parkland course. 16 players across 4 consecutive tee times (12:00–12:30). Solid layout, great warm-up day for the trip.</div>
             </div>
@@ -1826,10 +1841,10 @@
             <div class="trips-day-label">Fri Aug 6 · AM</div>
             <div class="trips-course-row highlight-course">
               <div class="trips-course-name">Golden Horseshoe — Gold &#127881;</div>
-              <div class="trips-course-stars">
-                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></span>
-                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></span>
-                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></span>
+              <div class="trips-course-scores">
+                <span class="score-pill score-s4"><span class="score-label">Quality</span><span class="score-val">85</span></span>
+                <span class="score-pill score-s3"><span class="score-label">Difficulty</span><span class="score-val">74</span></span>
+                <span class="score-pill score-s4"><span class="score-label">Uniqueness</span><span class="score-val">88</span></span>
               </div>
               <div class="trips-course-note">Robert Trent Jones Sr. masterpiece (1963). Consistently ranked Top 100 in America. Set in Colonial Williamsburg — stunning historic surroundings, tight tree-lined fairways, and the iconic 16th island green. The crown jewel of the trip.</div>
             </div>
@@ -1838,10 +1853,10 @@
             <div class="trips-day-label">Fri Aug 6 · PM</div>
             <div class="trips-course-row">
               <div class="trips-course-name">Golden Horseshoe — Green</div>
-              <div class="trips-course-stars">
-                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></span>
-                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
-                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></span>
+              <div class="trips-course-scores">
+                <span class="score-pill score-s3"><span class="score-label">Quality</span><span class="score-val">70</span></span>
+                <span class="score-pill score-s2"><span class="score-label">Difficulty</span><span class="score-val">61</span></span>
+                <span class="score-pill score-s3"><span class="score-label">Uniqueness</span><span class="score-val">66</span></span>
               </div>
               <div class="trips-course-note">Designed by Rees Jones (son of Robert Trent Jones Sr.). More open and forgiving than Gold, but still beautiful. Afternoon round gives 36-hole Friday — big day.</div>
             </div>
@@ -1850,10 +1865,10 @@
             <div class="trips-day-label">Sat Aug 7</div>
             <div class="trips-course-row highlight-course">
               <div class="trips-course-name">Kingsmill — River Course &#127881;</div>
-              <div class="trips-course-stars">
-                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></span>
-                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></span>
-                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></span>
+              <div class="trips-course-scores">
+                <span class="score-pill score-s4"><span class="score-label">Quality</span><span class="score-val">82</span></span>
+                <span class="score-pill score-s4"><span class="score-label">Difficulty</span><span class="score-val">87</span></span>
+                <span class="score-pill score-s4"><span class="score-label">Uniqueness</span><span class="score-val">81</span></span>
               </div>
               <div class="trips-course-note">Pete Dye design along the James River. Former PGA Tour host (Michelob Championship). Dramatic elevation changes, riverside holes, and brutal bunkering. One of the hardest and most scenic tracks in Virginia.</div>
             </div>
@@ -1870,10 +1885,10 @@
             <div class="trips-day-label">Thu Aug 5</div>
             <div class="trips-course-row">
               <div class="trips-course-name">Williamsburg National — Yorktown</div>
-              <div class="trips-course-stars">
-                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
-                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
-                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+              <div class="trips-course-scores">
+                <span class="score-pill score-s2"><span class="score-label">Quality</span><span class="score-val">58</span></span>
+                <span class="score-pill score-s2"><span class="score-label">Difficulty</span><span class="score-val">54</span></span>
+                <span class="score-pill score-s1"><span class="score-label">Uniqueness</span><span class="score-val">47</span></span>
               </div>
               <div class="trips-course-note">Same as Package A — solid public course, back-to-back tee times (9:05–9:35).</div>
             </div>
@@ -1882,10 +1897,10 @@
             <div class="trips-day-label">Fri Aug 6 · AM</div>
             <div class="trips-course-row">
               <div class="trips-course-name">Golden Horseshoe — Green</div>
-              <div class="trips-course-stars">
-                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></span>
-                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
-                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></span>
+              <div class="trips-course-scores">
+                <span class="score-pill score-s3"><span class="score-label">Quality</span><span class="score-val">70</span></span>
+                <span class="score-pill score-s2"><span class="score-label">Difficulty</span><span class="score-val">61</span></span>
+                <span class="score-pill score-s3"><span class="score-label">Uniqueness</span><span class="score-val">66</span></span>
               </div>
               <div class="trips-course-note">Rees Jones design — beautiful resort course without the Gold's premium price tag.</div>
             </div>
@@ -1894,10 +1909,10 @@
             <div class="trips-day-label">Fri Aug 6 · PM</div>
             <div class="trips-course-row">
               <div class="trips-course-name">Golden Horseshoe — The Shoe</div>
-              <div class="trips-course-stars">
-                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
-                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9734;&#9734;&#9734;</span></span>
-                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></span>
+              <div class="trips-course-scores">
+                <span class="score-pill score-s2"><span class="score-label">Quality</span><span class="score-val">52</span></span>
+                <span class="score-pill score-s1"><span class="score-label">Difficulty</span><span class="score-val">44</span></span>
+                <span class="score-pill score-s2"><span class="score-label">Uniqueness</span><span class="score-val">63</span></span>
               </div>
               <div class="trips-course-note">9-hole executive/short course on the Golden Horseshoe grounds. Fun, fast, low-pressure afternoon round. Unique in a package context — good for skins or side games.</div>
             </div>
@@ -1906,10 +1921,10 @@
             <div class="trips-day-label">Sat Aug 8</div>
             <div class="trips-course-row">
               <div class="trips-course-name">Williamsburg National — Jamestown</div>
-              <div class="trips-course-stars">
-                <span class="star-row">Q <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
-                <span class="star-row">D <span class="stars">&#9733;&#9733;&#9734;&#9734;&#9734;</span></span>
-                <span class="star-row">U <span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></span>
+              <div class="trips-course-scores">
+                <span class="score-pill score-s2"><span class="score-label">Quality</span><span class="score-val">55</span></span>
+                <span class="score-pill score-s2"><span class="score-label">Difficulty</span><span class="score-val">50</span></span>
+                <span class="score-pill score-s1"><span class="score-label">Uniqueness</span><span class="score-val">46</span></span>
               </div>
               <div class="trips-course-note">Second course at Williamsburg National. More open layout than Yorktown, friendlier for closing-day golf. Good finisher without the intimidation factor of Kingsmill.</div>
             </div>
